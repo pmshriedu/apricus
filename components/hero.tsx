@@ -38,18 +38,31 @@ interface SearchFormProps {
 const VideoBackground: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [loadAttempts, setLoadAttempts] = useState(0);
   const maxAttempts = 3;
+
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Reduce initial load time by setting a lower quality
+    // Optimize video loading
+    video.preload = "auto";
     video.playbackRate = 0.75;
-
-    // Load video only when component is mounted
-    video.load();
 
     const handleCanPlay = () => {
       video
@@ -64,8 +77,7 @@ const VideoBackground: React.FC = () => {
         });
     };
 
-    const handleError = (error: Event) => {
-      console.error("Video loading error:", error);
+    const handleError = () => {
       if (loadAttempts < maxAttempts) {
         setLoadAttempts((prev) => prev + 1);
         video.load();
@@ -75,33 +87,25 @@ const VideoBackground: React.FC = () => {
     video.addEventListener("canplay", handleCanPlay);
     video.addEventListener("error", handleError);
 
-    // Cleanup
     return () => {
       video.removeEventListener("canplay", handleCanPlay);
       video.removeEventListener("error", handleError);
     };
   }, [loadAttempts]);
 
-  // Fallback image style
-  const fallbackStyle = {
-    backgroundImage: "url('/images/fallback-bg.jpg')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  };
-
   return (
-    <>
+    <div className="relative w-full h-full">
       {/* Fallback/Loading State */}
-      {!isVideoPlaying && (
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-800 transition-opacity duration-500"
-          style={fallbackStyle}
-        >
-          {loadAttempts >= maxAttempts && (
-            <div className="absolute inset-0 bg-black bg-opacity-50" />
-          )}
-        </div>
-      )}
+      <div
+        className={`absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-800 transition-opacity duration-500 ${
+          isVideoPlaying ? "opacity-0" : "opacity-100"
+        }`}
+        style={{
+          backgroundImage: "url('/videos/sl-mobile.gif')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
 
       {/* Video Element */}
       <video
@@ -110,23 +114,20 @@ const VideoBackground: React.FC = () => {
         loop
         muted
         playsInline
-        className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700 ${
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
           isVideoPlaying ? "opacity-100" : "opacity-0"
         }`}
-        preload="metadata"
+        poster="/images/fallback-bg.jpg"
       >
         <source
-          src="/videos/sl.mp4"
+          src={isMobile ? "/videos/sl-mobile.gif" : "/videos/sl.mp4"}
           type="video/mp4"
-          media="all and (min-width: 768px)"
-        />
-        <source
-          src="/videos/sl-mobile.mp4"
-          type="video/mp4"
-          media="all and (max-width: 767px)"
         />
       </video>
-    </>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-40" />
+    </div>
   );
 };
 
