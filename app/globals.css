@@ -183,3 +183,18 @@ a:hover {
   background-color: #d6b56f;
   color: #ffffff;
 }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px; /* Adjust base font size for mobile */
+  }
+}
