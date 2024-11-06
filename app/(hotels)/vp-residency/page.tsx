@@ -133,7 +133,7 @@ const VPResidencyPage: React.FC = () => {
 
   const handleBookNow = () => {
     window.location.href =
-      "https://www.asiatech.in/booking_engine/index3.php?token=NDczMQ==";
+      "https://asiatech.in/booking_engine/index3?token=NzE2MA==";
   };
 
   return (

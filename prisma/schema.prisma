@@ -96,3 +96,21 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
 }
+
+model Enquiry {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  phoneNumber String
+  status      EnquiryStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("enquiries")
+}
+
+enum EnquiryStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}

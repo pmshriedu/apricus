@@ -63,7 +63,13 @@ const PorvorimLocation = () => {
     <div className="font-comfortaaRegular">
       {/* Hero Section with Parallax Effect */}
       <section className="relative h-[40rem]">
-        <div className="absolute inset-0 bg-primary" />
+        <div className="absolute inset-0">
+          <img
+            src="/images/hero-porvorim.jpg"
+            alt="Benaulim Beach"
+            className="w-full h-full object-cover object-center brightness-75 grayscale-[50%] transition-all duration-700 group-hover:brightness-100 group-hover:grayscale-0"
+          />
+        </div>
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-white p-4">
           <h1 className="font-comfortaaBold text-5xl md:text-7xl text-center mb-6 animate-fade-in">
             Porvorim, North Goa

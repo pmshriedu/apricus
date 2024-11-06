@@ -81,11 +81,11 @@ const services: Service[] = [
 
 const properties: Property[] = [
   {
-    name: "The Apricus",
+    name: "Apricus",
     description: "Our flagship property offering unparalleled luxury",
   },
   {
-    name: "Apricus Regency",
+    name: "Apricus Residency",
     description: "Urban sophistication meets traditional hospitality",
   },
   {
@@ -93,8 +93,13 @@ const properties: Property[] = [
     description: "Comfortable stays with a touch of elegance",
   },
   {
-    name: "Apricus Home Stay",
+    name: "Villas and Homes",
     description: "Experience authentic Goan hospitality",
+  },
+  {
+    name: "Apricus Express",
+    description:
+      "Quick, convenient stays with modern amenities and reliable service",
   },
 ];
 
@@ -110,9 +115,9 @@ const businessOpportunities: BusinessOpportunity[] = [
       "Leverage our management expertise to transform struggling properties into profitable ventures.",
   },
   {
-    title: "Lease Model",
+    title: "Revenue Share Model",
     description:
-      "Join our revenue-sharing opportunity for property owners with a sizeable profit-sharing ratio.",
+      "Join our flexible partnership model where risks and rewards are shared, ensuring mutual growth and success.",
   },
 ];
 
@@ -172,9 +177,9 @@ const AboutUs: React.FC = () => {
         <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
           <div className="max-w-7xl mx-auto">
             <h2 className="font-comfortaaBold text-3xl text-primary mb-8 text-center">
-              Our Properties
+              Our Brands
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {properties.map((property) => (
                 <Card
                   key={property.name}

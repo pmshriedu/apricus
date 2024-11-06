@@ -18,6 +18,12 @@ import {
   Contact,
   Calendar,
   UtensilsCrossed,
+  MapPin,
+  Building,
+  Home as Villa,
+  Instagram,
+  Twitter,
+  Facebook,
 } from "lucide-react";
 
 type NavItem = {
@@ -34,10 +40,48 @@ type DropdownMenuProps = {
   currentPath: string;
 };
 
-// Memoized constant data
+// Reorganized navigation items
 const standardNavItems: NavItem[] = [
   { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
-  { label: "About Us", href: "/aboutus", icon: <Info className="w-4 h-4" /> },
+  {
+    label: "Locations",
+    icon: <MapPin className="w-4 h-4" />,
+    subItems: [
+      { label: "Benaulim South Goa", href: "/locations/benaulim-south-goa" },
+      { label: "Varca ", href: "/locations/varca" },
+      { label: "Porvorim", href: "/locations/porvorim" },
+    ],
+  },
+  {
+    label: "Hotels",
+    icon: <Building className="w-4 h-4" />,
+    subItems: [
+      { label: "The Centre Court", href: "/the-center-court" },
+      { label: "Apricus VP residency", href: "/vp-residency" },
+    ],
+  },
+  {
+    label: "Villas",
+    icon: <Villa className="w-4 h-4" />,
+    subItems: [
+      { label: "Apricus Villa Brisa Marina", href: "/villa/brisa-marina" },
+    ],
+  },
+  {
+    label: "Dining",
+    href: "/dinings",
+    icon: <UtensilsCrossed className="w-4 h-4" />,
+  },
+  {
+    label: "Events",
+    href: "/events",
+    icon: <Calendar className="w-4 h-4" />,
+  },
+  {
+    label: "About Us",
+    href: "/aboutus",
+    icon: <Info className="w-4 h-4" />,
+  },
   {
     label: "Partner with Us",
     href: "/partner-with-us",
@@ -48,65 +92,55 @@ const standardNavItems: NavItem[] = [
     href: "/contact-us",
     icon: <Contact className="w-4 h-4" />,
   },
-  {
-    label: "Events",
-    href: "/events",
-    icon: <Calendar className="w-4 h-4" />,
-  },
-  {
-    label: "Dining",
-    href: "/dinings",
-    icon: <UtensilsCrossed className="w-4 h-4" />,
-  },
 ];
 
-const dropdownNavStructure = {
-  LOCATIONS: [
-    { label: "Benaulim South Goa", href: "/locations/benaulim-south-goa" },
-    { label: "Varca ", href: "/locations/varca" },
-    { label: "Porvorim", href: "/locations/porvorim" },
-  ],
-  HOTELS: [
-    { label: "The Centre Court", href: "/the-center-court" },
-    { label: "Apricus VP residency", href: "/vp-residency" },
-  ],
-  VILLAS: [
-    { label: "Apricus Villa Brisa Marina", href: "/villa/brisa-marina" },
-  ],
-} as const;
-
-// Memoized ContactHeader component
 const ContactHeader = memo(() => (
   <div className="bg-gradient-to-r font-comfortaaBold from-primary/80 to-primary/80 text-white py-2 shadow-md">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex flex-wrap justify-between items-center gap-2">
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          href="tel:+918956593946"
-          className="flex items-center hover:text-white/90 transition-colors"
-        >
+        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
           <Phone className="w-4 h-4 mr-2" />
-          <span className="font-semibold mr-1">CALL:</span>
+          <span className="font-semibold mr-1">Call Us:</span>
           <span>+91 8956593946</span>
-        </motion.a>
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          href="mailto:crs@apricushotels.com"
-          className="flex items-center hover:text-white/90 transition-colors"
-        >
+        </div>
+        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
           <Mail className="w-4 h-4 mr-2" />
-          <span className="font-semibold mr-1">EMAIL:</span>
+          <span className="font-semibold mr-1">Email Us:</span>
           <span>crs@apricushotels.com</span>
-        </motion.a>
+        </div>
+        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
+          <MessageCircle className="w-4 h-4 mr-2" />
+          <span>WhatsApp Us</span>
+        </div>
         <motion.a
           whileHover={{ scale: 1.05 }}
-          href="https://wa.me/918956593946"
+          href="https://www.instagram.com/apricushotels/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
         >
-          <MessageCircle className="w-4 h-4 mr-2" />
-          <span>WhatsApp Us</span>
+          <Instagram className="w-4 h-4 mr-2" />
+          <span className="sm:hidden">Instagram</span>
+        </motion.a>
+        <motion.a
+          whileHover={{ scale: 1.05 }}
+          href="https://twitter.com/apricushotels"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center hover:text-white/90 transition-colors"
+        >
+          <Twitter className="w-4 h-4 mr-2" />
+          <span className="sm:hidden">Twitter</span>
+        </motion.a>
+        <motion.a
+          whileHover={{ scale: 1.05 }}
+          href="https://www.facebook.com/apricushotels/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center hover:text-white/90 transition-colors"
+        >
+          <Facebook className="w-4 h-4 mr-2" />
+          <span className="sm:hidden">Facebook</span>
         </motion.a>
       </div>
     </div>
@@ -115,7 +149,6 @@ const ContactHeader = memo(() => (
 
 ContactHeader.displayName = "ContactHeader";
 
-// Memoized DropdownMenu component
 const DropdownMenu = memo(
   ({ isOpen, items, onClose, currentPath }: DropdownMenuProps) => (
     <AnimatePresence>
@@ -157,7 +190,6 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  // Debounced scroll handler
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     const handleScroll = () => {
@@ -174,7 +206,6 @@ const Navbar = () => {
     };
   }, []);
 
-  // Memoized handlers
   const handleMenuToggle = useCallback(() => {
     setIsOpen((prev) => !prev);
   }, []);
@@ -198,20 +229,20 @@ const Navbar = () => {
         <nav className={navClasses}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-              {/* Container for all desktop nav elements */}
+              {/* Desktop Navigation */}
               <div className="hidden lg:flex w-full items-center justify-between">
                 {/* Logo */}
                 <div className="w-[200px]">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 flex justify-center items-center mb-2"
                   >
                     <Link href="/">
                       <Image
                         src="/logo.png"
                         alt="apricus-logo"
-                        width={150}
-                        height={150}
+                        width={170}
+                        height={170}
                         priority
                       />
                     </Link>
@@ -220,9 +251,33 @@ const Navbar = () => {
 
                 {/* Navigation Links - Centered */}
                 <div className="flex items-center justify-center flex-1 px-8">
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-1 font-comfortaaBold">
                     {standardNavItems.map((item) => {
                       const isActive = pathname === item.href;
+
+                      if (item.subItems) {
+                        return (
+                          <div
+                            key={item.label}
+                            className="relative"
+                            onMouseEnter={() => handleDropdownEnter(item.label)}
+                            onMouseLeave={handleDropdownLeave}
+                          >
+                            <button className="flex items-center space-x-1 text-gray-800 hover:text-primary px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap">
+                              {item.icon}
+                              <span className="ml-1">{item.label}</span>
+                              <ChevronDown className="w-4 h-4" />
+                            </button>
+                            <DropdownMenu
+                              isOpen={activeDropdown === item.label}
+                              items={item.subItems}
+                              onClose={handleDropdownLeave}
+                              currentPath={pathname}
+                            />
+                          </div>
+                        );
+                      }
+
                       return (
                         <Link
                           key={item.label}
@@ -238,49 +293,17 @@ const Navbar = () => {
                         </Link>
                       );
                     })}
-
-                    {Object.entries(dropdownNavStructure).map(
-                      ([category, items]) => (
-                        <div
-                          key={category}
-                          className="relative"
-                          onMouseEnter={() => handleDropdownEnter(category)}
-                          onMouseLeave={handleDropdownLeave}
-                        >
-                          <button className="flex items-center space-x-1 text-gray-800 hover:text-primary px-2 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap">
-                            <span>{category}</span>
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                          <DropdownMenu
-                            isOpen={activeDropdown === category}
-                            items={items}
-                            onClose={handleDropdownLeave}
-                            currentPath={pathname}
-                          />
-                        </div>
-                      )
-                    )}
                   </div>
                 </div>
 
                 {/* Book Now Button */}
-                <div className="w-[200px] flex justify-end">
-                  <motion.div whileHover={{ scale: 1.05 }}>
-                    <Button
-                      variant="default"
-                      className="bg-primary text-white hover:bg-primary/90 font-medium shadow-md whitespace-nowrap"
-                    >
-                      Book Now
-                    </Button>
-                  </motion.div>
-                </div>
               </div>
 
               {/* Mobile menu button */}
               <div className="lg:hidden flex justify-between w-full items-center">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 mb-2"
                 >
                   <Link href="/">
                     <Image
@@ -319,6 +342,64 @@ const Navbar = () => {
               >
                 <div className="px-2 pt-2 pb-3 font-comfortaaBold space-y-1">
                   {standardNavItems.map((item) => {
+                    if (item.subItems) {
+                      return (
+                        <div key={item.label}>
+                          <button
+                            onClick={() =>
+                              setActiveDropdown(
+                                activeDropdown === item.label
+                                  ? null
+                                  : item.label
+                              )
+                            }
+                            className="w-full flex items-center space-x-2 text-gray-800 hover:text-primary px-3 py-2 rounded-md text-base font-medium"
+                          >
+                            {item.icon}
+                            <span>{item.label}</span>
+                            <ChevronDown
+                              className={`w-4 h-4 transform transition-transform ${
+                                activeDropdown === item.label
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
+                            />
+                          </button>
+                          <AnimatePresence>
+                            {activeDropdown === item.label && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="pl-6"
+                              >
+                                {item.subItems.map((subItem) => {
+                                  const isActive = pathname === subItem.href;
+                                  return (
+                                    <Link
+                                      key={subItem.label}
+                                      href={subItem.href}
+                                      className={`block px-3 py-2 text-sm ${
+                                        isActive
+                                          ? "text-primary font-medium"
+                                          : "text-gray-600 hover:text-primary"
+                                      }`}
+                                      onClick={() => {
+                                        setActiveDropdown(null);
+                                        setIsOpen(false);
+                                      }}
+                                    >
+                                      {subItem.label}
+                                    </Link>
+                                  );
+                                })}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    }
+
                     const isActive = pathname === item.href;
                     return (
                       <Link
@@ -336,67 +417,6 @@ const Navbar = () => {
                       </Link>
                     );
                   })}
-
-                  {Object.entries(dropdownNavStructure).map(
-                    ([category, items]) => (
-                      <div key={category}>
-                        <button
-                          onClick={() =>
-                            setActiveDropdown(
-                              activeDropdown === category ? null : category
-                            )
-                          }
-                          className="w-full flex items-center justify-between text-gray-800 hover:text-primary px-3 py-2 rounded-md text-base font-medium"
-                        >
-                          <span>{category}</span>
-                          <ChevronDown
-                            className={`w-4 h-4 transform transition-transform ${
-                              activeDropdown === category ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-                        <AnimatePresence>
-                          {activeDropdown === category && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: "auto" }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="pl-6"
-                            >
-                              {items.map((item) => {
-                                const isActive = pathname === item.href;
-                                return (
-                                  <Link
-                                    key={item.label}
-                                    href={item.href || "#"}
-                                    className={`block px-3 py-2 text-sm ${
-                                      isActive
-                                        ? "text-primary font-medium"
-                                        : "text-gray-600 hover:text-primary"
-                                    }`}
-                                    onClick={() => {
-                                      setActiveDropdown(null);
-                                      setIsOpen(false);
-                                    }}
-                                  >
-                                    {item.label}
-                                  </Link>
-                                );
-                              })}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    )
-                  )}
-                </div>
-                <div className="px-4 py-3">
-                  <Button
-                    variant="default"
-                    className="w-full bg-primary text-white hover:bg-primary/90 font-medium shadow-md"
-                  >
-                    Book Now
-                  </Button>
                 </div>
               </motion.div>
             )}

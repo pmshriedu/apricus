@@ -20,6 +20,8 @@ import {
   Building,
 } from "lucide-react";
 import Image from "next/image";
+import CCNavBar from "@/components/hotel-nav/center-court";
+import CCNavigation from "@/components/hotel-nav/center-court";
 
 interface ImageData {
   src: string;
@@ -182,6 +184,7 @@ const TheCenterCourtPage: React.FC = () => {
   return (
     <div className="font-comfortaaRegular">
       {/* Hero Section */}
+      <CCNavigation />
       <section className="relative h-screen">
         <div className="absolute inset-0 bg-primary opacity-50 z-10" />
         <div

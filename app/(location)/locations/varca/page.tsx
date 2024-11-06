@@ -18,6 +18,8 @@ import {
   Flower,
   CoffeeIcon,
   GlassWater,
+  UtensilsCrossed,
+  Leaf,
 } from "lucide-react";
 
 const VarcaLocation = () => {
@@ -59,11 +61,21 @@ const VarcaLocation = () => {
     router.push("/the-center-court");
   };
 
+  const handleDiningClick = () => {
+    router.push("/dinings");
+  };
+
   return (
     <div className="font-comfortaaRegular">
       {/* Hero Section with Parallax Effect */}
       <section className="relative h-[40rem]">
-        <div className="absolute inset-0 bg-primary" />
+        <div className="absolute inset-0">
+          <img
+            src="/images/hero-varca.jpg"
+            alt="Benaulim Beach"
+            className="w-full h-full object-cover object-center brightness-75 grayscale-[50%] transition-all duration-700 group-hover:brightness-100 group-hover:grayscale-0"
+          />
+        </div>
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-white p-4">
           <h1 className="font-comfortaaBold text-5xl md:text-7xl text-center mb-6 animate-fade-in">
             Varca, South Goa
@@ -136,7 +148,66 @@ const VarcaLocation = () => {
           </div>
         </div>
       </section>
+      <section className="py-24 bg-gradient-to-b from-primary/5 to-transparent">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="text-center mb-16">
+            <h2 className="font-comfortaaBold text-4xl text-gray-900 mb-4">
+              Dining Excellence
+            </h2>
+            <p className="font-comfortaaLight text-gray-600 max-w-2xl mx-auto">
+              Experience the finest vegetarian cuisine at our signature
+              restaurant
+            </p>
+          </div>
 
+          <Card className="overflow-hidden max-w-4xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 p-8">
+              <div className="space-y-6">
+                <div className="flex items-center space-x-3">
+                  <Leaf className="w-8 h-8 text-primary" />
+                  <h3 className="font-comfortaaBold text-3xl">
+                    Veggie Delight
+                  </h3>
+                </div>
+                <p className="font-comfortaaLight text-gray-600 text-lg leading-relaxed">
+                  Immerse yourself in a culinary journey of flavors at Veggie
+                  Delight, our signature restaurant offering exquisite
+                  vegetarian cuisine. From traditional Indian delicacies to
+                  international favorites, each dish is crafted with fresh,
+                  locally-sourced ingredients.
+                </p>
+                <div className="flex flex-col space-y-4">
+                  <div className="flex items-center space-x-3">
+                    <UtensilsCrossed className="w-5 h-5 text-primary" />
+                    <span className="font-comfortaaLight text-gray-600">
+                      All-day dining available
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <Leaf className="w-5 h-5 text-primary" />
+                    <span className="font-comfortaaLight text-gray-600">
+                      Pure vegetarian cuisine
+                    </span>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleDiningClick}
+                  className="bg-primary hover:bg-primary/90 text-white px-8 py-6 rounded-lg w-full md:w-auto"
+                >
+                  Explore
+                </Button>
+              </div>
+              <div className="relative h-[300px] rounded-xl overflow-hidden group">
+                <img
+                  src="/images/veggie.png"
+                  alt="Veggie Delight Restaurant"
+                  className="w-full h-full object-cover transition-transform duration-500 "
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
       {/* Featured Property Section */}
       <section className="py-24 bg-gray-50">
         <div className="container mx-auto max-w-6xl px-4">

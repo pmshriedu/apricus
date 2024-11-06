@@ -7,34 +7,35 @@ import PlacesSlider from "@/components/placesslider";
 import RoomCards from "@/components/room-cards";
 import Services from "@/components/services";
 import ApricusLoading from "./loading";
+import EnquiryPopup from "@/components/pop-enq/pop-up";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set a timeout to hide the loading screen after 3 seconds
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 3000);
-
-    // Cleanup the timer if the component unmounts
     return () => clearTimeout(timer);
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Show loading screen while isLoading is true
   if (isLoading) {
     return <ApricusLoading />;
   }
 
-  // Show main content after loading
   return (
-    <main>
-      <Hero />
-      <Services />
-      <Experience />
-      <Adventure />
-      <PlacesSlider />
-      <RoomCards />
-    </main>
+    <>
+      <div className="fixed inset-0 pointer-events-none z-50">
+        <EnquiryPopup />
+      </div>
+      <main className="relative">
+        <Hero />
+        <Services />
+        <Experience />
+        <Adventure />
+        <PlacesSlider />
+        <RoomCards />
+      </main>
+    </>
   );
 }

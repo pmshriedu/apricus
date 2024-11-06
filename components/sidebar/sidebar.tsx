@@ -71,6 +71,18 @@ const getNavData = () => ({
       ],
     },
     {
+      title: "Enquiries",
+      url: "#",
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: "Enquiry Details",
+          url: "/apricus-admin/dashboard/enquiry",
+        },
+      ],
+    },
+    {
       title: "Contact Queries",
       url: "#",
       icon: FileQuestion,

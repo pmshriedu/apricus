@@ -15,31 +15,13 @@ interface Property {
 
 const properties: Property[] = [
   {
-    title: "The Center Court",
+    title: "Veggie Delight Varca",
     imageUrl: "/images/dining1.jpg",
     content:
       "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
     address: "Varca, Goa",
     hours: "11am - 10pm",
     cuisine: "Multi-Cuisine, Vegetarian",
-  },
-  {
-    title: "VP Residency",
-    imageUrl: "/images/dining2.jpg",
-    content:
-      "Discover the flavors of authentic Goan and Indian cuisines at our in-house restaurant, Spice Pavillion. Delight your palate with traditional spices and locally sourced ingredients in a refined setting.",
-    address: "Anjuna, Goa",
-    hours: "8am - 11pm",
-    cuisine: "Goan, Indian",
-  },
-  {
-    title: "Brisa Marina",
-    imageUrl: "/images/dining3.jpg",
-    content:
-      "Indulge in a delectable array of seafood delicacies and international cuisines at our signature restaurant, Oceana. Savor each bite while admiring the breathtaking views of the Arabian Sea.",
-    address: "Baga, Goa",
-    hours: "7am - 11pm",
-    cuisine: "Seafood, International",
   },
 ];
 

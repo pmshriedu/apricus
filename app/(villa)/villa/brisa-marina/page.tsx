@@ -138,7 +138,7 @@ const BrisaMarinaPage: React.FC = () => {
 
   const handleBookNow = () => {
     window.location.href =
-      "https://www.asiatech.in/booking_engine/index3.php?token=NDczMQ==";
+      "https://asiatech.in/booking_engine/index3?token=NjAxMg==";
   };
 
   return (
