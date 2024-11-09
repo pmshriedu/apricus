@@ -20,6 +20,7 @@ import {
   Building,
 } from "lucide-react";
 import Image from "next/image";
+import VPNavigation from "@/components/hotel-nav/vp";
 
 interface ImageData {
   src: string;
@@ -139,7 +140,8 @@ const VPResidencyPage: React.FC = () => {
   return (
     <div className="font-comfortaaRegular">
       {/* Hero Section */}
-      <section className="relative h-screen">
+      <VPNavigation />
+      <section className="relative h-[40rem]">
         <div className="absolute inset-0 bg-primary opacity-50 z-10" />
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-700"

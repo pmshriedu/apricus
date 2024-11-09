@@ -18,6 +18,7 @@ import {
   Mail,
 } from "lucide-react";
 import Image from "next/image";
+import BMNavigation from "@/components/hotel-nav/bisra";
 
 interface ImageData {
   src: string;
@@ -144,7 +145,8 @@ const BrisaMarinaPage: React.FC = () => {
   return (
     <div className="font-comfortaaRegular">
       {/* Hero Section */}
-      <section className="relative h-screen">
+      <BMNavigation />
+      <section className="relative h-[40rem]">
         <div className="absolute inset-0 bg-primary opacity-50 z-10" />
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-700"

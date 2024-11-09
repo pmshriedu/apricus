@@ -50,6 +50,8 @@ const standardNavItems: NavItem[] = [
       { label: "Benaulim South Goa", href: "/locations/benaulim-south-goa" },
       { label: "Varca ", href: "/locations/varca" },
       { label: "Porvorim", href: "/locations/porvorim" },
+      { label: "Mussoorie", href: "/locations/mussoorie" },
+      { label: "Rishikesh", href: "/locations/rishikesh" },
     ],
   },
   {
@@ -58,6 +60,9 @@ const standardNavItems: NavItem[] = [
     subItems: [
       { label: "The Centre Court", href: "/the-center-court" },
       { label: "Apricus VP residency", href: "/vp-residency" },
+
+      { label: "Shivalik Hills Mussoorie", href: "/shivalik-hills-mussoorie" },
+      { label: "Bliss Ganga", href: "/bliss-ganga" },
     ],
   },
   {

@@ -22,7 +22,7 @@ import {
 import Image from "next/image";
 import CCNavBar from "@/components/hotel-nav/center-court";
 import CCNavigation from "@/components/hotel-nav/center-court";
-import BGNavigation from "@/components/hotel-nav/bliss-ganga";
+import SHNavigation from "@/components/hotel-nav/shivalik";
 
 interface ImageData {
   src: string;
@@ -35,63 +35,53 @@ interface Facility {
   name: string;
 }
 
-const TheBlissGangaPage: React.FC = () => {
+const TheShivalikHillsPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [currentGallerySlide, setCurrentGallerySlide] = useState<number>(0);
 
   const heroImages: string[] = [
-    "/images/bliss/hero1.jpg",
-    "/images/bliss/gallery7.jpg",
+    "/images/muss/hero1.jpg",
+    "/images/muss/gallery3.jpg",
   ];
 
   const galleryImages: ImageData[] = [
     {
-      src: "/images/bliss/hero1.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
+      src: "/images/muss/hero1.jpg",
+      title: "Shivalik Hills",
+      alt: "Shivalik Hills",
     },
     {
-      src: "/images/bliss/room1.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
+      src: "/images/muss/hero2.jpg",
+      title: "Shivalik Hills",
+      alt: "Shivalik Hills",
     },
     {
-      src: "/images/bliss/room2.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
+      src: "/images/muss/gallery1.jpg",
+      title: "Shivalik Hills",
+      alt: "Shivalik Hills",
     },
     {
-      src: "/images/bliss/room3.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
+      src: "/images/muss/gallery2.jpg",
+      title: "Shivalik Hills",
+      alt: "Shivalik Hills",
     },
     {
-      src: "/images/bliss/room4.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
-    },
-    {
-      src: "/images/bliss/room5.jpg",
-      title: "Bliss Ganga",
-      alt: "Bliss Ganga",
+      src: "/images/muss/gallery3.jpg",
+      title: "Shivalik Hills",
+      alt: "Shivalik Hills",
     },
   ];
 
   const roomImages: ImageData[] = [
     {
-      src: "/images/bliss/exeroom.jpg",
+      src: "/images/muss/room1.jpg",
       title: "",
       alt: "Luxurious Master Bedroom",
     },
     {
-      src: "/images/bliss/executive.jpg",
+      src: "/images/muss/room2.jpg",
       title: "",
       alt: "Comfortable Hall",
-    },
-    {
-      src: "/images/bliss/family.jpg",
-      title: "",
-      alt: "Drawing Room Setup",
     },
   ];
 
@@ -129,7 +119,7 @@ const TheBlissGangaPage: React.FC = () => {
   return (
     <div className="font-comfortaaRegular">
       {/* Hero Section */}
-      <BGNavigation />
+      <SHNavigation />
       <section className="relative h-[40rem]">
         <div className="absolute inset-0 bg-primary opacity-50 z-10" />
         <div
@@ -138,10 +128,10 @@ const TheBlissGangaPage: React.FC = () => {
         />
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-white p-4">
           <h1 className="font-comfortaaBold text-4xl md:text-6xl text-center mb-6">
-            Bliss Ganga
+            SHIVALIK HILLS MUSSOORIE
           </h1>
           <p className="font-comfortaaLight text-xl md:text-2xl text-center max-w-3xl">
-            Experience luxury and comfort in the heart of Rishikesh
+            Experience luxury and comfort in the heart of Mussoorie
           </p>
         </div>
         <div className="absolute bottom-4 left-0 right-0 z-20 flex items-center justify-center px-4 md:hidden">
@@ -256,7 +246,7 @@ const TheBlissGangaPage: React.FC = () => {
 
                 <div className="relative h-[300px] rounded-lg overflow-hidden hidden md:block">
                   <Image
-                    src="/images/bliss/hero1.jpg"
+                    src="/images/muss/hero2.jpg"
                     alt="Luxury Villa Booking"
                     layout="fill"
                     objectFit="cover"
@@ -274,17 +264,22 @@ const TheBlissGangaPage: React.FC = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h2 className="font-comfortaaBold text-3xl text-gray-900">
-                Bliss Ganga
+                Welcome to Shivalik Hills Mussoorie
               </h2>
-              <p className="font-comfortaaLight text-gray-600 leading-relaxed">
-                Bliss Ganga( A Unit of the Falcon Group) is not just a Hotel in
-                Rishikesh that will leave you breathless with the enchantment of
-                its surroundings, but assists in enabling you to experience both
-                physical and mental relaxation and realize the importance of a
-                moment of calm and personal space in your everyday life. It is a
-                charming 3 star boutique hotel in the sanctums of Rishikesh, a
-                land where spirituality and Mother Nature blend into a heady
-                concoction
+              <p className="font-comfortaaLight text-gray-600 text-lg leading-relaxed">
+                Shivalik Mussoorie Hills is a comfortable accommodation in
+                Mussoorie situated close to Mall Road (0.5 km). As a value added
+                service, guests can avail of complimentary Wi-Fi and breakfast
+                during their stay. The Hotel has well-maintained and comfortable
+                rooms.
+              </p>
+              <p className="font-comfortaaLight text-gray-600 text-lg leading-relaxed mt-4">
+                Each room is equipped with conveniences like tea-coffee maker,
+                wake-up call, drinking water and attached bathroom with hot and
+                cold water. Shivalik Mussoorie Hills provides various facilities
+                that include Room service, car rental, medical assistance and
+                power back-up. Travel desk and front desk are also offered for
+                the convenience of the guests.
               </p>
               {/* <div className="space-y-4">
                 <h3 className="font-comfortaaBold text-xl text-gray-900">
@@ -304,7 +299,7 @@ const TheBlissGangaPage: React.FC = () => {
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden shadow-xl">
               <Image
-                src="/images/bliss/about.jpg"
+                src="/images/muss/about.jpg"
                 alt="VP Residency"
                 layout="fill"
                 objectFit="cover"
@@ -434,7 +429,7 @@ const TheBlissGangaPage: React.FC = () => {
       {/* Full-width Map Section */}
       <section className="h-96 w-full relative">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3456.7890123456789!2d78.31234567890123!3d30.12345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDA3JzM0LjQiTiA3OMKwMTgnNDQuNCJF!5e0!3m2!1sen!2sin!4v1635789012345!5m2!1sen!2sin"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3439.8738404035926!2d78.06857661511744!3d30.45596508174133!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3908d0cfa61610fb%3A0x7ce2d6f826a49d9d!2sShivalik%20Hills%20Mussoorie!5e0!3m2!1sen!2sin!4v1624183020784!5m2!1sen!2sin"
           width="100%"
           height="100%"
           style={{ border: 0 }}
@@ -461,7 +456,8 @@ const TheBlissGangaPage: React.FC = () => {
                 <MapPin className="h-8 w-8 text-primary mx-auto mb-4" />
                 <h3 className="font-comfortaaMedium text-lg mb-2">Location</h3>
                 <p className="text-gray-600">
-                  Tapovan risikesh, Near Laxman Jhula Chowk NH-58
+                  Big Bend Balahisar, opp. Wyne Allen School, near Picture
+                  Palace, The Mall Road, Mussoorie, Uttarakhand 248179
                 </p>
               </CardContent>
             </Card>
@@ -499,4 +495,4 @@ const TheBlissGangaPage: React.FC = () => {
   );
 };
 
-export default TheBlissGangaPage;
+export default TheShivalikHillsPage;

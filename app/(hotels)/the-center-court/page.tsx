@@ -185,7 +185,7 @@ const TheCenterCourtPage: React.FC = () => {
     <div className="font-comfortaaRegular">
       {/* Hero Section */}
       <CCNavigation />
-      <section className="relative h-screen">
+      <section className="relative h-[40rem]">
         <div className="absolute inset-0 bg-primary opacity-50 z-10" />
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-700"
