@@ -24,18 +24,11 @@ import {
   Waves,
   Hospital,
 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import CCNavigation from "@/components/hotel-nav/center-court";
 import { useRouter } from "next/navigation";
 import VPNavigation from "@/components/hotel-nav/vp";
 

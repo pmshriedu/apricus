@@ -8,16 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Menu,
-  X,
-  Home,
-  Utensils,
-  Calendar,
-  Image,
-  PhoneCall,
-  Bed,
-} from "lucide-react";
+import { Menu, X, Home, Image, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";

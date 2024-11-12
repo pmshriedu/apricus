@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import CCNavigation from "@/components/hotel-nav/center-court";
+
 import VPNavigation from "@/components/hotel-nav/vp";
 
 const GalleryPage = () => {

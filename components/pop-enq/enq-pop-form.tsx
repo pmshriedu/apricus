@@ -86,7 +86,8 @@ const EnquiryForm = () => {
           Contact Us
         </CardTitle>
         <CardDescription className="text-center font-comfortaaRegular">
-          Fill out the form below and we'll get back to you as soon as possible.
+          Fill out the form below and we&apos;ll get back to you as soon as
+          possible.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -160,7 +161,7 @@ const EnquiryForm = () => {
             {submitSuccess && (
               <Alert className="bg-green-50 border-green-200">
                 <AlertDescription className="text-green-800">
-                  Thank you for your enquiry! We'll contact you soon.
+                  Thank you for your enquiry! We&apos;ll contact you soon.
                 </AlertDescription>
               </Alert>
             )}
@@ -192,8 +193,8 @@ const EnquiryForm = () => {
       </CardContent>
       <CardFooter className="flex flex-col space-y-2">
         <p className="text-sm text-muted-foreground text-center">
-          Your privacy is important to us. We'll never share your information
-          with third parties.
+          Your privacy is important to us. We&apos;ll never share your
+          information with third parties.
         </p>
       </CardFooter>
     </Card>

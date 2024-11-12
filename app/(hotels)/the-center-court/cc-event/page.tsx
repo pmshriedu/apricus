@@ -3,10 +3,6 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  Users,
-  Utensils,
-  Building2,
-  PartyPopper,
   MapPin,
   Calendar,
   PhoneCall,

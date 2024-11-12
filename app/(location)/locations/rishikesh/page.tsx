@@ -217,8 +217,8 @@ const RishikeshLocation = () => {
               Location
             </h2>
             <p className="font-comfortaaLight text-gray-600 max-w-2xl mx-auto">
-              Strategically located near Rishikesh's spiritual landmarks and the
-              holy Ganges
+              Strategically located near Rishikesh&apos;s spiritual landmarks
+              and the holy Ganges
             </p>
           </div>
           <div className="h-[500px] rounded-xl overflow-hidden shadow-xl">

@@ -20,8 +20,7 @@ import {
   Building,
 } from "lucide-react";
 import Image from "next/image";
-import CCNavBar from "@/components/hotel-nav/center-court";
-import CCNavigation from "@/components/hotel-nav/center-court";
+
 import SHNavigation from "@/components/hotel-nav/shivalik";
 
 interface ImageData {

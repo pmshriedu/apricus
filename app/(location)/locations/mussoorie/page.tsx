@@ -117,10 +117,11 @@ const ShivalikHillsMussoorieLocation = () => {
                 State Capital Dehradun by Air, Rail and Road makes Mussoorie one
                 of the best holiday destinations in the world. Green hills,
                 beautiful falls and British Era Heritage makes Mussoorie a
-                holiday destination for everyone who's looking for wonderful
-                holidays. Shivalik Hills Mussoorie By Royal Collection Hotels is
-                one of the elegantly designed luxury hotels in Mussoorie,
-                offering premium luxury in Stay with 45 ultra luxury rooms.
+                holiday destination for everyone who&apos;s looking for
+                wonderful holidays. Shivalik Hills Mussoorie By Royal Collection
+                Hotels is one of the elegantly designed luxury hotels in
+                Mussoorie, offering premium luxury in Stay with 45 ultra luxury
+                rooms.
               </p>
               <div className="space-y-4">
                 <p className="flex items-center text-gray-700">
@@ -221,8 +222,8 @@ const ShivalikHillsMussoorieLocation = () => {
               Location
             </h2>
             <p className="font-comfortaaLight text-gray-600 max-w-2xl mx-auto">
-              Perfectly situated near Mussoorie's prime attractions and scenic
-              viewpoints
+              Perfectly situated near Mussoorie&apos;s prime attractions and
+              scenic viewpoints
             </p>
           </div>
           <div className="h-[500px] rounded-xl overflow-hidden shadow-xl">
