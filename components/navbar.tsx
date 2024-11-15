@@ -23,6 +23,7 @@ import {
   Instagram,
   Twitter,
   Facebook,
+  Linkedin,
 } from "lucide-react";
 
 type NavItem = {
@@ -47,6 +48,7 @@ const standardNavItems: NavItem[] = [
     icon: <MapPin className="w-4 h-4" />,
     subItems: [
       { label: "Benaulim South Goa", href: "/locations/benaulim-south-goa" },
+      { label: "Cavelossim South Goa", href: "/locations/cavelossim" },
       { label: "Varca ", href: "/locations/varca" },
       { label: "Porvorim", href: "/locations/porvorim" },
       { label: "Mussoorie", href: "/locations/mussoorie" },
@@ -59,7 +61,7 @@ const standardNavItems: NavItem[] = [
     subItems: [
       { label: "The Centre Court", href: "/the-center-court" },
       { label: "Apricus VP residency", href: "/vp-residency" },
-
+      { label: "Apricus Inn Riverside", href: "/riverside-inn" },
       { label: "Shivalik Hills Mussoorie", href: "/shivalik-hills-mussoorie" },
       { label: "Bliss Ganga", href: "/bliss-ganga" },
     ],
@@ -118,7 +120,7 @@ const ContactHeader = memo(() => (
         </div>
         <motion.a
           whileHover={{ scale: 1.05 }}
-          href="https://www.instagram.com/apricushotels/"
+          href="http://www.instagram.com/apricushotels"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
@@ -128,13 +130,13 @@ const ContactHeader = memo(() => (
         </motion.a>
         <motion.a
           whileHover={{ scale: 1.05 }}
-          href="https://twitter.com/apricushotels"
+          href="https://www.linkedin.com/company/apricus-hotels-resorts/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
         >
-          <Twitter className="w-4 h-4 mr-2" />
-          <span className="sm:hidden">Twitter</span>
+          <Linkedin className="w-4 h-4 mr-2" />
+          <span className="sm:hidden">LinkedIn</span>
         </motion.a>
         <motion.a
           whileHover={{ scale: 1.05 }}
@@ -245,8 +247,8 @@ const Navbar = () => {
                       <Image
                         src="/logo.png"
                         alt="apricus-logo"
-                        width={170}
-                        height={170}
+                        width={140}
+                        height={140}
                         priority
                       />
                     </Link>
@@ -313,8 +315,8 @@ const Navbar = () => {
                     <Image
                       src="/logo.png"
                       alt="apricus-logo"
-                      width={150}
-                      height={150}
+                      width={120}
+                      height={120}
                       priority
                     />
                   </Link>
