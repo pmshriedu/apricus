@@ -21,7 +21,6 @@ import {
   Building,
   Home as Villa,
   Instagram,
-  Twitter,
   Facebook,
   Linkedin,
 } from "lucide-react";
