@@ -1,6 +1,11 @@
+// app/api/bookings/route.ts
+
 import { prisma } from "@/lib/prisma";
 import { handleSuccess, handleError } from "@/lib/api-helpers";
 import { ApiError } from "@/lib/utils";
+import { transporter } from "@/lib/nodemailer";
+import { generateEmailTemplate } from "@/lib/nodemailer-template";
+import { generateCustomerConfirmationEmail } from "@/lib/customer-booking-template";
 
 export async function GET() {
   try {
@@ -20,7 +25,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // Validate required fields (removed childrens from required fields)
+    // Validate required fields
     const requiredFields = [
       "checkIn",
       "checkOut",
@@ -57,7 +62,7 @@ export async function POST(req: Request) {
     }
 
     // Validate childrens if provided
-    const childrens = body.childrens ?? 0; // Default to 0 if not provided
+    const childrens = body.childrens ?? 0;
     if (childrens < 0) {
       throw new ApiError(400, "Number of childrens cannot be negative");
     }
@@ -68,7 +73,7 @@ export async function POST(req: Request) {
         checkIn,
         checkOut,
         adults: body.adults,
-        childrens, // Use the validated childrens value
+        childrens,
         fullName: body.fullName,
         phoneNo: body.phoneNo,
         email: body.email,
@@ -81,6 +86,32 @@ export async function POST(req: Request) {
         location: true,
       },
     });
+
+    // Send emails
+    try {
+      // Send detailed notification to admin
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: process.env.ADMIN_EMAIL,
+        subject: `New Booking Request - ${booking.hotel.name}`,
+        html: generateEmailTemplate(booking),
+        priority: "high",
+      });
+
+      // Send confirmation email to customer
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: booking.email,
+        subject: `Booking Request Received - ${booking.hotel.name}`,
+        html: generateCustomerConfirmationEmail(booking),
+      });
+    } catch (emailError: any) {
+      console.error("Failed to send email:", {
+        error: emailError.message,
+        stack: emailError.stack,
+        errorCode: emailError.code,
+      });
+    }
 
     return handleSuccess(booking);
   } catch (error) {

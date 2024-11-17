@@ -53,10 +53,11 @@ export default function ContactQueries() {
   const fetchContacts = async () => {
     try {
       const response = await fetch("/api/contact");
-      const data = await response.json();
-      setContacts(data);
+      const result = await response.json();
+      setContacts(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
       console.error("Failed to fetch contacts:", error);
+      setContacts([]);
     } finally {
       setIsLoading(false);
     }

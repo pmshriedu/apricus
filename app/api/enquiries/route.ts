@@ -1,7 +1,11 @@
 // src/app/api/enquiries/route.ts
+
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
+
+import { transporter } from "@/lib/nodemailer";
+import { generateEnquiryEmailTemplate } from "@/lib/enquiries-template";
 
 const prisma = new PrismaClient();
 
@@ -28,6 +32,42 @@ export async function POST(request: Request) {
       },
     });
 
+    // Send email notifications
+    try {
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: process.env.ADMIN_EMAIL,
+        cc: process.env.SALES_EMAIL, // Optional: Add additional recipients
+        subject: `New Customer Enquiry - ${enquiry.fullName}`,
+        html: generateEnquiryEmailTemplate(enquiry),
+        priority: "high",
+      });
+
+      // Send acknowledgment email to customer
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: enquiry.email,
+        subject: "We've Received Your Enquiry - Apricus Hotels",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #C68D07;">Thank You for Your Interest</h2>
+            <p>Dear ${enquiry.fullName},</p>
+            <p>We have received your enquiry and our team will be in touch with you shortly.</p>
+            <p>Your enquiry reference number is: <strong>${enquiry.id}</strong></p>
+            <p>We aim to respond to all enquiries within 24 hours.</p>
+            <p>Best regards,<br>The Apricus Hotels Team</p>
+          </div>
+        `,
+      });
+    } catch (emailError: any) {
+      console.error("Failed to send email notification:", {
+        error: emailError.message,
+        stack: emailError.stack,
+        errorCode: emailError.code,
+      });
+      // Continue with the response even if email fails
+    }
+
     return NextResponse.json(
       { message: "Enquiry submitted successfully", data: enquiry },
       { status: 201 }
@@ -48,7 +88,7 @@ export async function POST(request: Request) {
   }
 }
 
-// Get all enquiries (optional)
+// Get all enquiries
 export async function GET() {
   try {
     const enquiries = await prisma.enquiry.findMany({

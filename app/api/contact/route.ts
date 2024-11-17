@@ -1,32 +1,103 @@
-// File: /app/api/contact/route.ts
+// app/api/contact/route.ts
 
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
+import { transporter } from "@/lib/nodemailer";
+import { generateContactEmailTemplate } from "@/lib/contact-template";
 
-export async function GET() {
+const prisma = new PrismaClient();
+
+// Validation schema for contact form
+const contactSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  message: z.string().min(10),
+});
+
+export async function POST(request: Request) {
   try {
-    const contacts = await prisma.contact.findMany({
-      orderBy: { createdAt: "desc" },
+    const body = await request.json();
+
+    // Validate request body
+    const validatedData = contactSchema.parse(body);
+
+    // Create new contact entry in database
+    const contact = await prisma.contact.create({
+      data: {
+        name: validatedData.name,
+        email: validatedData.email,
+        message: validatedData.message,
+      },
     });
-    return NextResponse.json(contacts);
-  } catch {
+
+    // Send email notifications
+    try {
+      // Send notification to admin
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: process.env.ADMIN_EMAIL,
+        subject: `New Contact Form Submission - ${contact.name}`,
+        html: generateContactEmailTemplate(contact),
+      });
+
+      // Send confirmation email to user
+      await transporter.sendMail({
+        from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
+        to: contact.email,
+        subject: "Thank You for Contacting Apricus Hotels",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2 style="color: #C68D07;">Message Received</h2>
+            <p>Dear ${contact.name},</p>
+            <p>Thank you for reaching out to us. We have received your message and will get back to you soon.</p>
+            <p>Your reference number is: <strong>${contact.id}</strong></p>
+            <p>Best regards,<br>The Apricus Hotels Team</p>
+          </div>
+        `,
+      });
+    } catch (emailError: any) {
+      console.error("Failed to send email notification:", {
+        error: emailError.message,
+        stack: emailError.stack,
+        errorCode: emailError.code,
+      });
+      // Continue with the response even if email fails
+    }
+
     return NextResponse.json(
-      { error: "Failed to fetch contact queries" },
+      { message: "Message sent successfully", data: contact },
+      { status: 201 }
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { message: "Validation error", errors: error.errors },
+        { status: 400 }
+      );
+    }
+
+    console.error("Error processing contact form:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
       { status: 500 }
     );
   }
 }
 
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    const { name, email, message } = await req.json();
-    const contact = await prisma.contact.create({
-      data: { name, email, message },
+    const contacts = await prisma.contact.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
     });
-    return NextResponse.json(contact, { status: 201 });
-  } catch {
+
+    return NextResponse.json({ data: contacts });
+  } catch (error) {
+    console.error("Error fetching contacts:", error);
     return NextResponse.json(
-      { error: "Failed to submit contact form" },
+      { message: "Internal server error" },
       { status: 500 }
     );
   }

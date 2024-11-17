@@ -17,6 +17,27 @@ import {
   Settings,
 } from "lucide-react";
 
+type BusinessOpportunity = {
+  title: string;
+  description: string;
+};
+const businessOpportunities: BusinessOpportunity[] = [
+  {
+    title: "Management Opportunities",
+    description:
+      "Partner with us to maximize profits in a brief period through our expert management services.",
+  },
+  {
+    title: "Franchise Opportunity",
+    description:
+      "Leverage our management expertise to transform struggling properties into profitable ventures.",
+  },
+  {
+    title: "Revenue Share Model",
+    description:
+      "Join our flexible partnership model where risks and rewards are shared, ensuring mutual growth and success.",
+  },
+];
 const PartnershipPage = () => {
   return (
     <div className="font-comfortaaRegular">
@@ -148,7 +169,31 @@ const PartnershipPage = () => {
           </div>
         </div>
       </section>
-
+      {/* Business Opportunities Section - With primary background */}
+      <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="font-comfortaaBold text-3xl text-primary mb-8 text-center">
+            Business Opportunities
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {businessOpportunities.map((opportunity, index) => (
+              <Card
+                key={index}
+                className="bg-white hover:shadow-lg transition-shadow"
+              >
+                <CardContent className="p-6">
+                  <h3 className="font-comfortaaBold text-xl text-primary mb-4">
+                    {opportunity.title}
+                  </h3>
+                  <p className="font-comfortaaRegular text-gray-600">
+                    {opportunity.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </div>
       {/* Original Benefits Section - Now showing key highlights */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

@@ -179,7 +179,7 @@ const AboutUs: React.FC = () => {
         </div>
 
         {/* Our Properties Section - With alternating background */}
-        <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-16">
           <div className="max-w-7xl mx-auto">
             <h2 className="font-comfortaaBold text-3xl text-primary mb-8 text-center">
               Our Brands
@@ -205,7 +205,31 @@ const AboutUs: React.FC = () => {
             </div>
           </div>
         </div>
-
+        {/* Business Opportunities Section - With primary background */}
+        <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="font-comfortaaBold text-3xl text-primary mb-8 text-center">
+              Business Opportunities
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {businessOpportunities.map((opportunity, index) => (
+                <Card
+                  key={index}
+                  className="bg-white hover:shadow-lg transition-shadow"
+                >
+                  <CardContent className="p-6">
+                    <h3 className="font-comfortaaBold text-xl text-primary mb-4">
+                      {opportunity.title}
+                    </h3>
+                    <p className="font-comfortaaRegular text-gray-600">
+                      {opportunity.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
         {/* Brochure Download Section */}
         <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pb-16">
           <div className="max-w-7xl mx-auto">
@@ -445,31 +469,6 @@ const AboutUs: React.FC = () => {
             </Card>
           </div>
         </section>
-        {/* Business Opportunities Section - With primary background */}
-        <div className="bg-primary/5 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-16">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="font-comfortaaBold text-3xl text-primary mb-8 text-center">
-              Business Opportunities
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {businessOpportunities.map((opportunity, index) => (
-                <Card
-                  key={index}
-                  className="bg-white hover:shadow-lg transition-shadow"
-                >
-                  <CardContent className="p-6">
-                    <h3 className="font-comfortaaBold text-xl text-primary mb-4">
-                      {opportunity.title}
-                    </h3>
-                    <p className="font-comfortaaRegular text-gray-600">
-                      {opportunity.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Win-Win Philosophy Section */}
         <div className="text-center py-16">
