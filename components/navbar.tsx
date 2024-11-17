@@ -103,51 +103,117 @@ const email = "crs@apricushotels.com";
 const ContactHeader = memo(() => (
   <div className="bg-gradient-to-r font-comfortaaBold from-primary/80 to-primary/80 text-white py-2 shadow-md">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap justify-between items-center gap-2">
-        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
-          <Phone className="w-4 h-4 mr-2" />
-          <span className="font-semibold mr-1">Call Us:</span>
-          <a href={`tel:${phoneNumber}`}>+91 8956593946</a>
+      {/* Mobile Layout */}
+      <div className="sm:hidden">
+        {/* Contact Info for Mobile */}
+        <div className="flex justify-between items-center mb-2">
+          <a
+            href={`tel:${phoneNumber}`}
+            className="flex items-center text-xs hover:text-white/90 transition-colors"
+          >
+            <Phone className="w-3 h-3 mr-1" />
+            <span>+91 {phoneNumber}</span>
+          </a>
+
+          <div className="flex gap-3">
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              href="http://www.instagram.com/apricushotels"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiFillInstagram className="w-4 h-4" />
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              href="https://www.linkedin.com/company/apricus-hotels-resorts/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <IoLogoLinkedin className="w-4 h-4" />
+            </motion.a>
+            <motion.a
+              whileHover={{ scale: 1.05 }}
+              href="https://www.facebook.com/apricushotels/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <IoLogoFacebook className="w-4 h-4" />
+            </motion.a>
+          </div>
         </div>
-        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
-          <Mail className="w-4 h-4 mr-2" />
-          <span className="font-semibold mr-1">Email Us:</span>
-          <a href={`mailto:${email}`}>crs@apricushotels.com</a>
+
+        <div className="flex justify-between items-center">
+          <a
+            href={`mailto:${email}`}
+            className="flex items-center text-xs hover:text-white/90 transition-colors"
+          >
+            <Mail className="w-3 h-3 mr-1" />
+            <span>{email}</span>
+          </a>
+
+          <a
+            href={`https://wa.me/${phoneNumber}`}
+            className="flex items-center text-xs hover:text-white/90 transition-colors"
+          >
+            <IoLogoWhatsapp className="w-3 h-3 mr-1" />
+            <span>WhatsApp</span>
+          </a>
         </div>
-        <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
-          <IoLogoWhatsapp className="w-4 h-4 mr-2" />
-          <a href={`https://wa.me/${phoneNumber}`}>WhatsApp Us</a>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden sm:flex sm:justify-between sm:items-center">
+        <div className="flex gap-6">
+          <div className="flex items-center hover:text-white/90 transition-colors">
+            <Phone className="w-4 h-4 mr-2" />
+            <span className="font-semibold mr-1">Call Us:</span>
+            <a href={`tel:${phoneNumber}`}>+91 {phoneNumber}</a>
+          </div>
+
+          <div className="flex items-center hover:text-white/90 transition-colors">
+            <Mail className="w-4 h-4 mr-2" />
+            <span className="font-semibold mr-1">Email Us:</span>
+            <a href={`mailto:${email}`}>{email}</a>
+          </div>
+
+          <div className="flex items-center hover:text-white/90 transition-colors">
+            <IoLogoWhatsapp className="w-4 h-4 mr-2" />
+            <a href={`https://wa.me/${phoneNumber}`}>WhatsApp Us</a>
+          </div>
         </div>
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          href="http://www.instagram.com/apricushotels"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center hover:text-white/90 transition-colors"
-        >
-          <AiFillInstagram className="w-4 h-4 mr-2" />
-          <span className="sm:hidden">Instagram</span>
-        </motion.a>
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          href="https://www.linkedin.com/company/apricus-hotels-resorts/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center hover:text-white/90 transition-colors"
-        >
-          <IoLogoLinkedin className="w-4 h-4 mr-2" />
-          <span className="sm:hidden">LinkedIn</span>
-        </motion.a>
-        <motion.a
-          whileHover={{ scale: 1.05 }}
-          href="https://www.facebook.com/apricushotels/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center hover:text-white/90 transition-colors"
-        >
-          <IoLogoFacebook className="w-4 h-4 mr-2" />
-          <span className="sm:hidden">Facebook</span>
-        </motion.a>
+
+        <div className="flex gap-4">
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            href="http://www.instagram.com/apricushotels"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/90 transition-colors"
+          >
+            <AiFillInstagram className="w-5 h-5" />
+          </motion.a>
+
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            href="https://www.linkedin.com/company/apricus-hotels-resorts/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/90 transition-colors"
+          >
+            <IoLogoLinkedin className="w-5 h-5" />
+          </motion.a>
+
+          <motion.a
+            whileHover={{ scale: 1.05 }}
+            href="https://www.facebook.com/apricushotels/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/90 transition-colors"
+          >
+            <IoLogoFacebook className="w-5 h-5" />
+          </motion.a>
+        </div>
       </div>
     </div>
   </div>
