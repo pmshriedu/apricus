@@ -60,7 +60,7 @@ const standardNavItems: NavItem[] = [
     subItems: [
       { label: "The Centre Court", href: "/the-center-court" },
       { label: "Apricus VP residency", href: "/vp-residency" },
-      { label: "Apricus Inn Riverside", href: "/riverside-inn" },
+      { label: "Apricus Inn Riverside", href: "/apricus-inn" },
       { label: "Shivalik Hills Mussoorie", href: "/shivalik-hills-mussoorie" },
       { label: "Bliss Ganga", href: "/bliss-ganga" },
     ],

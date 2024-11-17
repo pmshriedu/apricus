@@ -373,7 +373,7 @@ const AboutUs: React.FC = () => {
                   {/* Image Section */}
                   <div className="relative h-[400px] lg:h-full min-h-[400px] lg:min-h-[600px]">
                     <Image
-                      src="/images/yogesh-kumar.png"
+                      src="/images/yogesh-kumar.jpg"
                       alt="Mr. Yogesh Kumar"
                       layout="fill"
                       objectFit="cover"
