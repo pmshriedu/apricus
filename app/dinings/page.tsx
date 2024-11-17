@@ -89,7 +89,7 @@ const DiningPage: React.FC = () => {
           <h1 className="font-comfortaaBold text-5xl mb-4">
             Culinary Excellence
           </h1>
-          <p className="font-comfortaaLight text-xl max-w-2xl mx-auto mb-6">
+          <p className="font-comfortaaRegular text-xl max-w-2xl mx-auto mb-6">
             Embark on a gastronomic journey through our exceptional dining
             venues. From authentic local flavors to international cuisines, each
             restaurant offers a unique culinary experience crafted with passion
@@ -102,19 +102,21 @@ const DiningPage: React.FC = () => {
         {properties.map((property, index) => (
           <div key={index} className="mb-12">
             <Card
-              className={`flex flex-col md:flex-row items-center ${
+              className={`flex flex-col md:flex-row items-stretch ${
                 index % 2 === 0 ? "" : "md:flex-row-reverse"
               }`}
             >
-              <div className="md:w-1/2 relative h-[400px]">
+              <div className="w-full md:w-1/2 h-64 md:h-auto relative">
                 <Image
                   src={property.imageUrl}
                   alt={property.title}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority={index === 0}
                 />
               </div>
-              <div className="md:w-1/2 p-6">
+              <div className="w-full md:w-1/2 p-6">
                 <CardHeader>
                   <CardTitle className="text-3xl font-comfortaaBold text-accent">
                     {property.title}
