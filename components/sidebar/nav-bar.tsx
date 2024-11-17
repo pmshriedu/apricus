@@ -20,18 +20,7 @@ import {
   BreadcrumbPage,
 } from "../ui/breadcrumb";
 
-import {
-  Copy,
-  CornerUpRight,
-  FileText,
-  Link,
-  LogOut,
-  MoreHorizontal,
-  Settings2,
-  Trash2,
-  type LucideIcon,
-  User,
-} from "lucide-react";
+import { LogOut, MoreHorizontal, type LucideIcon, User } from "lucide-react";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
@@ -50,33 +39,8 @@ const NavTop = () => {
           label: "Profile",
           icon: User,
         },
-        {
-          label: "Customize Page",
-          icon: Settings2,
-        },
-        {
-          label: "Turn into wiki",
-          icon: FileText,
-        },
       ],
-      [
-        {
-          label: "Copy Link",
-          icon: Link,
-        },
-        {
-          label: "Duplicate",
-          icon: Copy,
-        },
-        {
-          label: "Move to",
-          icon: CornerUpRight,
-        },
-        {
-          label: "Move to Trash",
-          icon: Trash2,
-        },
-      ],
+
       [
         {
           label: "Logout",

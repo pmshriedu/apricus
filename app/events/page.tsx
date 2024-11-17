@@ -73,7 +73,7 @@ const EventsPage = () => {
         {/* Header Content */}
         <div className="relative z-10 text-center px-4 py-20 max-w-7xl mx-auto">
           <h1 className="font-comfortaaBold text-4xl md:text-6xl lg:text-7xl text-white mb-6 drop-shadow-lg">
-            Catering & Event Agency
+            Events & Catering
           </h1>
           <p className="font-comfortaaBold text-lg md:text-xl text-white/90 mb-8">
             Creating Memorable Events with Style & Perfection

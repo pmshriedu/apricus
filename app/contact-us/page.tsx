@@ -94,7 +94,7 @@ const ContactPage = () => {
               </div>
               <h3 className="font-comfortaaBold text-xl mb-4">Call Us</h3>
               <p className="text-gray-600 font-comfortaaLight">
-                Main: +91 8956593946
+                Main: +91 8956593947
                 <br />
                 Reservations: 8956593946
               </p>
@@ -125,7 +125,7 @@ const ContactPage = () => {
             {[
               {
                 city: "Mumbai",
-                phone: "+91 9028062730",
+                phone: "+91 9028062731",
                 email: "rso.mumbai@apricushotels.com",
               },
               {

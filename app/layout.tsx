@@ -32,14 +32,84 @@ const lucidaUnicodeCalligraphy = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Apricus - Hotels and Resorts",
-  description: "Hotels and Resorts",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
+  metadataBase: new URL("https://apricushotels.com"),
+  title: {
+    default: "Apricus Resort | Luxury Stay & Adventure Experience",
+    template: "%s | Apricus Resort",
   },
+  description:
+    "Experience luxury accommodations, thrilling adventures, and world-class services at Apricus Resort. Book your perfect getaway with stunning views and premium amenities.",
+  keywords: [
+    "Apricus Resort",
+    "Apricus Hotel",
+    "luxury hotel",
+    "luxury resort",
+    "adventure resort",
+    "premium accommodations",
+    "executive rooms",
+    "premium rooms",
+    "hotel booking ",
+    "goa hotel booking",
+    "hotels in goa",
+    "goa hotels",
+    "south goa hotels",
+    "goa adventure",
+    "goa stays",
+    "resort booking",
+    "apricus",
+    "hotel apricus",
+    "hotel apricus inn",
+    "bliss ganga",
+    "shivalik hills",
+    "the center court",
+    "vp residency",
+    "raj samudra hotel",
+    "cavelossim hotel",
+    "mussoorie",
+    "porvorim",
+    "varca",
+    "benaulim south goa",
+    "benaulim",
+    "rishikesh",
+    "dinings",
+    "apricus dining",
+    "apricus villa",
+    "vacation stays",
+    "luxury rooms",
+  ],
+  openGraph: {
+    title: "Apricus Hotel & Resort | Luxury Stay & Adventure Experience",
+    description:
+      "Discover luxury accommodations and adventure experiences at Apricus Hotel & Resort",
+    type: "website",
+    locale: "en_US",
+    url: "/",
+    siteName: "Apricus Hotel & Resort",
+    images: [
+      {
+        url: "/images/preview.png",
+        width: 1200,
+        height: 630,
+        alt: "Apricus Resort Overview",
+      },
+    ],
+  },
+
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  category: "travel, hotels , apricus ",
 };
 
 export default function RootLayout({

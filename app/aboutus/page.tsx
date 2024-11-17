@@ -93,13 +93,18 @@ const properties: Property[] = [
     description: "Comfortable stays with a touch of elegance",
   },
   {
-    name: "Villas and Homes",
+    name: "Apricus Villas and Homes",
     description: "Experience authentic Goan hospitality",
   },
   {
     name: "Apricus Express",
     description:
       "Quick, convenient stays with modern amenities and reliable service",
+  },
+  {
+    name: "Craft Kitchen by Apricus",
+    description:
+      "Artisanal dining experience with innovative culinary creations",
   },
 ];
 
@@ -396,7 +401,7 @@ const AboutUs: React.FC = () => {
 
                     <div className="mb-8">
                       <p className="font-comfortaaRegular text-gray-600 leading-relaxed">
-                        With 17 years of expertise in the hospitality industry,
+                        With 20 years of expertise in the hospitality industry,
                         Mr. Kumar excels in brand building, public relations,
                         and sales. His journey began after graduating in hotel
                         management, leading to associations with renowned names

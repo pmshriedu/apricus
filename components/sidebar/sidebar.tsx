@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   BadgeCheck,
   ChevronRight,
@@ -48,6 +48,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
 
 const getNavData = () => ({
   teams: [
@@ -150,7 +151,12 @@ export default function ApricusSidebar() {
   const { data: session } = useSession();
   const [activeTeam, setActiveTeam] = React.useState(getNavData().teams[0]);
   const data = getNavData();
+  const router = useRouter();
 
+  const handleLogout = async () => {
+    await signOut({ redirect: false });
+    router.replace("/");
+  };
   return (
     <Sidebar
       collapsible="icon"
@@ -311,7 +317,10 @@ export default function ApricusSidebar() {
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator className="bg-accent/20" />
-                <DropdownMenuItem className="font-comfortaaMedium text-red-600 hover:bg-red-50">
+                <DropdownMenuItem
+                  className="font-comfortaaMedium text-red-600 hover:bg-red-50"
+                  onClick={handleLogout}
+                >
                   <LogOut className="mr-2" />
                   Log out
                 </DropdownMenuItem>

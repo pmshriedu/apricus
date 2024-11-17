@@ -163,7 +163,9 @@ const CavelossimLocation = () => {
               <div className="space-y-6">
                 <div className="flex items-center space-x-3">
                   <UtensilsCrossed className="w-8 h-8 text-primary" />
-                  <h3 className="font-comfortaaBold text-3xl">Craft Kitchen</h3>
+                  <h3 className="font-comfortaaBold text-3xl">
+                    Craft Kitchen and Bar
+                  </h3>
                 </div>
                 <p className="font-comfortaaLight text-gray-600 text-lg leading-relaxed">
                   Experience culinary artistry at Craft Kitchen, where our

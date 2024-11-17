@@ -19,6 +19,26 @@ interface Property {
 
 const properties: Property[] = [
   {
+    title: "Craft Kitchen and Bar",
+    imageUrl: "/images/apricus/bar2.jpg",
+    content:
+      "Experience culinary artistry at Craft Kitchen, where our expert chefs blend local Goan flavors with international cuisine. Enjoy your meal with panoramic views of the river, creating an unforgettable dining experience. Our master chefs combine traditional techniques with modern innovation to bring you the best of both worlds.",
+    address: "Cavelossim, South Goa",
+    hours: "7am - 2am",
+    cuisine: "Goan, International",
+    url: "/apricus-inn/ar-dine",
+  },
+  {
+    title: "Veggie Delight Varca",
+    imageUrl: "/images/dining1.jpg",
+    content:
+      "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
+    address: "Varca, Goa",
+    hours: "11am - 10pm",
+    cuisine: "Multi-Cuisine, Vegetarian",
+    url: "/the-center-court/cc-dine",
+  },
+  {
     title: "Ambrosia",
     subtitle: "The Multi Cuisine Restaurant",
     imageUrl: "/images/bliss/res1.jpg",
@@ -49,16 +69,6 @@ const properties: Property[] = [
     hours: "11am - 10pm",
     cuisine: "Multi-Cuisine, Vegetarian",
     url: "/the-center-court/cc-dine",
-  },
-  {
-    title: "Craft Kitchen",
-    imageUrl: "/images/apricus/bar2.jpg",
-    content:
-      "Experience culinary artistry at Craft Kitchen, where our expert chefs blend local Goan flavors with international cuisine. Enjoy your meal with panoramic views of the river, creating an unforgettable dining experience. Our master chefs combine traditional techniques with modern innovation to bring you the best of both worlds.",
-    address: "Cavelossim, South Goa",
-    hours: "12pm - 11pm",
-    cuisine: "Goan, International",
-    url: "/apricus-inn/ar-dine",
   },
 ];
 

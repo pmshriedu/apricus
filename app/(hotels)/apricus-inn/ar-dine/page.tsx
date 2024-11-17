@@ -48,7 +48,7 @@ const CraftKitchenPage: React.FC = () => {
       <section className="relative h-[60vh]">
         <Image
           src="/images/apricus/dine1.jpg"
-          alt="Craft Kitchen Restaurant"
+          alt="Craft Kitchen Restaurant and Bar"
           layout="fill"
           objectFit="cover"
           priority
@@ -85,7 +85,7 @@ const CraftKitchenPage: React.FC = () => {
                 className="bg-white/90 text-base md:text-lg px-3 py-1.5 md:px-4 md:py-2 w-full md:w-auto flex justify-center items-center"
               >
                 <Clock className="w-4 h-4 mr-2" />
-                Open Daily 12:00 PM - 11:00 PM
+                Open Daily 07:00 AM - 02:00 AM
               </Badge>
               <Badge
                 variant="secondary"
@@ -110,7 +110,7 @@ const CraftKitchenPage: React.FC = () => {
               Culinary Artistry Meets Riverside Dining
             </h2>
             <p className="text-lg text-muted-foreground mb-6">
-              Experience culinary artistry at Craft Kitchen, where our expert
+              Experience culinary artistry at Craft Kitchen , where our expert
               chefs blend local Goan flavors with international cuisine. Enjoy
               your meal with panoramic views of the river, creating an
               unforgettable dining experience.

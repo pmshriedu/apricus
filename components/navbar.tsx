@@ -4,13 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { IoLogoFacebook, IoLogoLinkedin, IoLogoWhatsapp } from "react-icons/io";
+import { AiFillInstagram } from "react-icons/ai";
 import {
   Menu,
   X,
   ChevronDown,
   Phone,
   Mail,
-  MessageCircle,
   Home,
   Info,
   Handshake,
@@ -20,9 +21,6 @@ import {
   MapPin,
   Building,
   Home as Villa,
-  Instagram,
-  Facebook,
-  Linkedin,
 } from "lucide-react";
 
 type NavItem = {
@@ -58,11 +56,11 @@ const standardNavItems: NavItem[] = [
     label: "Hotels",
     icon: <Building className="w-4 h-4" />,
     subItems: [
-      { label: "The Centre Court", href: "/the-center-court" },
-      { label: "Apricus VP residency", href: "/vp-residency" },
       { label: "Apricus Inn Riverside", href: "/apricus-inn" },
-      { label: "Shivalik Hills Mussoorie", href: "/shivalik-hills-mussoorie" },
+      { label: "Apricus VP residency", href: "/vp-residency" },
       { label: "Bliss Ganga", href: "/bliss-ganga" },
+      { label: "Shivalik Hills Mussoorie", href: "/shivalik-hills-mussoorie" },
+      { label: "The Centre Court", href: "/the-center-court" },
     ],
   },
   {
@@ -99,6 +97,9 @@ const standardNavItems: NavItem[] = [
   },
 ];
 
+const phoneNumber = "+918956593946";
+const email = "crs@apricushotels.com";
+
 const ContactHeader = memo(() => (
   <div className="bg-gradient-to-r font-comfortaaBold from-primary/80 to-primary/80 text-white py-2 shadow-md">
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,16 +107,16 @@ const ContactHeader = memo(() => (
         <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
           <Phone className="w-4 h-4 mr-2" />
           <span className="font-semibold mr-1">Call Us:</span>
-          <span>+91 8956593946</span>
+          <a href={`tel:${phoneNumber}`}>+91 8956593946</a>
         </div>
         <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
           <Mail className="w-4 h-4 mr-2" />
           <span className="font-semibold mr-1">Email Us:</span>
-          <span>crs@apricushotels.com</span>
+          <a href={`mailto:${email}`}>crs@apricushotels.com</a>
         </div>
         <div className="hidden sm:flex items-center hover:text-white/90 transition-colors">
-          <MessageCircle className="w-4 h-4 mr-2" />
-          <span>WhatsApp Us</span>
+          <IoLogoWhatsapp className="w-4 h-4 mr-2" />
+          <a href={`https://wa.me/${phoneNumber}`}>WhatsApp Us</a>
         </div>
         <motion.a
           whileHover={{ scale: 1.05 }}
@@ -124,7 +125,7 @@ const ContactHeader = memo(() => (
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
         >
-          <Instagram className="w-4 h-4 mr-2" />
+          <AiFillInstagram className="w-4 h-4 mr-2" />
           <span className="sm:hidden">Instagram</span>
         </motion.a>
         <motion.a
@@ -134,7 +135,7 @@ const ContactHeader = memo(() => (
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
         >
-          <Linkedin className="w-4 h-4 mr-2" />
+          <IoLogoLinkedin className="w-4 h-4 mr-2" />
           <span className="sm:hidden">LinkedIn</span>
         </motion.a>
         <motion.a
@@ -144,7 +145,7 @@ const ContactHeader = memo(() => (
           rel="noopener noreferrer"
           className="flex items-center hover:text-white/90 transition-colors"
         >
-          <Facebook className="w-4 h-4 mr-2" />
+          <IoLogoFacebook className="w-4 h-4 mr-2" />
           <span className="sm:hidden">Facebook</span>
         </motion.a>
       </div>
