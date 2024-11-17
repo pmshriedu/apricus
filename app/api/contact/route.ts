@@ -56,13 +56,16 @@ export async function POST(request: Request) {
           </div>
         `,
       });
-    } catch (emailError: any) {
-      console.error("Failed to send email notification:", {
-        error: emailError.message,
-        stack: emailError.stack,
-        errorCode: emailError.code,
-      });
-      // Continue with the response even if email fails
+    } catch (emailError) {
+      if (emailError instanceof Error) {
+        console.error("Failed to send email:", {
+          error: emailError.message,
+          stack: emailError.stack,
+          errorCode: (emailError as NodeJS.ErrnoException).code ?? "Unknown", // Safe type narrowing
+        });
+      } else {
+        console.error("An unexpected error occurred:", emailError);
+      }
     }
 
     return NextResponse.json(

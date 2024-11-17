@@ -1,6 +1,12 @@
 // lib/contact-email-template.ts
-
-export const generateContactEmailTemplate = (contact: any) => {
+interface Contact {
+  name: string;
+  email: string;
+  createdAt: Date;
+  id: string | number;
+  message: string;
+}
+export const generateContactEmailTemplate = (contact: Contact) => {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("en-US", {
       weekday: "long",

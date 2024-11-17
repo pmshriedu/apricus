@@ -1,4 +1,23 @@
-export const generateEmailTemplate = (booking: any) => {
+export interface Booking {
+  checkIn: string; // ISO date string for check-in date
+  checkOut: string; // ISO date string for check-out date
+  fullName: string; // Full name of the guest
+  email: string; // Email address of the guest
+  phoneNo: string; // Phone number of the guest
+  id: string; // Booking reference ID
+  hotel: {
+    name: string; // Name of the hotel
+  };
+  location: {
+    name: string; // Location of the hotel
+  };
+  adults: number; // Number of adults
+  childrens: number; // Number of children
+  createdAt: string; // ISO date string for when the booking was created
+  updatedAt: string; // ISO date string for when the booking was last updated
+}
+
+export const generateEmailTemplate = (booking: Booking) => {
   const checkInDate = new Date(booking.checkIn).toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
@@ -11,9 +30,8 @@ export const generateEmailTemplate = (booking: any) => {
     month: "long",
     day: "numeric",
   });
-
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleString("en-US", {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString("en-US", {
       weekday: "long",
       year: "numeric",
       month: "long",
@@ -22,7 +40,6 @@ export const generateEmailTemplate = (booking: any) => {
       minute: "2-digit",
     });
   };
-
   // Fixed date calculation
   const calculateNights = (checkIn: Date, checkOut: Date): number => {
     const diffTime = checkOut.getTime() - checkIn.getTime();

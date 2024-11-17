@@ -1,6 +1,13 @@
 // lib/enquiry-email-template.ts
+export interface Enquiry {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  id: string;
+  createdAt: Date;
+}
 
-export const generateEnquiryEmailTemplate = (enquiry: any) => {
+export const generateEnquiryEmailTemplate = (enquiry: Enquiry) => {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleString("en-US", {
       weekday: "long",

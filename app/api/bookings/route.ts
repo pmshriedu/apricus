@@ -87,6 +87,13 @@ export async function POST(req: Request) {
       },
     });
 
+    const bookingWithStringDates = {
+      ...booking,
+      checkIn: booking.checkIn.toISOString(),
+      checkOut: booking.checkOut.toISOString(),
+      createdAt: booking.createdAt.toISOString(),
+      updatedAt: booking.updatedAt.toISOString(),
+    };
     // Send emails
     try {
       // Send detailed notification to admin
@@ -94,7 +101,7 @@ export async function POST(req: Request) {
         from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
         to: process.env.ADMIN_EMAIL,
         subject: `New Booking Request - ${booking.hotel.name}`,
-        html: generateEmailTemplate(booking),
+        html: generateEmailTemplate(bookingWithStringDates),
         priority: "high",
       });
 
@@ -103,14 +110,18 @@ export async function POST(req: Request) {
         from: `"Apricus Hotels" <${process.env.EMAIL_USER}>`,
         to: booking.email,
         subject: `Booking Request Received - ${booking.hotel.name}`,
-        html: generateCustomerConfirmationEmail(booking),
+        html: generateCustomerConfirmationEmail(bookingWithStringDates),
       });
-    } catch (emailError: any) {
-      console.error("Failed to send email:", {
-        error: emailError.message,
-        stack: emailError.stack,
-        errorCode: emailError.code,
-      });
+    } catch (emailError) {
+      if (emailError instanceof Error) {
+        console.error("Failed to send email:", {
+          error: emailError.message,
+          stack: emailError.stack,
+          errorCode: (emailError as NodeJS.ErrnoException).code ?? "Unknown", // Safe type narrowing
+        });
+      } else {
+        console.error("An unexpected error occurred:", emailError);
+      }
     }
 
     return handleSuccess(booking);

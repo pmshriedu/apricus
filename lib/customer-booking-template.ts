@@ -1,6 +1,22 @@
 // lib/booking-confirmation-template.ts
+interface Booking {
+  id: string;
+  checkIn: string; // ISO date string
+  checkOut: string; // ISO date string
+  adults: number;
+  childrens: number;
+  fullName: string;
+  phoneNo: string;
+  email: string;
+  location: {
+    name: string;
+  };
+  hotel: {
+    name: string;
+  };
+}
 
-export const generateCustomerConfirmationEmail = (booking: any) => {
+export const generateCustomerConfirmationEmail = (booking: Booking) => {
   const checkInDate = new Date(booking.checkIn).toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
