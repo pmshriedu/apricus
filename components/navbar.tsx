@@ -71,7 +71,7 @@ const standardNavItems: NavItem[] = [
     ],
   },
   {
-    label: "Dining",
+    label: "Clubs/Dining",
     href: "/dinings",
     icon: <UtensilsCrossed className="w-4 h-4" />,
   },
@@ -307,14 +307,14 @@ const Navbar = () => {
                 <div className="w-[200px]">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    className="flex-shrink-0 flex justify-center items-center mb-2"
+                    className="flex-shrink-0 flex justify-center items-center mb-2 mt-2"
                   >
                     <Link href="/">
                       <Image
                         src="/logo.png"
                         alt="apricus-logo"
-                        width={140}
-                        height={140}
+                        width={130}
+                        height={130}
                         priority
                       />
                     </Link>
@@ -375,14 +375,14 @@ const Navbar = () => {
               <div className="lg:hidden flex justify-between w-full items-center">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
-                  className="flex-shrink-0 mb-2"
+                  className="flex-shrink-0 mb-2 mt-2"
                 >
                   <Link href="/">
                     <Image
                       src="/logo.png"
                       alt="apricus-logo"
-                      width={120}
-                      height={120}
+                      width={110}
+                      height={110}
                       priority
                     />
                   </Link>

@@ -12,8 +12,8 @@ interface Property {
   imageUrl: string;
   content: string;
   address: string;
-  hours: string;
-  cuisine: string;
+  hours?: string;
+  cuisine?: string;
   url?: string;
 }
 
@@ -27,6 +27,15 @@ const properties: Property[] = [
     hours: "7am - 2am",
     cuisine: "Goan, International",
     url: "/apricus-inn/ar-dine",
+  },
+  {
+    title: "Zuki Club",
+    imageUrl: "/images/zuki.jpg",
+    content:
+      "Located in the heart of Candolim, ZUKI brings you an unforgettable nightlife experience where the party never stops! Our iconic club is designed to captivate with vibrant energy, pulsating beats, and an ambiance that attracts fun-lovers from all over the world.",
+    address: "At Hotel Acacia, Candolim, Goa",
+
+    url: "/contact-us",
   },
   {
     title: "Veggie Delight Varca",
@@ -137,12 +146,12 @@ const DiningPage: React.FC = () => {
                       <span>{property.address}</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Clock className="text-accent" />
-                      <span>{property.hours}</span>
+                      {property.hours && <Clock className="text-accent" />}
+                      <span>{property?.hours}</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Utensils className="text-accent" />
-                      <span>{property.cuisine}</span>
+                      {property.cuisine && <Utensils className="text-accent" />}
+                      <span>{property?.cuisine}</span>
                     </div>
                   </div>
                   <Button
