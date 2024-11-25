@@ -64,7 +64,7 @@ const standardNavItems: NavItem[] = [
     ],
   },
   {
-    label: "Villas",
+    label: "Villa/Homes",
     icon: <Villa className="w-4 h-4" />,
     subItems: [
       { label: "Apricus Villa Brisa Marina", href: "/villa/brisa-marina" },
