@@ -32,10 +32,10 @@ const SocialIcon = memo(({ Icon, label }: SocialIconProps) => (
   <Link
     href="#"
     aria-label={label}
-    className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center 
-             hover:bg-primary transition-all duration-300 group"
+    className="w-10 h-10 rounded-full bg-white flex items-center justify-center 
+             hover:bg-black transition-all duration-300 group"
   >
-    <Icon size={18} className="text-gray-400 group-hover:text-white" />
+    <Icon size={18} className="text-black group-hover:text-white" />
   </Link>
 ));
 SocialIcon.displayName = "SocialIcon";
@@ -44,7 +44,7 @@ const FooterLink = memo(({ children }: FooterLinkProps) => (
   <li>
     <Link
       href="#"
-      className="text-gray-300 hover:text-primary transition-colors duration-300 
+      className="text-white hover:text-primary transition-colors duration-300 
                flex items-center group"
     >
       <ArrowRight
@@ -112,7 +112,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-black text-white">
+    <footer className="bg-primary text-white font-comfortaaRegular">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -120,7 +120,7 @@ const Footer: React.FC = () => {
           <div className="space-y-6">
             <Link href="/" className="block">
               <Image
-                src="/logo.png"
+                src="/logo-white.png"
                 alt="Apricus Hotels"
                 width={250}
                 height={150}
@@ -129,12 +129,12 @@ const Footer: React.FC = () => {
                 loading="eager"
               />
             </Link>
-            <p className="font-comfortaaLight text-gray-300 leading-relaxed">
+            <p className="font-comfortaaLight text-white leading-relaxed">
               Experience luxury redefined at Apricus, where every moment is
               crafted to perfection. Immerse yourself in unparalleled comfort
               and hospitality.
             </p>
-            <div className="flex space-x-4">
+            <div className="flex space-x-4 ">
               {SOCIAL_ICONS.map((social, index) => (
                 <SocialIcon
                   key={index}
@@ -204,7 +204,7 @@ const Footer: React.FC = () => {
               <h4 className="font-comfortaaBold text-lg mb-2">
                 Subscribe to Our Newsletter
               </h4>
-              <p className="font-comfortaaLight text-gray-300">
+              <p className="font-comfortaaLight text-white">
                 Stay updated with our latest offers and experiences.
               </p>
             </div>
@@ -215,13 +215,13 @@ const Footer: React.FC = () => {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="flex-grow px-4 py-2 bg-gray-800 rounded-md focus:outline-none 
-                         focus:ring-2 focus:ring-primary font-comfortaaLight"
+                className="flex-grow px-4 py-2 bg-white text-black font-comfortaaRegular rounded-md focus:outline-none 
+                         focus:ring-2 focus:ring-primary "
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-primary hover:bg-primary/90 rounded-md transition-colors 
+                className="px-6 py-2 bg-white hover:bg-black hover:text-white  text-black rounded-md transition-colors 
                          duration-300 font-comfortaaMedium"
               >
                 Subscribe
@@ -231,9 +231,9 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-6 border-t border-gray-800">
+        <div className="py-6 border-t border-white">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="font-comfortaaLight text-gray-400 text-sm text-center md:text-left">
+            <p className="font-comfortaaLight text-white text-sm text-center md:text-left">
               &copy; {currentYear} Apricus Hotels. All Rights Reserved.
             </p>
             <ul className="flex flex-wrap justify-center gap-6 font-comfortaaLight text-sm">
@@ -241,7 +241,7 @@ const Footer: React.FC = () => {
                 <li key={item}>
                   <Link
                     href="#"
-                    className="text-gray-400 hover:text-primary transition-colors duration-300"
+                    className="text-white hover:text-primary transition-colors duration-300"
                   >
                     {item}
                   </Link>
