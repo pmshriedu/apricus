@@ -311,7 +311,7 @@ const Navbar = () => {
                   >
                     <Link href="/">
                       <Image
-                        src="/logo.png"
+                        src="/logo-gold.png"
                         alt="apricus-logo"
                         width={130}
                         height={130}
