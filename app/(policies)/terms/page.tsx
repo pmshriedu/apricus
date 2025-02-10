@@ -36,10 +36,11 @@ const TermsOfServicePage = () => {
                   </h2>
                   <p className="text-gray-600">
                     By accessing or using the services of Apricus Hotels and
-                    Resorts Private Limited ("Company," "we," "us," or "our"),
-                    you agree to be bound by these Terms of Service. If you
-                    disagree with any part of these terms, you may not access
-                    our services.
+                    Resorts Private Limited (&quot;Company,&quot;
+                    &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;), you
+                    agree to be bound by these Terms of Service. If you disagree
+                    with any part of these terms, you may not access our
+                    services.
                   </p>
                 </div>
 

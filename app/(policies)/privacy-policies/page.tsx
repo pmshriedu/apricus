@@ -36,11 +36,11 @@ const PrivacyPolicyPage = () => {
                     Introduction
                   </h2>
                   <p className="text-gray-600 mb-4">
-                    Apricus Hotels and Resorts Private Limited ("we," "our," or
-                    "us") is committed to protecting your privacy. This Privacy
-                    Policy explains how we collect, use, disclose, and safeguard
-                    your information when you visit our website or use our
-                    services.
+                    Apricus Hotels and Resorts Private Limited (&quot;we,&quot;
+                    &quot;our,&quot; or &quot;us&quot;) is committed to
+                    protecting your privacy. This Privacy Policy explains how we
+                    collect, use, disclose, and safeguard your information when
+                    you visit our website or use our services.
                   </p>
                 </div>
 

@@ -140,7 +140,7 @@ const RefundPolicyPage = () => {
                   <ul className="list-disc pl-6 text-gray-600 space-y-2">
                     <li>Log into your account on our website</li>
                     <li>Navigate to your booking</li>
-                    <li>Click on the "Cancel Booking" button</li>
+                    <li>Click on the &quot;Cancel Booking&quot; button</li>
                     <li>Follow the prompts to complete the cancellation</li>
                   </ul>
                 </div>
