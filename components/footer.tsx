@@ -44,7 +44,7 @@ const FooterLink = memo(({ children }: FooterLinkProps) => (
   <li>
     <Link
       href="#"
-      className="text-white hover:text-primary transition-colors duration-300 
+      className="text-white hover:text-white transition-colors duration-300 
                flex items-center group"
     >
       <ArrowRight
@@ -97,10 +97,10 @@ const INSTAGRAM_IMAGES: string[] = [
   "/images/dine.jpg",
 ];
 
-const FOOTER_POLICIES: string[] = [
-  "Privacy Policy",
-  "Terms of Service",
-  "Cookie Policy",
+const FOOTER_POLICIES = [
+  { name: "Privacy Policy", url: "/privacy-policies" },
+  { name: "Terms of Service", url: "/terms" },
+  { name: "Refund Policy", url: "/refund-policies" },
 ];
 
 const Footer: React.FC = () => {
@@ -238,12 +238,12 @@ const Footer: React.FC = () => {
             </p>
             <ul className="flex flex-wrap justify-center gap-6 font-comfortaaLight text-sm">
               {FOOTER_POLICIES.map((item) => (
-                <li key={item}>
+                <li key={item.name}>
                   <Link
-                    href="#"
-                    className="text-white hover:text-primary transition-colors duration-300"
+                    href={item.url}
+                    className="text-white hover:text-white transition-colors duration-300"
                   >
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
