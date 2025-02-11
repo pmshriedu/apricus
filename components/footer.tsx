@@ -3,9 +3,7 @@ import React, { memo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Twitter,
   Facebook,
-  Youtube,
   Instagram,
   Linkedin,
   ArrowRight,
@@ -15,8 +13,9 @@ import { FormEvent } from "react";
 
 // Types
 interface SocialIconProps {
-  Icon: LucideIcon; // Capital 'I' in Icon to match the props usage
+  Icon: LucideIcon;
   label: string;
+  url: string;
 }
 
 interface SectionTitleProps {
@@ -25,12 +24,16 @@ interface SectionTitleProps {
 
 interface FooterLinkProps {
   children: React.ReactNode;
+  url: string;
 }
-
+interface NavigationLink {
+  label: string;
+  url: string;
+}
 // Memoized components
-const SocialIcon = memo(({ Icon, label }: SocialIconProps) => (
+const SocialIcon = memo(({ Icon, label, url }: SocialIconProps) => (
   <Link
-    href="#"
+    href={url}
     aria-label={label}
     className="w-10 h-10 rounded-full bg-white flex items-center justify-center 
              hover:bg-black transition-all duration-300 group"
@@ -40,10 +43,10 @@ const SocialIcon = memo(({ Icon, label }: SocialIconProps) => (
 ));
 SocialIcon.displayName = "SocialIcon";
 
-const FooterLink = memo(({ children }: FooterLinkProps) => (
+const FooterLink = memo(({ children, url }: FooterLinkProps) => (
   <li>
     <Link
-      href="#"
+      href={url}
       className="text-white hover:text-white transition-colors duration-300 
                flex items-center group"
     >
@@ -66,27 +69,37 @@ const SectionTitle = memo(({ children }: SectionTitleProps) => (
 SectionTitle.displayName = "SectionTitle";
 
 // Constants
-const SOCIAL_ICONS: SocialIconProps[] = [
-  { Icon: Twitter, label: "Twitter" }, // Changed from 'icon' to 'Icon'
-  { Icon: Facebook, label: "Facebook" }, // Changed from 'icon' to 'Icon'
-  { Icon: Youtube, label: "YouTube" }, // Changed from 'icon' to 'Icon'
-  { Icon: Instagram, label: "Instagram" }, // Changed from 'icon' to 'Icon'
-  { Icon: Linkedin, label: "LinkedIn" }, // Changed from 'icon' to 'Icon'
+const SOCIAL_ICONS = [
+  {
+    Icon: Facebook,
+    label: "Facebook",
+    url: "https://www.facebook.com/apricushotels/",
+  },
+  {
+    Icon: Instagram,
+    label: "Instagram",
+    url: "http://www.instagram.com/apricushotels",
+  },
+  {
+    Icon: Linkedin,
+    label: "LinkedIn",
+    url: "https://www.linkedin.com/company/apricus-hotels-resorts/",
+  },
 ];
 
-const QUICK_LINKS: string[] = [
-  "Home",
-  "About Us",
-  "Rooms",
-  "Blog",
-  "Contact Us",
+const QUICK_LINKS: NavigationLink[] = [
+  { label: "Home", url: "/" },
+  { label: "About Us", url: "/aboutus" },
+  // { label: "Rooms", url: "/rooms" },
+  { label: "Contact Us", url: "/contact-us" },
 ];
-const EXPLORE_LINKS: string[] = [
-  "FAQ",
-  "Gallery",
-  "Dining",
-  "Spa & Wellness",
-  "Events",
+const EXPLORE_LINKS: NavigationLink[] = [
+  // { label: "FAQ", url: "/faq" },
+
+  { label: "Dining", url: "/dinings" },
+  // { label: "Spa & Wellness", url: "/spa-wellness" },
+  { label: "Events", url: "/events" },
+  { label: "Partner With Us", url: "/partner-with-us" },
 ];
 const INSTAGRAM_IMAGES: string[] = [
   "/images/roomone.jpg",
@@ -140,6 +153,7 @@ const Footer: React.FC = () => {
                   key={index}
                   Icon={social.Icon}
                   label={social.label}
+                  url={social.url}
                 />
               ))}
             </div>
@@ -150,7 +164,9 @@ const Footer: React.FC = () => {
             <SectionTitle>Quick Links</SectionTitle>
             <ul className="space-y-3 font-comfortaaLight">
               {QUICK_LINKS.map((item) => (
-                <FooterLink key={item}>{item}</FooterLink>
+                <FooterLink key={item.label} url={item.url}>
+                  {item.label}
+                </FooterLink>
               ))}
             </ul>
           </div>
@@ -160,7 +176,9 @@ const Footer: React.FC = () => {
             <SectionTitle>Explore</SectionTitle>
             <ul className="space-y-3 font-comfortaaLight">
               {EXPLORE_LINKS.map((item) => (
-                <FooterLink key={item}>{item}</FooterLink>
+                <FooterLink key={item.label} url={item.url}>
+                  {item.label}
+                </FooterLink>
               ))}
             </ul>
           </div>
