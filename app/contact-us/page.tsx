@@ -83,11 +83,11 @@ const ContactPage = () => {
                     Registered Office
                   </h4>
                   <p className="text-gray-600 font-comfortaaLight leading-relaxed">
+                    Apricus Hotels Private Limited
+                    <br />
                     B3, Ground Floor, H.No. 31/N/S,
                     <br />
                     CD Symphony, Seraulim,
-                    <br />
-                    Apricus Hotels Private Limited
                     <br />
                     Colva, South Goa 403708
                   </p>

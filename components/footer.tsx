@@ -148,9 +148,10 @@ const Footer: React.FC = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 mt-1 flex-shrink-0 text-white/60" />
                 <div className="font-comfortaaLight text-sm text-white/80 space-y-1">
+                  <p>Apricus Hotels Private Limited</p>
                   <p>B3, Ground Floor, H.No. 31/N/S,</p>
                   <p>CD Symphony, Seraulim,</p>
-                  <p>Apricus Hotels Private Limited</p>
+
                   <p>Colva, South Goa 403708</p>
                 </div>
               </div>
