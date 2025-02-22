@@ -1,0 +1,199 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Room {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  capacity    Int
+  amenities   Amenity[]   @relation("RoomToAmenity")
+  images      RoomImage[]
+  hotelId     String
+  hotel       Hotel       @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  bookings    RoomBooking[] // Add this line
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([hotelId])
+}
+
+model RoomImage {
+  id        String   @id @default(cuid())
+  url       String
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId])
+}
+
+model Amenity {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  icon        String?
+  rooms       Room[]   @relation("RoomToAmenity")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model Location {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  hotels    Hotel[]
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model HotelImage {
+  id        String   @id @default(cuid())
+  url       String
+  hotelId   String
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hotelId])
+}
+
+model Hotel {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  images      HotelImage[]
+  rooms       Room[]        // Add this line
+  locationId  String
+  location    Location      @relation(fields: [locationId], references: [id])
+  bookings    Booking[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Testimonial Testimonial[]
+
+  @@index([locationId])
+}
+model RoomBooking {
+  id        String   @id @default(cuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id])
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id])
+  checkIn   DateTime
+  checkOut  DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roomId])
+  @@index([bookingId])
+}
+model Booking {
+  id           String        @id @default(cuid())
+  checkIn      DateTime
+  checkOut     DateTime
+  adults       Int
+  childrens    Int
+  fullName     String
+  phoneNo      String
+  email        String
+  companyName  String?
+  gstNumber    String?
+  locationId   String
+  location     Location      @relation(fields: [locationId], references: [id])
+  hotelId      String
+  hotel        Hotel         @relation(fields: [hotelId], references: [id])
+  status       BookingStatus @default(PENDING)
+  transaction  Transaction?
+  roomBookings RoomBooking[] // Add this line
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([locationId])
+  @@index([hotelId])
+}
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  location  String
+  rating    Int
+  date      DateTime @default(now())
+  hotelId   String
+  hotel     Hotel    @relation(fields: [hotelId], references: [id])
+  review    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([hotelId])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model Enquiry {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  phoneNumber String
+  status      EnquiryStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("enquiries")
+}
+
+model Transaction {
+  id                 String   @id @default(cuid())
+  amount             Float
+  currency           String   @default("INR")
+  status             String   @default("PENDING")
+  razorpayOrderId    String?  @unique
+  razorpayPaymentId  String?
+  razorpaySignature  String?
+  userEmail          String
+  userName           String
+  booking            Booking? @relation(fields: [bookingId], references: [id])
+  bookingId          String?  @unique
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([bookingId])
+}
+
+
+enum EnquiryStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
