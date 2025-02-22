@@ -21,6 +21,7 @@ import {
   Home,
   Clock,
 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface RoomData {
   roomId: string;
@@ -56,6 +57,14 @@ export default function BookingPaymentForm({
   const [isProcessing, setIsProcessing] = useState(false);
   const [totalAmount, setTotalAmount] = useState<number>(0);
   const [numberOfNights, setNumberOfNights] = useState<number>(0);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountAmount: number;
+    discountType: "PERCENTAGE" | "FIXED";
+    discountValue: number;
+  } | null>(null);
+  const [isCouponLoading, setIsCouponLoading] = useState(false);
   const router = useRouter();
 
   const {
@@ -82,6 +91,49 @@ export default function BookingPaymentForm({
     setTotalAmount(price * nights);
   }, [checkIn, checkOut, price]);
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode) return;
+
+    setIsCouponLoading(true);
+    try {
+      const response = await fetch("/api/coupons/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: couponCode,
+          bookingAmount: totalAmount,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAppliedCoupon(data.data);
+        toast({
+          title: "Success",
+          description: "Coupon applied successfully!",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: data.error,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to apply coupon",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCouponLoading(false);
+    }
+  };
+  const calculateFinalAmount = () => {
+    if (!appliedCoupon) return totalAmount;
+    return totalAmount - appliedCoupon.discountAmount;
+  };
   const validatePhoneNumber = (phone: string) => {
     // Basic validation for Indian phone numbers (10 digits, optionally starting with +91)
     const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
@@ -131,6 +183,7 @@ export default function BookingPaymentForm({
           ...formData,
           adults,
           childrens,
+          couponCode: appliedCoupon?.code,
         }),
       });
 
@@ -353,6 +406,44 @@ export default function BookingPaymentForm({
             </section>
 
             {/* Payment Summary */}
+            <div className="flex items-center space-x-2 mt-4">
+              <Input
+                placeholder="Enter coupon code"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                className="uppercase"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleApplyCoupon}
+                disabled={isCouponLoading || !couponCode}
+              >
+                {isCouponLoading ? "Applying..." : "Apply"}
+              </Button>
+            </div>
+
+            {appliedCoupon && (
+              <div className="mt-2">
+                <div className="flex justify-between items-center text-sm text-green-600">
+                  <span>Coupon Discount ({appliedCoupon.code})</span>
+                  <span>-₹{appliedCoupon.discountAmount.toFixed(2)}</span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="text-xs text-red-500 mt-1 h-auto p-0"
+                  onClick={() => {
+                    setAppliedCoupon(null);
+                    setCouponCode("");
+                  }}
+                >
+                  Remove Coupon
+                </Button>
+              </div>
+            )}
+
+            <Separator className="my-3" />
             <div className="bg-accent/10 rounded-lg p-6 mt-8">
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-sm font-comfortaaRegular">
@@ -369,7 +460,7 @@ export default function BookingPaymentForm({
                     Total Amount
                   </span>
                   <span className="text-2xl font-comfortaaBold text-primary">
-                    ₹{totalAmount.toFixed(2)}
+                    ₹{calculateFinalAmount().toFixed(2)}
                   </span>
                 </div>
               </div>

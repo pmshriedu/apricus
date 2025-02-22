@@ -14,7 +14,6 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { LoadingSpinner } from "./loading-spinner";
-import { BookingModal } from "./booking-modal/booking-modal";
 
 // Interface for form data
 interface FormData {
@@ -272,7 +271,7 @@ const Hero: React.FC = () => {
     childrens: 0,
     location: "",
   });
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
   const [hotels, setHotels] = useState<Hotel[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -374,8 +373,6 @@ const Hero: React.FC = () => {
       });
       return;
     }
-
-    setIsModalOpen(true);
   };
 
   return (
@@ -398,19 +395,6 @@ const Hero: React.FC = () => {
           formData={formData}
           setFormData={setFormData}
         />
-
-        {isModalOpen && (
-          <BookingModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            locationId={formData.location}
-            checkIn={formData.checkin}
-            checkOut={formData.checkout}
-            adults={formData.adults}
-            childrens={formData.childrens}
-            hotels={hotels}
-          />
-        )}
       </div>
     </header>
   );
