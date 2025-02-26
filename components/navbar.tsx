@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoLogoFacebook, IoLogoLinkedin, IoLogoWhatsapp } from "react-icons/io";
 import { AiFillInstagram } from "react-icons/ai";
+import { signOut, useSession } from "next-auth/react";
 import {
   Menu,
   X,
@@ -21,6 +22,9 @@ import {
   MapPin,
   Building,
   Home as Villa,
+  User,
+  LogOut,
+  BookOpen,
 } from "lucide-react";
 
 type NavItem = {
@@ -256,6 +260,89 @@ const DropdownMenu = memo(
 
 DropdownMenu.displayName = "DropdownMenu";
 
+// User Profile Avatar with dropdown - Fixed to prevent wrapping
+const UserMenu = () => {
+  const { data: session } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+
+  if (!session?.user) {
+    return (
+      <Link
+        href="/customer-signin"
+        className="flex items-center gap-2 text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap"
+      >
+        <User className="w-[22px] h-[20px]" />
+        <span className="hidden sm:inline">Sign In</span>
+      </Link>
+    );
+  }
+
+  const toggleMenu = () => setIsOpen(!isOpen);
+  const closeMenu = () => setIsOpen(false);
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+    closeMenu();
+  };
+
+  return (
+    <div className="relative">
+      <button
+        onClick={toggleMenu}
+        className="flex items-center gap-2 text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors"
+      >
+        <div className="relative w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+          {session.user?.name ? (
+            session.user.name.charAt(0).toUpperCase()
+          ) : (
+            <User className="w-4 h-4" />
+          )}
+        </div>
+        <span className="hidden sm:inline max-w-24 truncate whitespace-nowrap">
+          {session.user?.name || session.user?.email?.split("@")[0]}
+        </span>
+        <ChevronDown className="w-4 h-4" />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="absolute right-0 w-48 mt-2 bg-white shadow-lg rounded-md overflow-hidden z-50"
+          >
+            <div className="px-4 py-2 border-b">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                {session.user?.name || "User"}
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                {session.user?.email}
+              </p>
+            </div>
+
+            <Link
+              href="/customer-dashboard"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors"
+              onClick={closeMenu}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>My Bookings</span>
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -303,11 +390,11 @@ const Navbar = () => {
             <div className="flex items-center justify-between h-16">
               {/* Desktop Navigation */}
               <div className="hidden lg:flex w-full items-center justify-between">
-                {/* Logo */}
-                <div className="w-[200px]">
+                {/* Logo - Fixed visibility issue */}
+                <div className="flex-shrink-0 w-[200px]">
                   <motion.div
                     whileHover={{ scale: 1.05 }}
-                    className="flex-shrink-0 flex justify-center items-center mb-2 mt-2"
+                    className="flex justify-center items-center mb-2 mt-2"
                   >
                     <Link href="/">
                       <Image
@@ -321,8 +408,8 @@ const Navbar = () => {
                   </motion.div>
                 </div>
 
-                {/* Navigation Links - Centered */}
-                <div className="flex items-center justify-center flex-1 px-8">
+                {/* Navigation Links - Adjusted spacing for better fit */}
+                <div className="flex items-center justify-center flex-1 px-4">
                   <div className="flex items-center space-x-1 font-comfortaaBold">
                     {standardNavItems.map((item) => {
                       const isActive = pathname === item.href;
@@ -368,10 +455,13 @@ const Navbar = () => {
                   </div>
                 </div>
 
-                {/* Book Now Button */}
+                {/* User Profile Section - Fixed to prevent wrapping */}
+                <div className="flex items-center ml-4 flex-shrink-0 w-[200px] justify-end">
+                  <UserMenu />
+                </div>
               </div>
 
-              {/* Mobile menu button */}
+              {/* Mobile menu button and logo */}
               <div className="lg:hidden flex justify-between w-full items-center">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
@@ -388,17 +478,21 @@ const Navbar = () => {
                   </Link>
                 </motion.div>
 
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleMenuToggle}
-                  className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-primary focus:outline-none"
-                >
-                  {isOpen ? (
-                    <X className="block h-6 w-6" />
-                  ) : (
-                    <Menu className="block h-6 w-6" />
-                  )}
-                </motion.button>
+                {/* Mobile User Menu */}
+                <div className="flex items-center gap-2">
+                  <UserMenu />
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleMenuToggle}
+                    className="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-primary focus:outline-none"
+                  >
+                    {isOpen ? (
+                      <X className="block h-6 w-6" />
+                    ) : (
+                      <Menu className="block h-6 w-6" />
+                    )}
+                  </motion.button>
+                </div>
               </div>
             </div>
           </div>

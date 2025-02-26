@@ -1,13 +1,11 @@
-// lib/booking-helpers.ts
 import { BookingWithDetails } from "@/types/bookings";
+import { PrismaBooking } from "./prismabooking";
 
-// This function converts a Prisma Booking object to your BookingWithDetails interface
 export function convertPrismaBookingToInterface(
-  prismaBooking: any // Using any here since the Prisma return type is complex with includes
+  prismaBooking: PrismaBooking
 ): BookingWithDetails {
   return {
     id: prismaBooking.id,
-    // Convert Date objects to ISO strings
     checkIn: prismaBooking.checkIn.toISOString(),
     checkOut: prismaBooking.checkOut.toISOString(),
     adults: prismaBooking.adults,
@@ -36,7 +34,7 @@ export function convertPrismaBookingToInterface(
             prismaBooking.transaction.razorpayPaymentId || undefined,
         }
       : undefined,
-    roomBookings: prismaBooking.roomBookings.map((rb: any) => ({
+    roomBookings: prismaBooking.roomBookings.map((rb) => ({
       id: rb.id,
       roomId: rb.roomId,
       bookingId: rb.bookingId,

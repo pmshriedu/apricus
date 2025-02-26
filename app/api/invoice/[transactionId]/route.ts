@@ -33,6 +33,7 @@ export async function GET(
     }
 
     try {
+      // First check if payment exists and has an invoice
       const payment = await razorpay.payments.fetch(
         transaction.razorpayPaymentId
       );
@@ -64,8 +65,19 @@ export async function GET(
         `Check-out: ${checkOut}\n` +
         `Guests: ${transaction.booking?.adults} Adults, ${transaction.booking?.childrens} Children`;
 
-      // Use Razorpay's type from their SDK
-      const invoiceOptions: Invoices.RazorpayInvoiceCreateRequestBody = {
+      // Check if transaction is completed
+      const isPaid =
+        transaction.status === "COMPLETED" ||
+        transaction.status === "SUCCESS" ||
+        payment.status === "captured";
+
+      // Use Razorpay's type from their SDK but extend it with additional properties
+      const invoiceOptions: Invoices.RazorpayInvoiceCreateRequestBody & {
+        status?: string;
+        payment?: {
+          payment_id: string;
+        };
+      } = {
         type: "invoice",
         description: description,
         customer: {
@@ -93,6 +105,15 @@ export async function GET(
         email_notify: 1,
         receipt: transaction.id,
       };
+
+      // If payment is already captured, create a paid invoice
+      if (isPaid) {
+        // Add payment details to the invoice
+        invoiceOptions.status = "paid";
+        invoiceOptions.payment = {
+          payment_id: transaction.razorpayPaymentId,
+        };
+      }
 
       const invoice = await razorpay.invoices.create(invoiceOptions);
 

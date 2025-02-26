@@ -16,15 +16,29 @@ export async function GET(
       include: {
         hotel: {
           select: {
+            id: true,
             name: true,
+            description: true,
           },
         },
         location: {
           select: {
+            id: true,
             name: true,
           },
         },
         transaction: true,
+        roomBookings: {
+          include: {
+            room: {
+              select: {
+                name: true,
+                price: true,
+                description: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -66,15 +80,29 @@ export async function PATCH(
       include: {
         hotel: {
           select: {
+            id: true,
             name: true,
+            description: true,
           },
         },
         location: {
           select: {
+            id: true,
             name: true,
           },
         },
         transaction: true,
+        roomBookings: {
+          include: {
+            room: {
+              select: {
+                name: true,
+                price: true,
+                description: true,
+              },
+            },
+          },
+        },
       },
     });
 

@@ -69,7 +69,17 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/apricus-admin/dashboard");
+      // Ensure we retrieve the user's role to redirect correctly
+      const response = await fetch("/api/auth/session");
+      const session = await response.json();
+
+      if (session?.user?.role === "ADMIN") {
+        router.push("/apricus-admin/dashboard");
+      } else {
+        // Not an admin, redirect to homepage or show error
+        setError("You don't have admin privileges");
+      }
+
       router.refresh(); // Refresh to update session state
     } catch (err) {
       console.error("Login error:", err);

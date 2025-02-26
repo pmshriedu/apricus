@@ -23,7 +23,6 @@ import {
   Users,
   AlertTriangle,
   Clock,
-  FileDown,
   ArrowLeft,
   Tag,
   Receipt,
@@ -167,29 +166,6 @@ export default function BookingDetails() {
     const end = new Date(checkOut);
     const diffTime = end.getTime() - start.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  };
-
-  const downloadBookingPDF = async () => {
-    try {
-      const response = await fetch(`/api/bookings/download?id=${bookingId}`);
-
-      if (!response.ok) {
-        throw new Error("Failed to download booking");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `booking-${bookingId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Error downloading booking:", err);
-      setError("Failed to download booking. Please try again.");
-    }
   };
 
   const cancelBooking = async () => {
@@ -564,15 +540,6 @@ export default function BookingDetails() {
           </CardContent>
 
           <CardFooter className="flex justify-between border-t pt-6 flex-col sm:flex-row gap-4">
-            <Button
-              variant="outline"
-              onClick={downloadBookingPDF}
-              className="font-comfortaaRegular w-full sm:w-auto"
-            >
-              <FileDown className="h-4 w-4 mr-2" />
-              Download Booking
-            </Button>
-
             {isBookingCancellable() && (
               <>
                 <Button

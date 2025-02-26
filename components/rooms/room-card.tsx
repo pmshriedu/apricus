@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Room, RoomImage, Amenity, RoomBooking } from "@prisma/client";
@@ -114,7 +114,12 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
   const numberOfNights = calculateNights();
   const totalPrice = room.price * numberOfNights;
 
-  const amenityIcons: { [key: string]: any } = {
+  // Define a type for the amenity icons
+  type AmenityIcons = {
+    [key: string]: ReactNode;
+  };
+
+  const amenityIcons: AmenityIcons = {
     "Wi-Fi": <Wifi className="w-4 h-4" />,
     "Coffee Maker": <Coffee className="w-4 h-4" />,
     "King Bed": <Bed className="w-4 h-4" />,

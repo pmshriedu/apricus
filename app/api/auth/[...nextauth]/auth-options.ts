@@ -46,6 +46,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
+        token.id = user.id;
       }
       return token;
     },
@@ -56,18 +57,28 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // Handle redirects based on user role
+      if (url.startsWith(baseUrl)) {
+        // For relative URLs, check if we have stored URL to go to
+        if (typeof window !== "undefined") {
+          const storedUrl = sessionStorage.getItem("bookingReturnUrl");
+          if (storedUrl) {
+            return storedUrl;
+          }
+        }
+        // If we don't have a stored URL, use default paths
+        return url;
+      }
+      // Allows callbacks to external URLs if they are allowed
+      return url;
+    },
   },
   pages: {
-    signIn: "/apricus/login", // Customer login page
-    // You can add other custom pages if needed
-    // signOut: '/auth/signout',
-    // error: '/auth/error',
+    signIn: "/login", // Default login page
+    error: "/auth/error",
   },
   session: {
     strategy: "jwt",
   },
 };
-
-// Use this in your NextAuth handler
-// import { authOptions } from "@/lib/auth-options";
-// const handler = NextAuth(authOptions);

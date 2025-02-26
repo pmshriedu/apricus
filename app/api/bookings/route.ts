@@ -76,8 +76,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = BookingSchema.parse(body);
 
-    // Existing booking check code remains the same...
+    // Verify the user exists in the database
+    const userExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
 
+    // Check if room exists
     const room = await prisma.room.findUnique({
       where: { id: validatedData.roomId },
       select: { price: true },
@@ -106,29 +110,32 @@ export async function POST(request: NextRequest) {
 
     const { booking, transaction } = await prisma.$transaction(
       async (prisma) => {
-        const booking = await prisma.booking.create({
-          data: {
-            checkIn: checkInDate,
-            checkOut: checkOutDate,
-            adults: validatedData.adults,
-            childrens: validatedData.childrens,
-            fullName: validatedData.fullName,
-            phoneNo: validatedData.phoneNo,
-            email: validatedData.email,
-            companyName: validatedData.companyName,
-            gstNumber: validatedData.gstNumber,
-            locationId: validatedData.locationId,
-            hotelId: validatedData.hotelId,
-            status: "PENDING",
-            userId: session.user.id, // Link to the authenticated user
-            roomBookings: {
-              create: {
-                roomId: validatedData.roomId,
-                checkIn: checkInDate,
-                checkOut: checkOutDate,
-              },
+        // Create booking data with conditional userId
+        const bookingData = {
+          checkIn: checkInDate,
+          checkOut: checkOutDate,
+          adults: validatedData.adults,
+          childrens: validatedData.childrens,
+          fullName: validatedData.fullName,
+          phoneNo: validatedData.phoneNo,
+          email: validatedData.email,
+          companyName: validatedData.companyName,
+          gstNumber: validatedData.gstNumber,
+          locationId: validatedData.locationId,
+          hotelId: validatedData.hotelId,
+          status: "PENDING" as const, // Type assertion to fix the enum issue
+          ...(userExists && { userId: session.user.id }),
+          roomBookings: {
+            create: {
+              roomId: validatedData.roomId,
+              checkIn: checkInDate,
+              checkOut: checkOutDate,
             },
           },
+        };
+
+        const booking = await prisma.booking.create({
+          data: bookingData,
           include: {
             roomBookings: true,
           },

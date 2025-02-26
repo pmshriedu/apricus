@@ -17,13 +17,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { formatCurrency } from "@/lib/currency-formatter";
 import {
-  Loader2,
   Calendar,
   MapPin,
   Users,
   AlertTriangle,
   Clock,
-  FileDown,
   RefreshCw,
   Phone,
   Tag,
@@ -47,7 +45,6 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { formatDate } from "@/lib/date-formatter";
 import { BookingWithDetails, RoomBooking } from "@/types/bookings";
-import { toast } from "@/hooks/use-toast";
 
 // Status badge mapping
 const statusVariants = {
@@ -69,9 +66,6 @@ export default function CustomerDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
-  const [isDownloading, setIsDownloading] = useState<{
-    [key: string]: boolean;
-  }>({});
 
   useEffect(() => {
     // Redirect if user is not authenticated
@@ -104,62 +98,6 @@ export default function CustomerDashboard() {
       setError("Failed to load your bookings. Please try again.");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const downloadBookingPDF = async (bookingId: string) => {
-    try {
-      // Set downloading state for this specific booking
-      setIsDownloading((prev) => ({ ...prev, [bookingId]: true }));
-
-      // Request the PDF from the API
-      const response = await fetch(`/api/bookings/download/${bookingId}`);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.error || "Failed to download booking details"
-        );
-      }
-
-      // Get the PDF blob from the response
-      const blob = await response.blob();
-
-      // Create a URL for the blob
-      const url = window.URL.createObjectURL(blob);
-
-      // Create a temporary anchor element to trigger download
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `booking-${bookingId}.pdf`;
-
-      // Append to the document and click to trigger download
-      document.body.appendChild(a);
-      a.click();
-
-      // Clean up
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast({
-        title: "Download Successful",
-        description: "Your booking details have been downloaded successfully.",
-        variant: "default",
-      });
-    } catch (err) {
-      console.error("Error downloading booking PDF:", err);
-      toast({
-        title: "Download Failed",
-        description:
-          err instanceof Error
-            ? err.message
-            : "Failed to download booking details",
-        variant: "destructive",
-      });
-    } finally {
-      // Clear downloading state for this booking
-      setIsDownloading((prev) => ({ ...prev, [bookingId]: false }));
     }
   };
 
@@ -430,22 +368,6 @@ export default function CustomerDashboard() {
                             {new Date(booking.createdAt).toLocaleDateString()}
                           </div>
                           <div className="flex space-x-2">
-                            {booking.status === "CONFIRMED" && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="font-comfortaaRegular text-sm border-primary text-primary hover:bg-primary/5"
-                                onClick={() => downloadBookingPDF(booking.id)}
-                                disabled={isDownloading[booking.id]}
-                              >
-                                {isDownloading[booking.id] ? (
-                                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                ) : (
-                                  <FileDown className="h-4 w-4 mr-2" />
-                                )}
-                                Download
-                              </Button>
-                            )}
                             <Button
                               variant="default"
                               size="sm"

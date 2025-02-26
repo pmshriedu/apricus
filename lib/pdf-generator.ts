@@ -3,6 +3,9 @@ import { formatDate } from "@/lib/date-formatter";
 import { formatCurrency } from "@/lib/currency-formatter";
 import { BookingWithDetails } from "@/types/bookings";
 
+// Define the RoomBooking type
+type RoomBooking = BookingWithDetails["roomBookings"][0];
+
 export async function generateBookingPDF(
   booking: BookingWithDetails
 ): Promise<Buffer> {
@@ -85,7 +88,7 @@ export async function generateBookingPDF(
 
     // Add room entries
     doc.font("Helvetica");
-    booking.roomBookings.forEach((roomBooking: any) => {
+    booking.roomBookings.forEach((roomBooking: RoomBooking) => {
       doc.text(roomBooking.room.name, 50, roomTableY);
       doc.text(formatCurrency(roomBooking.room.price), 400, roomTableY, {
         width: 100,
