@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { Hotel, Location } from "@/types";
+import { Location } from "@/types";
 import { Label } from "./ui/label";
 import {
   Select,
@@ -272,9 +272,8 @@ const Hero: React.FC = () => {
     location: "",
   });
 
-  const [hotels, setHotels] = useState<Hotel[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading] = useState<boolean>(false);
 
   const router = useRouter();
   const { toast } = useToast();

@@ -113,6 +113,7 @@ export default function RoomManagement() {
         description: "Failed to fetch hotels",
         variant: "destructive",
       });
+      console.error("Failed to fetch hotels:", error);
     }
   };
 
@@ -369,7 +370,7 @@ export default function RoomManagement() {
               <Checkbox
                 id={`amenity-${amenity.id}`}
                 checked={formData.amenityIds.includes(amenity.id)}
-                onCheckedChange={(checked: any) => {
+                onCheckedChange={(checked: boolean) => {
                   setFormData({
                     ...formData,
                     amenityIds: checked

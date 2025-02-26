@@ -2,8 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 import {
   CheckCircle2,
-  Download,
-  Clock,
   ArrowLeft,
   MapPin,
   Users,
@@ -11,7 +9,6 @@ import {
   Mail,
   Phone,
   Calendar,
-  CreditCard,
   Receipt,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -126,12 +123,16 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                   <InfoItem
                     icon={<Calendar className="w-4 h-4" />}
                     label="Check-in"
-                    value={formatBookingDate(transaction.booking?.checkIn!)}
+                    value={formatBookingDate(
+                      transaction.booking?.checkIn ?? new Date()
+                    )}
                   />
                   <InfoItem
                     icon={<Calendar className="w-4 h-4" />}
                     label="Check-out"
-                    value={formatBookingDate(transaction.booking?.checkOut!)}
+                    value={formatBookingDate(
+                      transaction.booking?.checkOut ?? new Date()
+                    )}
                   />
                   <InfoItem
                     icon={<Users className="w-4 h-4" />}

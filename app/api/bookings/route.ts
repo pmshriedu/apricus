@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import Razorpay from "razorpay";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/auth-options";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
@@ -62,6 +64,15 @@ async function calculateDiscount(
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required" },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const validatedData = BookingSchema.parse(body);
 
@@ -109,6 +120,7 @@ export async function POST(request: NextRequest) {
             locationId: validatedData.locationId,
             hotelId: validatedData.hotelId,
             status: "PENDING",
+            userId: session.user.id, // Link to the authenticated user
             roomBookings: {
               create: {
                 roomId: validatedData.roomId,
@@ -195,7 +207,16 @@ export async function GET() {
           },
         },
         transaction: true,
-        roomBookings: true, // Include roomBookings in the response
+        roomBookings: {
+          include: {
+            room: {
+              select: {
+                name: true,
+                price: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

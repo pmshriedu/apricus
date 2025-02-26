@@ -1,6 +1,8 @@
+// File: /app/bookings/[roomId]/page.tsx
 import BookingPaymentForm from "@/components/booking-form/booking-forms";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import AuthCheck from "./auth-check";
 
 interface BookingPageProps {
   params: {
@@ -26,7 +28,7 @@ export default async function BookingPage({
     include: {
       hotel: {
         include: {
-          location: true, // Include the location relation
+          location: true,
         },
       },
     },
@@ -36,23 +38,30 @@ export default async function BookingPage({
     notFound();
   }
 
+  // Convert search params to a string for auth check component
+  const searchParamsString = new URLSearchParams(
+    searchParams as Record<string, string>
+  ).toString();
+
   return (
-    <div className="container mx-auto py-8">
-      <BookingPaymentForm
-        roomData={{
-          roomId: params.roomId,
-          hotelId: searchParams.hotelId,
-          locationId: searchParams.locationId,
-          roomName: room.name,
-          hotelName: room.hotel.name,
-          locationName: room.hotel.location.name,
-          checkIn: searchParams.checkIn,
-          checkOut: searchParams.checkOut,
-          adults: parseInt(searchParams.adults),
-          childrens: parseInt(searchParams.childrens),
-          price: parseFloat(searchParams.amount),
-        }}
-      />
-    </div>
+    <AuthCheck roomId={params.roomId} searchParams={searchParamsString}>
+      <div className="container mx-auto py-8">
+        <BookingPaymentForm
+          roomData={{
+            roomId: params.roomId,
+            hotelId: searchParams.hotelId,
+            locationId: searchParams.locationId,
+            roomName: room.name,
+            hotelName: room.hotel.name,
+            locationName: room.hotel.location.name,
+            checkIn: searchParams.checkIn,
+            checkOut: searchParams.checkOut,
+            adults: parseInt(searchParams.adults),
+            childrens: parseInt(searchParams.childrens),
+            price: parseFloat(searchParams.amount),
+          }}
+        />
+      </div>
+    </AuthCheck>
   );
 }

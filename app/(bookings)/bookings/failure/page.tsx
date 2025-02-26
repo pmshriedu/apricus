@@ -25,11 +25,11 @@ const FailurePage = () => {
             {/* Reassurance Message */}
             <div className="text-center">
               <p className="text-gray-700 font-comfortaaMedium mb-2">
-                Don't worry, no charges have been made
+                Don&lsquo;t worry, no charges have been made
               </p>
               <p className="text-gray-500 text-sm">
-                Your payment attempt was unsuccessful and your account hasn't
-                been charged
+                Your payment attempt was unsuccessful and your account
+                hasn&lsquo;t been charged
               </p>
             </div>
 

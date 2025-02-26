@@ -48,7 +48,7 @@ export default function PaymentPage() {
     setIsProcessing(true);
 
     try {
-      const { orderId, transactionId } = await createOrderId();
+      const { orderId } = await createOrderId();
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,

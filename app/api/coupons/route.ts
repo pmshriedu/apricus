@@ -1,7 +1,6 @@
 // app/api/coupons/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 
 export async function POST(request: Request) {
   try {
@@ -32,6 +31,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: coupon });
   } catch (error) {
+    console.error("Error creating coupon:", error);
     return NextResponse.json(
       { error: "Error creating coupon" },
       { status: 500 }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const coupons = await prisma.coupon.findMany({
       orderBy: { createdAt: "desc" },
@@ -67,6 +67,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, data: couponsWithStatus });
   } catch (error) {
+    console.error("Error creating coupon:", error);
     return NextResponse.json(
       { error: "Error fetching coupons" },
       { status: 500 }

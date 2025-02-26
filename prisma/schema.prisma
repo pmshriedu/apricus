@@ -18,7 +18,8 @@ model User {
   name      String?
   email     String   @unique
   password  String
-  role      String   @default("ADMIN")
+  role      String   @default("CUSTOMER") // Changed default from ADMIN to CUSTOMER
+  bookings  Booking[] // Add relation to bookings
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -155,12 +156,15 @@ model Booking {
   hotel        Hotel         @relation(fields: [hotelId], references: [id])
   status       BookingStatus @default(PENDING)
   transaction  Transaction?
-  roomBookings RoomBooking[] // Add this line
+  roomBookings RoomBooking[]
+  userId       String?       // Make it optional for backward compatibility
+  user         User?         @relation(fields: [userId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
   @@index([locationId])
   @@index([hotelId])
+  @@index([userId])
 }
 model Testimonial {
   id        String   @id @default(cuid())

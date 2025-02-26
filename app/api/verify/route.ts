@@ -19,12 +19,8 @@ const verifyRazorpaySignature = (
 
 export async function POST(request: NextRequest) {
   try {
-    const {
-      orderCreationId,
-      razorpayPaymentId,
-      razorpayOrderId,
-      razorpaySignature,
-    } = await request.json();
+    const { razorpayPaymentId, razorpayOrderId, razorpaySignature } =
+      await request.json();
 
     const isSignatureValid = verifyRazorpaySignature(
       razorpayOrderId,

@@ -23,6 +23,63 @@ import {
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+// Define Razorpay response types
+interface RazorpaySuccessResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayErrorResponse {
+  error: {
+    code: string;
+    description: string;
+    source: string;
+    step: string;
+    reason: string;
+    metadata: string;
+  };
+}
+
+// Define RazorpayOptions interface
+interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpaySuccessResponse) => void;
+  modal: {
+    ondismiss: () => void;
+  };
+  prefill: {
+    name: string;
+    email: string;
+    contact: string;
+  };
+  theme: {
+    color: string;
+  };
+}
+
+// Define RazorpayInstance interface
+interface RazorpayInstance {
+  on: (
+    event: string,
+    callback: (response: RazorpayErrorResponse) => void
+  ) => void;
+  open: () => void;
+  close: () => void;
+}
+
+// Extend the Window interface to include Razorpay
+declare global {
+  interface Window {
+    Razorpay: new (options: RazorpayOptions) => RazorpayInstance;
+  }
+}
+
 interface RoomData {
   roomId: string;
   roomName: string;
@@ -121,6 +178,7 @@ export default function BookingPaymentForm({
         });
       }
     } catch (error) {
+      console.error("Coupon apply error:", error);
       toast({
         title: "Error",
         description: "Failed to apply coupon",
@@ -130,10 +188,12 @@ export default function BookingPaymentForm({
       setIsCouponLoading(false);
     }
   };
+
   const calculateFinalAmount = () => {
     if (!appliedCoupon) return totalAmount;
     return totalAmount - appliedCoupon.discountAmount;
   };
+
   const validatePhoneNumber = (phone: string) => {
     // Basic validation for Indian phone numbers (10 digits, optionally starting with +91)
     const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
@@ -201,14 +261,14 @@ export default function BookingPaymentForm({
         return;
       }
 
-      const options = {
+      const options: RazorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
         amount: bookingData.totalAmount * 100,
         currency: "INR",
         name: "Apricus Hotels",
         description: `Room Booking - ${roomName} at ${hotelName} for ${bookingData.numberOfNights} nights`,
         order_id: bookingData.orderId,
-        handler: async function (response: any) {
+        handler: async function (response: RazorpaySuccessResponse) {
           try {
             const verifyResponse = await fetch("/api/verify", {
               method: "POST",
@@ -248,13 +308,16 @@ export default function BookingPaymentForm({
         theme: { color: "#C68D07" },
       };
 
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.on("payment.failed", function (response: any) {
-        console.error("Payment failed:", response.error);
-        paymentObject.close();
-        setIsProcessing(false);
-        router.push("/bookings/failure");
-      });
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.on(
+        "payment.failed",
+        function (response: RazorpayErrorResponse) {
+          console.error("Payment failed:", response.error);
+          paymentObject.close();
+          setIsProcessing(false);
+          router.push("/bookings/failure");
+        }
+      );
       paymentObject.open();
     } catch (error) {
       console.error("Payment processing error:", error);

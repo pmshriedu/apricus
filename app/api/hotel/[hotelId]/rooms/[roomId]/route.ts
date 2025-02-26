@@ -1,5 +1,5 @@
 // app/api/hotel/[hotelId]/rooms/[roomId]/route.ts
-import { NextResponse } from "next/server";
+
 import { prisma } from "@/lib/prisma";
 import { handleSuccess, handleError } from "@/lib/api-helpers";
 

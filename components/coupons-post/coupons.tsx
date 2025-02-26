@@ -75,6 +75,7 @@ export default function CouponManagement() {
         setCoupons(data);
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: "Error",
         description: "Failed to fetch coupons",
@@ -111,6 +112,7 @@ export default function CouponManagement() {
         resetForm();
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: "Error",
         description: `Failed to ${selectedCoupon ? "update" : "create"} coupon`,
@@ -137,6 +139,7 @@ export default function CouponManagement() {
         fetchCoupons();
       }
     } catch (error) {
+      console.error(error);
       toast({
         title: "Error",
         description: "Failed to delete coupon",

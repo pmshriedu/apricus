@@ -71,6 +71,7 @@ export async function POST(request: Request) {
       },
     });
   } catch (error) {
+    console.error("Error veriying coupon:", error);
     return NextResponse.json(
       { error: "Error verifying coupon" },
       { status: 500 }

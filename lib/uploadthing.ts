@@ -5,20 +5,20 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
   hotelImage: f({ image: { maxFileSize: "4MB", maxFileCount: 8 } })
-    .middleware(async ({ req }) => {
+    .middleware(async ({}) => {
       // Verify user is authenticated
       return { userId: "admin" };
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(async ({ metadata }) => {
       return { uploadedBy: metadata.userId };
     }),
 
   roomImage: f({ image: { maxFileSize: "4MB", maxFileCount: 8 } })
-    .middleware(async ({ req }) => {
+    .middleware(async ({}) => {
       // Verify user is authenticated
       return { userId: "admin" };
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(async ({ metadata }) => {
       return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;

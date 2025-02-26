@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
-
 import { NextRequest, NextResponse } from "next/server";
 import Razorpay from "razorpay";
+import { Invoices } from "razorpay/dist/types/invoices";
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID!,
@@ -64,7 +64,8 @@ export async function GET(
         `Check-out: ${checkOut}\n` +
         `Guests: ${transaction.booking?.adults} Adults, ${transaction.booking?.childrens} Children`;
 
-      const invoiceOptions: any = {
+      // Use Razorpay's type from their SDK
+      const invoiceOptions: Invoices.RazorpayInvoiceCreateRequestBody = {
         type: "invoice",
         description: description,
         customer: {
@@ -72,13 +73,15 @@ export async function GET(
           email: transaction.userEmail,
           contact: transaction.booking?.phoneNo || "",
           billing_address: {
-            company_name: transaction.booking?.companyName || undefined,
-            gstin: transaction.booking?.gstNumber || undefined,
+            line1: "", // Required by Razorpay
+            city: "", // Required by Razorpay
+            state: "", // Required by Razorpay
+            country: "IN", // Required by Razorpay
+            zipcode: "", // Required by Razorpay
           },
         },
         line_items: [
           {
-            item_id: transaction.id,
             name: "Hotel Room Booking",
             description: `Room booking at ${transaction.booking?.hotel?.name}`,
             amount: Math.round(transaction.amount * 100),
