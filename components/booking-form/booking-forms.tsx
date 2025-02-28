@@ -194,6 +194,11 @@ export default function BookingPaymentForm({
     return totalAmount - appliedCoupon.discountAmount;
   };
 
+  const gstRate = totalAmount > 7500 ? 0.18 : 0.12;
+  const sgst = calculateFinalAmount() * (gstRate / 2);
+  const cgst = calculateFinalAmount() * (gstRate / 2);
+  const totalAmountWithTax = calculateFinalAmount() * (1 + gstRate);
+
   const validatePhoneNumber = (phone: string) => {
     // Basic validation for Indian phone numbers (10 digits, optionally starting with +91)
     const phoneRegex = /^(?:\+91)?[6-9]\d{9}$/;
@@ -261,9 +266,10 @@ export default function BookingPaymentForm({
         return;
       }
 
+      // The totalAmount from the API already includes GST
       const options: RazorpayOptions = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-        amount: bookingData.totalAmount * 100,
+        amount: Math.round(bookingData.totalAmount * 100), // Use the totalAmount directly from API response
         currency: "INR",
         name: "Apricus Hotels",
         description: `Room Booking - ${roomName} at ${hotelName} for ${bookingData.numberOfNights} nights`,
@@ -518,13 +524,41 @@ export default function BookingPaymentForm({
                   <span>{numberOfNights}</span>
                 </div>
                 <Separator className="my-3" />
-                <div className="flex justify-between items-center">
-                  <span className="font-comfortaaBold text-gray-800">
-                    Total Amount
-                  </span>
-                  <span className="text-2xl font-comfortaaBold text-primary">
-                    ₹{calculateFinalAmount().toFixed(2)}
-                  </span>
+                {/* Tax Details */}
+                <div className="space-y-3 mt-4">
+                  <div className="flex justify-between items-center text-sm font-comfortaaRegular">
+                    <span>Subtotal</span>
+                    <span>₹{totalAmount.toFixed(2)}</span>
+                  </div>
+
+                  {/* Coupon discount (keep your existing coupon code if applied) */}
+                  {appliedCoupon && (
+                    <div className="flex justify-between items-center text-sm text-green-600">
+                      <span>Coupon Discount ({appliedCoupon.code})</span>
+                      <span>-₹{appliedCoupon.discountAmount.toFixed(2)}</span>
+                    </div>
+                  )}
+
+                  {/* GST breakdown */}
+                  <div className="flex justify-between items-center text-sm font-comfortaaRegular">
+                    <span>SGST {totalAmount > 7500 ? "(9%)" : "(6%)"}</span>
+                    <span>₹{sgst.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm font-comfortaaRegular">
+                    <span>CGST {totalAmount > 7500 ? "(9%)" : "(6%)"}</span>
+                    <span>₹{cgst.toFixed(2)}</span>
+                  </div>
+
+                  <Separator className="my-3" />
+
+                  <div className="flex justify-between items-center">
+                    <span className="font-comfortaaBold text-gray-800">
+                      Total Amount (Inc. GST)
+                    </span>
+                    <span className="text-2xl font-comfortaaBold text-primary">
+                      ₹{totalAmountWithTax.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>

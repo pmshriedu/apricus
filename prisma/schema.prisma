@@ -201,7 +201,10 @@ model Enquiry {
 
 model Transaction {
   id                 String   @id @default(cuid())
-  amount             Float
+  amount             Float    // Base amount after discount
+  totalAmount        Float?   // Total amount including taxes
+  sgst               Float?   // SGST amount
+  cgst               Float?   // CGST amount
   currency           String   @default("INR")
   status             String   @default("PENDING")
   razorpayOrderId    String?  @unique

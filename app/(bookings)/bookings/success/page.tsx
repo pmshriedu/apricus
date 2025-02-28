@@ -65,10 +65,16 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     notFound();
   }
 
+  // Calculate GST breakdown
+  const gstRate = transaction.amount > 7500 ? 0.18 : 0.12;
+  const sgst = transaction.amount * (gstRate / 2);
+  const cgst = transaction.amount * (gstRate / 2);
+  const totalAmountWithTax = transaction.amount * (1 + gstRate);
+
   const formattedAmount = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
-  }).format(transaction.amount);
+  }).format(totalAmountWithTax);
 
   const formattedDate = new Intl.DateTimeFormat("en-IN", {
     dateStyle: "long",
@@ -192,7 +198,46 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                 <div className="bg-accent/5 p-6 rounded-lg space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 font-comfortaaRegular">
-                      Amount Paid
+                      Subtotal
+                    </span>
+                    <span className="font-comfortaaMedium">
+                      ₹{transaction.amount.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-comfortaaRegular">
+                      SGST {gstRate === 0.18 ? "(9%)" : "(6%)"}
+                    </span>
+                    <span className="font-comfortaaMedium">
+                      ₹{sgst.toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-comfortaaRegular">
+                      CGST {gstRate === 0.18 ? "(9%)" : "(6%)"}
+                    </span>
+                    <span className="font-comfortaaMedium">
+                      ₹{cgst.toFixed(2)}
+                    </span>
+                  </div>
+                  {transaction.discountAmount &&
+                  transaction.discountAmount > 0 ? (
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600 font-comfortaaRegular">
+                        Discount Applied
+                      </span>
+                      <span className="font-comfortaaMedium text-green-600">
+                        -₹{transaction.discountAmount.toFixed(2)}
+                      </span>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                  <Separator className="bg-gray-200" />
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 font-comfortaaRegular">
+                      Total Amount (Inc. GST)
                     </span>
                     <span className="text-xl font-comfortaaBold text-primary">
                       {formattedAmount}

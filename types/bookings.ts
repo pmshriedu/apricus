@@ -15,6 +15,10 @@ export interface RoomBooking {
 export interface Transaction {
   id: string;
   amount: number;
+  totalAmount: number;
+  sgst: number;
+  cgst: number;
+
   status: string;
   discountAmount?: number;
   currency: string;

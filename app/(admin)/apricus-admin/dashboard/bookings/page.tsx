@@ -59,6 +59,10 @@ type Booking = {
   status: "PENDING" | "CONFIRMED" | "CANCELLED";
   transaction?: {
     amount: number;
+    totalAmount: number;
+    cgst: number;
+    sgst: number;
+    discountAmount: number;
     status: string;
     razorpayOrderId?: string;
     razorpayPaymentId?: string;
@@ -153,11 +157,11 @@ export default function BookingsDashboard() {
     });
   };
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (totalAmount: number) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
-    }).format(amount);
+    }).format(totalAmount);
   };
 
   const filteredBookings = bookings.filter(
@@ -346,7 +350,9 @@ export default function BookingsDashboard() {
                                 {booking.transaction.status}
                               </Badge>
                               <p className="text-sm font-medium">
-                                {formatCurrency(booking.transaction.amount)}
+                                {formatCurrency(
+                                  booking.transaction.totalAmount
+                                )}
                               </p>
                             </div>
                           ) : (
@@ -600,44 +606,123 @@ export default function BookingsDashboard() {
                           Payment Information
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-3 gap-2">
-                          <span className="text-gray-500 text-sm">Amount:</span>
-                          <span className="col-span-2 font-medium">
-                            {formatCurrency(selectedBooking.transaction.amount)}
-                          </span>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {/* Main Payment Info */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <span className="text-gray-500 text-sm">
+                              Status:
+                            </span>
+                            <span className="col-span-1 sm:col-span-2">
+                              <Badge
+                                className={`${getPaymentStatusColor(
+                                  selectedBooking.transaction.status
+                                )} text-white`}
+                              >
+                                {selectedBooking.transaction.status}
+                              </Badge>
+                            </span>
 
-                          <span className="text-gray-500 text-sm">Status:</span>
-                          <span className="col-span-2">
-                            <Badge
-                              className={`${getPaymentStatusColor(
-                                selectedBooking.transaction.status
-                              )} text-white`}
-                            >
-                              {selectedBooking.transaction.status}
-                            </Badge>
-                          </span>
+                            <span className="text-gray-500 text-sm">
+                              Amount:
+                            </span>
+                            <span className="col-span-1 sm:col-span-2 font-medium">
+                              {formatCurrency(
+                                selectedBooking.transaction.totalAmount
+                              )}
+                            </span>
+                          </div>
 
-                          {selectedBooking.transaction.razorpayOrderId && (
-                            <>
-                              <span className="text-gray-500 text-sm">
-                                Order ID:
-                              </span>
-                              <span className="col-span-2 font-medium break-all">
-                                {selectedBooking.transaction.razorpayOrderId}
-                              </span>
-                            </>
+                          {/* Tax and Discount Details */}
+                          {(selectedBooking.transaction?.sgst > 0 ||
+                            selectedBooking.transaction?.cgst > 0 ||
+                            selectedBooking.transaction?.discountAmount >
+                              0) && (
+                            <div className="mt-2 p-2 bg-gray-50 rounded-md">
+                              <p className="text-sm font-medium text-gray-700 mb-1">
+                                Breakdown:
+                              </p>
+                              <div className="grid grid-cols-2 gap-1 text-sm">
+                                {selectedBooking.transaction?.sgst > 0 && (
+                                  <>
+                                    <span className="text-gray-500">SGST:</span>
+                                    <span className="font-medium text-right">
+                                      {formatCurrency(
+                                        selectedBooking.transaction.sgst
+                                      )}
+                                    </span>
+                                  </>
+                                )}
+
+                                {selectedBooking.transaction?.cgst > 0 && (
+                                  <>
+                                    <span className="text-gray-500">CGST:</span>
+                                    <span className="font-medium text-right">
+                                      {formatCurrency(
+                                        selectedBooking.transaction.cgst
+                                      )}
+                                    </span>
+                                  </>
+                                )}
+
+                                {selectedBooking.transaction?.discountAmount >
+                                  0 && (
+                                  <>
+                                    <span className="text-gray-500">
+                                      Discount:
+                                    </span>
+                                    <span className="font-medium text-green-600 text-right">
+                                      -
+                                      {formatCurrency(
+                                        selectedBooking.transaction
+                                          .discountAmount
+                                      )}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
                           )}
 
-                          {selectedBooking.transaction.razorpayPaymentId && (
-                            <>
-                              <span className="text-gray-500 text-sm">
-                                Payment ID:
-                              </span>
-                              <span className="col-span-2 font-medium break-all">
-                                {selectedBooking.transaction.razorpayPaymentId}
-                              </span>
-                            </>
+                          {/* Payment IDs */}
+                          {(selectedBooking.transaction.razorpayOrderId ||
+                            selectedBooking.transaction.razorpayPaymentId) && (
+                            <div className="border-t pt-3 mt-3">
+                              <p className="text-sm font-medium text-gray-700 mb-1">
+                                Payment Details:
+                              </p>
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                {selectedBooking.transaction
+                                  .razorpayOrderId && (
+                                  <>
+                                    <span className="text-gray-500 text-sm">
+                                      Order ID:
+                                    </span>
+                                    <span className="col-span-1 sm:col-span-2 font-medium text-xs sm:text-sm break-all">
+                                      {
+                                        selectedBooking.transaction
+                                          .razorpayOrderId
+                                      }
+                                    </span>
+                                  </>
+                                )}
+
+                                {selectedBooking.transaction
+                                  .razorpayPaymentId && (
+                                  <>
+                                    <span className="text-gray-500 text-sm">
+                                      Payment ID:
+                                    </span>
+                                    <span className="col-span-1 sm:col-span-2 font-medium text-xs sm:text-sm break-all">
+                                      {
+                                        selectedBooking.transaction
+                                          .razorpayPaymentId
+                                      }
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
                           )}
                         </div>
                       </CardContent>

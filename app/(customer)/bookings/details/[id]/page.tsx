@@ -68,6 +68,9 @@ interface Transaction {
   id: string;
   amount: number;
   status: string;
+  totalAmount: number;
+  sgst: number;
+  cgst: number;
   discountAmount?: number;
   currency: string;
   razorpayPaymentId?: string;
@@ -418,20 +421,35 @@ export default function BookingDetails() {
                         <p className="text-sm font-comfortaaMedium mt-2">
                           Amount
                           <span className="float-right font-comfortaaRegular">
-                            {formatCurrency(booking.transaction.amount)}
+                            {formatCurrency(booking.transaction.totalAmount)}
                           </span>
                         </p>
-                        {booking.transaction.discountAmount &&
-                          booking.transaction.discountAmount > 0 && (
-                            <p className="text-sm font-comfortaaMedium mt-2 text-green-700">
-                              Discount
-                              <span className="float-right font-comfortaaRegular">
-                                {formatCurrency(
-                                  booking.transaction.discountAmount
-                                )}
-                              </span>
-                            </p>
-                          )}
+                        {booking.transaction?.cgst
+                          ? booking.transaction.cgst > 0 && (
+                              <p className="text-xs font-comfortaaLight text-green-600">
+                                CGST: {formatCurrency(booking.transaction.cgst)}
+                              </p>
+                            )
+                          : ""}
+                        {booking.transaction?.sgst
+                          ? booking.transaction.sgst > 0 && (
+                              <p className="text-xs font-comfortaaLight text-green-600">
+                                SGST: {formatCurrency(booking.transaction.sgst)}
+                              </p>
+                            )
+                          : ""}
+                        {booking.transaction.discountAmount
+                          ? booking.transaction.discountAmount > 0 && (
+                              <p className="text-sm font-comfortaaMedium mt-2 text-green-700">
+                                Discount
+                                <span className="float-right font-comfortaaRegular">
+                                  {formatCurrency(
+                                    booking.transaction.discountAmount
+                                  )}
+                                </span>
+                              </p>
+                            )
+                          : ""}
                         {booking.transaction.razorpayPaymentId && (
                           <p className="text-sm font-comfortaaMedium mt-2">
                             Payment ID

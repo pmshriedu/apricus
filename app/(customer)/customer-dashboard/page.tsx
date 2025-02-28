@@ -302,18 +302,41 @@ export default function CustomerDashboard() {
                                 </p>
                                 <p className="text-sm font-comfortaaRegular text-gray-600">
                                   {booking.transaction
-                                    ? formatCurrency(booking.transaction.amount)
+                                    ? formatCurrency(
+                                        booking.transaction.totalAmount
+                                      )
                                     : "Payment pending"}
                                 </p>
-                                {booking.transaction?.discountAmount &&
-                                  booking.transaction.discountAmount > 0 && (
-                                    <p className="text-xs font-comfortaaLight text-green-600">
-                                      Discount:{" "}
-                                      {formatCurrency(
-                                        booking.transaction.discountAmount
-                                      )}
-                                    </p>
-                                  )}
+                                {booking.transaction?.cgst
+                                  ? booking.transaction.cgst > 0 && (
+                                      <p className="text-xs font-comfortaaLight text-green-600">
+                                        CGST:{" "}
+                                        {formatCurrency(
+                                          booking.transaction.cgst
+                                        )}
+                                      </p>
+                                    )
+                                  : ""}
+                                {booking.transaction?.sgst
+                                  ? booking.transaction.sgst > 0 && (
+                                      <p className="text-xs font-comfortaaLight text-green-600">
+                                        SGST:{" "}
+                                        {formatCurrency(
+                                          booking.transaction.sgst
+                                        )}
+                                      </p>
+                                    )
+                                  : ""}
+                                {booking.transaction?.discountAmount
+                                  ? booking.transaction.discountAmount > 0 && (
+                                      <p className="text-xs font-comfortaaLight text-green-600">
+                                        Discount:{" "}
+                                        {formatCurrency(
+                                          booking.transaction.discountAmount
+                                        )}
+                                      </p>
+                                    )
+                                  : ""}
                               </div>
                             </div>
                           </div>

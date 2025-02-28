@@ -32,6 +32,20 @@ function calculateNights(checkIn: Date, checkOut: Date): number {
   return diffDays;
 }
 
+function calculateTaxes(amount: number) {
+  const gstRate = amount > 7500 ? 0.18 : 0.12;
+  const totalTax = amount * gstRate;
+  const sgst = totalTax / 2;
+  const cgst = totalTax / 2;
+
+  return {
+    sgst,
+    cgst,
+    totalTax,
+    totalAmount: amount + totalTax,
+  };
+}
+
 async function calculateDiscount(
   couponCode: string | undefined,
   bookingAmount: number
@@ -104,7 +118,11 @@ export async function POST(request: NextRequest) {
       validatedData.couponCode,
       baseAmount
     );
-    const finalAmount = baseAmount - discountAmount;
+    const discountedAmount = baseAmount - discountAmount;
+
+    // Calculate taxes based on discounted amount
+    const { sgst, cgst, totalTax, totalAmount } =
+      calculateTaxes(discountedAmount);
 
     const bookingReference = crypto.randomUUID();
 
@@ -141,8 +159,9 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        // Create order with Razorpay using the total amount (including taxes)
         const order = await razorpay.orders.create({
-          amount: Math.round(finalAmount * 100), // Use final amount after discount
+          amount: Math.round(totalAmount * 100), // Use total amount with taxes
           currency: "INR",
           receipt: bookingReference,
           notes: {
@@ -150,18 +169,21 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // Update transaction to include coupon details
+        // Create transaction with tax details
         const transaction = await prisma.transaction.create({
           data: {
-            amount: finalAmount,
+            amount: discountedAmount,
+            totalAmount: totalAmount,
+            sgst: sgst,
+            cgst: cgst,
             currency: "INR",
             userEmail: validatedData.email,
             userName: validatedData.fullName,
             razorpayOrderId: order.id,
             status: "PENDING",
             bookingId: booking.id,
-            couponId: couponId, // Link coupon if applied
-            discountAmount: discountAmount, // Store discount amount
+            couponId: couponId,
+            discountAmount: discountAmount,
           },
         });
 
@@ -177,14 +199,21 @@ export async function POST(request: NextRequest) {
       }
     );
 
+    // Return comprehensive response with all price components
     return NextResponse.json({
       success: true,
       booking,
       orderId: transaction.razorpayOrderId,
       transactionId: transaction.id,
-      totalAmount: finalAmount,
+      baseAmount: baseAmount, // Original room price * nights
+      discountAmount: discountAmount, // Coupon discount amount
+      discountedAmount: discountedAmount, // After applying discount
+      sgst: sgst, // SGST component
+      cgst: cgst, // CGST component
+      totalTax: totalTax, // Total tax amount
+      totalAmount: totalAmount, // Final amount with taxes
       numberOfNights,
-      discountAmount,
+      gstRate: discountedAmount > 7500 ? 18 : 12, // GST rate applied
     });
   } catch (error) {
     console.error("Booking creation error:", error);

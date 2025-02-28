@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Transaction" ADD COLUMN     "cgst" DOUBLE PRECISION,
+ADD COLUMN     "sgst" DOUBLE PRECISION,
+ADD COLUMN     "totalAmount" DOUBLE PRECISION;
