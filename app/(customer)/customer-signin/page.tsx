@@ -57,6 +57,13 @@ export default function CustomerLoginPage() {
       );
     }
 
+    // Show success message if redirected from password reset
+    if (searchParams.get("resetComplete") === "true") {
+      setSuccess(
+        "Password reset successful! Please log in with your new password."
+      );
+    }
+
     // Get the redirect URL if coming from booking flow
     const returnTo = searchParams.get("returnTo");
     if (returnTo) {
@@ -170,9 +177,17 @@ export default function CustomerLoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-comfortaaMedium">
-                      Password
-                    </FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="font-comfortaaMedium">
+                        Password
+                      </FormLabel>
+                      <Link
+                        href="/forgot-password"
+                        className="text-sm text-primary hover:underline font-comfortaaRegular"
+                      >
+                        Forgot password?
+                      </Link>
+                    </div>
                     <FormControl>
                       <Input
                         {...field}
@@ -207,7 +222,7 @@ export default function CustomerLoginPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex justify-center border-t p-6">
+        <CardFooter className="flex flex-col gap-4 border-t p-6">
           <div className="text-center font-comfortaaRegular">
             Don&lsquo;t have an account?{" "}
             <Link

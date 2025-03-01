@@ -29,10 +29,10 @@ interface Transaction {
   userName: string;
   userEmail: string;
   amount: number;
-  totalAmount: number | null; // Change this to allow null values
-  sgst: number | null; // Also make this nullable to be safe
-  discountAmount: number | null; // This might also be nullable
-  cgst: number | null; // And this
+  totalAmount: number | null;
+  sgst: number | null;
+  discountAmount: number | null;
+  cgst: number | null;
   razorpayPaymentId: string | null;
   createdAt: Date;
   booking: TransactionBooking | null;
@@ -101,7 +101,7 @@ export default function DownloadButton({ transaction }: DownloadButtonProps) {
       headStyles: { fillColor: [218, 165, 32], textColor: [255, 255, 255] },
     });
 
-    currentY = (doc as any).lastAutoTable.finalY + 10;
+    currentY = doc.lastAutoTable.finalY + 10;
 
     // Guest Information Table
     const guestData = [
@@ -120,7 +120,7 @@ export default function DownloadButton({ transaction }: DownloadButtonProps) {
       headStyles: { fillColor: [218, 165, 32], textColor: [255, 255, 255] },
     });
 
-    currentY = (doc as any).lastAutoTable.finalY + 10;
+    currentY = doc.lastAutoTable.finalY + 10;
 
     // Payment Information Table
     const paymentData = [

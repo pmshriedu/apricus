@@ -1,7 +1,7 @@
-// src/app/api/verify/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendBookingConfirmationEmail } from "@/lib/email-utils";
 
 const verifyRazorpaySignature = (
   razorpayOrderId: string,
@@ -45,17 +45,19 @@ export async function POST(request: NextRequest) {
     }
 
     if (!isSignatureValid) {
-      // Update both transaction and booking status
-      await prisma.$transaction([
-        prisma.transaction.update({
-          where: { id: transaction.id },
-          data: { status: "FAILED" },
-        }),
-        prisma.booking.update({
-          where: { id: transaction.booking?.id },
+      // Update transaction status
+      await prisma.transaction.update({
+        where: { id: transaction.id },
+        data: { status: "FAILED" },
+      });
+
+      // Only update booking if it exists
+      if (transaction.booking) {
+        await prisma.booking.update({
+          where: { id: transaction.booking.id },
           data: { status: "CANCELLED" },
-        }),
-      ]);
+        });
+      }
 
       return NextResponse.json(
         {
@@ -81,6 +83,17 @@ export async function POST(request: NextRequest) {
         data: { status: "CONFIRMED" },
       }),
     ]);
+
+    // Send confirmation email after successful payment verification
+    if (transaction.booking?.id) {
+      try {
+        await sendBookingConfirmationEmail(transaction.booking.id);
+        console.log(`Email sent for booking: ${transaction.booking.id}`);
+      } catch (emailError) {
+        console.error("Failed to send confirmation email:", emailError);
+        // Don't fail the transaction if email fails
+      }
+    }
 
     return NextResponse.json(
       {

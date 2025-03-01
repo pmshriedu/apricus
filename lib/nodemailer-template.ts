@@ -1,35 +1,47 @@
-export interface Booking {
-  checkIn: string; // ISO date string for check-in date
-  checkOut: string; // ISO date string for check-out date
-  fullName: string; // Full name of the guest
-  email: string; // Email address of the guest
-  phoneNo: string; // Phone number of the guest
-  id: string; // Booking reference ID
+export interface BookingEmailData {
+  id: string;
+  fullName: string;
+  email: string;
+  phoneNo: string;
   hotel: {
-    name: string; // Name of the hotel
+    name: string;
   };
   location: {
-    name: string; // Location of the hotel
+    name: string;
   };
-  adults: number; // Number of adults
-  childrens: number; // Number of children
-  createdAt: string; // ISO date string for when the booking was created
-  updatedAt: string; // ISO date string for when the booking was last updated
+  checkIn: string;
+  checkOut: string;
+  adults: number;
+  childrens: number;
+  createdAt: string;
+  updatedAt: string;
+  roomName: string;
+  price: number;
+  transaction: {
+    amount: number;
+    discountAmount: number;
+    totalAmount: number;
+    status: string;
+    sgst: number;
+    cgst: number;
+  } | null;
 }
 
-export const generateEmailTemplate = (booking: Booking) => {
+export const generateEmailTemplate = (booking: BookingEmailData) => {
   const checkInDate = new Date(booking.checkIn).toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
   const checkOutDate = new Date(booking.checkOut).toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("en-US", {
       weekday: "long",
@@ -40,7 +52,8 @@ export const generateEmailTemplate = (booking: Booking) => {
       minute: "2-digit",
     });
   };
-  // Fixed date calculation
+
+  // Calculate nights
   const calculateNights = (checkIn: Date, checkOut: Date): number => {
     const diffTime = checkOut.getTime() - checkIn.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -51,13 +64,23 @@ export const generateEmailTemplate = (booking: Booking) => {
     new Date(booking.checkOut)
   );
 
+  // Calculate payment details
+  const baseAmount = booking.price * numberOfNights;
+  const discountAmount = booking.transaction?.discountAmount || 0;
+  const subtotal = baseAmount - discountAmount;
+  const gstRate = baseAmount > 7500 ? 18 : 12;
+  const gstAmount = booking.transaction
+    ? booking.transaction.sgst + booking.transaction.cgst
+    : subtotal * (gstRate / 100);
+  const totalAmount = booking.transaction?.totalAmount || subtotal + gstAmount;
+
   return `
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>New Booking Enquiry</title>
+          <title>Booking Confirmation - Apricus Hotels</title>
           <style>
             body {
               font-family: 'Arial', sans-serif;
@@ -117,19 +140,39 @@ export const generateEmailTemplate = (booking: Booking) => {
               display: inline-block;
             }
             .message-box {
-              background-color: #fff8e6;
-              border: 1px solid #C68D07;
+              background-color: #e6f7ee;
+              border: 1px solid #28a745;
               padding: 15px;
               margin: 20px 0;
               border-radius: 4px;
             }
-            .status-pending {
+            .status-confirmed {
               display: inline-block;
-              background-color: #fff3cd;
-              color: #856404;
+              background-color: #d4edda;
+              color: #155724;
               padding: 5px 10px;
               border-radius: 4px;
               font-weight: bold;
+            }
+            .pricing-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 15px 0;
+            }
+            .pricing-table th {
+              background-color: #f8f9fa;
+              color: #495057;
+              text-align: left;
+              padding: 10px;
+              border-bottom: 1px solid #dee2e6;
+            }
+            .pricing-table td {
+              padding: 10px;
+              border-bottom: 1px solid #dee2e6;
+            }
+            .pricing-table .total-row {
+              font-weight: bold;
+              background-color: #fff8e6;
             }
             .footer {
               background-color: #f8f9fa;
@@ -146,6 +189,22 @@ export const generateEmailTemplate = (booking: Booking) => {
               margin-top: 25px;
               padding-top: 20px;
               border-top: 1px solid #eee;
+            }
+            .qr-code {
+              text-align: center;
+              margin: 20px 0;
+            }
+            .button {
+              background-color: #C68D07;
+              color: white;
+              padding: 12px 24px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 16px;
+              margin: 10px 0;
+              border-radius: 4px;
+              font-weight: bold;
             }
             @media only screen and (max-width: 600px) {
               .container {
@@ -164,11 +223,21 @@ export const generateEmailTemplate = (booking: Booking) => {
         <body>
           <div class="container">
             <div class="header">
-              <h1>New Booking Enquiry</h1>
+              <h1>Booking Confirmation</h1>
             </div>
             <div class="content">
               <div class="message-box">
-                <strong>Important Notice:</strong> This is a new booking enquiry that requires review and confirmation. Current Status: <span class="status-pending">PENDING</span>
+                <strong>Thank you for your booking!</strong> Your reservation is confirmed for ${
+                  booking.hotel.name
+                }. Current Status: <span class="status-confirmed">CONFIRMED</span>
+              </div>
+  
+              <div class="section">
+                <h2>Booking Details</h2>
+                <p><strong>Booking Reference:</strong> ${booking.id}</p>
+                <p><strong>Booking Date:</strong> ${formatDate(
+                  booking.createdAt
+                )}</p>
               </div>
   
               <div class="section">
@@ -176,13 +245,13 @@ export const generateEmailTemplate = (booking: Booking) => {
                 <p><strong>Full Name:</strong> ${booking.fullName}</p>
                 <p><strong>Email Address:</strong> ${booking.email}</p>
                 <p><strong>Phone Number:</strong> ${booking.phoneNo}</p>
-                <p><strong>Reference ID:</strong> ${booking.id}</p>
               </div>
   
               <div class="section">
-                <h2>Property Details</h2>
+                <h2>Hotel Details</h2>
                 <p><strong>Hotel Name:</strong> ${booking.hotel.name}</p>
                 <p><strong>Location:</strong> ${booking.location.name}</p>
+                <p><strong>Room Type:</strong> ${booking.roomName}</p>
               </div>
   
               <div class="section">
@@ -202,34 +271,78 @@ export const generateEmailTemplate = (booking: Booking) => {
               </div>
   
               <div class="section">
-                <h2>Booking Timeline</h2>
-                <p><strong>Enquiry Received:</strong> ${formatDate(
-                  booking.createdAt
-                )}</p>
-                <p><strong>Last Updated:</strong> ${formatDate(
-                  booking.updatedAt
-                )}</p>
+                <h2>Payment Details</h2>
+                <table class="pricing-table">
+                  <tr>
+                    <td>Room Price per Night</td>
+                    <td>₹${booking.price.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Number of Nights</td>
+                    <td>${numberOfNights}</td>
+                  </tr>
+                  <tr>
+                    <td>Base Amount</td>
+                    <td>₹${baseAmount.toFixed(2)}</td>
+                  </tr>
+                  ${
+                    discountAmount > 0
+                      ? `
+                  <tr>
+                    <td>Discount</td>
+                    <td>-₹${discountAmount.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Subtotal</td>
+                    <td>₹${subtotal.toFixed(2)}</td>
+                  </tr>
+                  `
+                      : ""
+                  }
+                  <tr>
+                    <td>GST (${gstRate}%)</td>
+                    <td>₹${gstAmount.toFixed(2)}</td>
+                  </tr>
+                  <tr class="total-row">
+                    <td>Total Amount (Inc. GST)</td>
+                    <td>₹${totalAmount.toFixed(2)}</td>
+                  </tr>
+                </table>
               </div>
   
               <div class="section">
-                <h2>Required Actions</h2>
-                <p>• Review guest information and stay details</p>
-                <p>• Check room availability for the requested dates</p>
-                <p>• Verify pricing and applicable rates</p>
-                <p>• Contact guest within 24 hours</p>
+                <h2>Important Information</h2>
+                <p>• Check-in Time: 2:00 PM</p>
+                <p>• Check-out Time: 12:00 PM</p>
+                <p>• Please present a valid ID proof at check-in</p>
+                <p>• Early check-in and late check-out are subject to availability</p>
+                <p>• For any changes or cancellations, please contact us at least 48 hours before check-in</p>
+              </div>
+  
+              <div class="qr-code">
+                <p>Show this QR code at check-in for quick verification:</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+                  booking.id
+                )}" alt="Booking QR Code" width="150" height="150" />
+              </div>
+  
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="https://apricushotels.com/bookings/view/${
+                  booking.id
+                }" class="button">View Booking Online</a>
               </div>
   
               <div class="contact-info">
-                <h2 style="color: #C68D07;">Contact Information</h2>
-                <p>For any immediate assistance or questions regarding this booking enquiry:</p>
+                <h2 style="color: #C68D07;">Need Help?</h2>
+                <p>For any assistance or queries regarding your booking:</p>
                 <p>✆ Reservations: +91 8956593946</p>
                 <p>✉ Email: crs@apricushotels.com</p>
-                <p>⚡ Quick Response Code: ${booking.id}</p>
+                <p>⚡ Booking Reference: ${booking.id}</p>
               </div>
             </div>
             
             <div class="footer">
-              <p>This is an automated message - please do not reply to this email.</p>
+              <p>We look forward to welcoming you to Apricus Hotels!</p>
               <p>© ${new Date().getFullYear()} Apricus Hotels. All rights reserved.</p>
             </div>
           </div>

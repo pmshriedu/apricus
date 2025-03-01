@@ -76,6 +76,8 @@ async function calculateDiscount(
   };
 }
 
+// Send booking confirmation email
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -98,7 +100,7 @@ export async function POST(request: NextRequest) {
     // Check if room exists
     const room = await prisma.room.findUnique({
       where: { id: validatedData.roomId },
-      select: { price: true },
+      select: { price: true, name: true },
     });
 
     if (!room) {

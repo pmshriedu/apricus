@@ -25,6 +25,7 @@ import {
   User,
   LogOut,
   BookOpen,
+  User2,
 } from "lucide-react";
 
 type NavItem = {
@@ -320,7 +321,14 @@ const UserMenu = () => {
                 {session.user?.email}
               </p>
             </div>
-
+            <Link
+              href="/customer-profile"
+              className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors"
+              onClick={closeMenu}
+            >
+              <User2 className="w-4 h-4" />
+              <span>My Profile</span>
+            </Link>
             <Link
               href="/customer-dashboard"
               className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-primary hover:text-white transition-colors"

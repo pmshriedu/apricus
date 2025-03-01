@@ -14,47 +14,50 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  name      String?
-  email     String   @unique
-  password  String
-  role      String   @default("CUSTOMER") // Changed default from ADMIN to CUSTOMER
-  bookings  Booking[] // Add relation to bookings
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String    @id @default(cuid())
+  name              String?
+  email             String    @unique
+  password          String
+  role              String    @default("CUSTOMER") // Changed default from ADMIN to CUSTOMER
+  bookings          Booking[] // Add relation to bookings
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  lastLogin         DateTime?
+  passwordUpdatedAt DateTime?
 }
+
 model Room {
-  id          String       @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
   price       Float
   capacity    Int
-  amenities   Amenity[]   @relation("RoomToAmenity")
+  amenities   Amenity[]     @relation("RoomToAmenity")
   images      RoomImage[]
   hotelId     String
-  hotel       Hotel       @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  hotel       Hotel         @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   bookings    RoomBooking[] // Add this line
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([hotelId])
 }
 
 model Coupon {
-  id              String         @id @default(cuid())
-  code            String         @unique
-  description     String?
-  discountType    DiscountType
-  discountValue   Float
-  maxUses         Int
-  currentUses     Int           @default(0)
+  id               String        @id @default(cuid())
+  code             String        @unique
+  description      String?
+  discountType     DiscountType
+  discountValue    Float
+  maxUses          Int
+  currentUses      Int           @default(0)
   minBookingAmount Float?
-  startDate       DateTime
-  endDate         DateTime
-  isActive        Boolean       @default(true)
-  transactions    Transaction[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  startDate        DateTime
+  endDate          DateTime
+  isActive         Boolean       @default(true)
+  transactions     Transaction[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 }
 
 enum DiscountType {
@@ -74,13 +77,14 @@ model RoomImage {
 }
 
 model Amenity {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  icon        String?
-  rooms       Room[]   @relation("RoomToAmenity")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String   @unique
+  icon      String?
+  rooms     Room[]   @relation("RoomToAmenity")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
+
 model Contact {
   id        String   @id @default(cuid())
   name      String
@@ -115,7 +119,7 @@ model Hotel {
   name        String
   description String?
   images      HotelImage[]
-  rooms       Room[]        // Add this line
+  rooms       Room[] // Add this line
   locationId  String
   location    Location      @relation(fields: [locationId], references: [id])
   bookings    Booking[]
@@ -125,6 +129,7 @@ model Hotel {
 
   @@index([locationId])
 }
+
 model RoomBooking {
   id        String   @id @default(cuid())
   roomId    String
@@ -139,6 +144,7 @@ model RoomBooking {
   @@index([roomId])
   @@index([bookingId])
 }
+
 model Booking {
   id           String        @id @default(cuid())
   checkIn      DateTime
@@ -157,7 +163,7 @@ model Booking {
   status       BookingStatus @default(PENDING)
   transaction  Transaction?
   roomBookings RoomBooking[]
-  userId       String?       // Make it optional for backward compatibility
+  userId       String? // Make it optional for backward compatibility
   user         User?         @relation(fields: [userId], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -166,6 +172,7 @@ model Booking {
   @@index([hotelId])
   @@index([userId])
 }
+
 model Testimonial {
   id        String   @id @default(cuid())
   name      String
@@ -188,42 +195,41 @@ enum BookingStatus {
 }
 
 model Enquiry {
-  id          String   @id @default(cuid())
+  id          String        @id @default(cuid())
   fullName    String
   email       String
   phoneNumber String
   status      EnquiryStatus @default(PENDING)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@map("enquiries")
 }
 
 model Transaction {
-  id                 String   @id @default(cuid())
-  amount             Float    // Base amount after discount
-  totalAmount        Float?   // Total amount including taxes
-  sgst               Float?   // SGST amount
-  cgst               Float?   // CGST amount
-  currency           String   @default("INR")
-  status             String   @default("PENDING")
-  razorpayOrderId    String?  @unique
-  razorpayPaymentId  String?
-  razorpaySignature  String?
-  userEmail          String
-  userName           String
-  booking            Booking? @relation(fields: [bookingId], references: [id])
-  bookingId          String?  @unique
-  coupon             Coupon?  @relation(fields: [couponId], references: [id])
-  couponId           String?
-  discountAmount     Float?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id                String   @id @default(cuid())
+  amount            Float // Base amount after discount
+  totalAmount       Float? // Total amount including taxes
+  sgst              Float? // SGST amount
+  cgst              Float? // CGST amount
+  currency          String   @default("INR")
+  status            String   @default("PENDING")
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?
+  razorpaySignature String?
+  userEmail         String
+  userName          String
+  booking           Booking? @relation(fields: [bookingId], references: [id])
+  bookingId         String?  @unique
+  coupon            Coupon?  @relation(fields: [couponId], references: [id])
+  couponId          String?
+  discountAmount    Float?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   @@index([bookingId])
   @@index([couponId])
 }
-
 
 enum EnquiryStatus {
   PENDING

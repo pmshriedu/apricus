@@ -15,6 +15,7 @@ import {
   FileQuestion,
   LocateIcon,
   HotelIcon,
+  House,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -139,8 +140,40 @@ const getNavData = () => ({
       isActive: false,
       items: [
         {
-          title: "Add Location",
+          title: "Add Hotel",
           url: "/apricus-admin/dashboard/post-hotel",
+        },
+      ],
+    },
+    {
+      title: "Rooms & Amenities",
+      url: "#",
+      icon: House,
+      isActive: false,
+      items: [
+        {
+          title: "Add Rooms",
+          url: "/apricus-admin/dashboard/post-room",
+        },
+        {
+          title: "Add Amenities",
+          url: "/apricus-admin/dashboard/post-amenities",
+        },
+        {
+          title: "View Room Chart",
+          url: "/apricus-admin/dashboard/calender-view",
+        },
+      ],
+    },
+    {
+      title: "Coupons",
+      url: "#",
+      icon: HotelIcon,
+      isActive: false,
+      items: [
+        {
+          title: "Add Coupons",
+          url: "/apricus-admin/dashboard/coupons-post",
         },
       ],
     },
@@ -311,7 +344,12 @@ export default function ApricusSidebar() {
                 <DropdownMenuSeparator className="bg-accent/20" />
 
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="font-comfortaaRegular hover:bg-accent/10">
+                  <DropdownMenuItem
+                    className="font-comfortaaRegular hover:bg-accent/10"
+                    onClick={() =>
+                      router.push("/apricus-admin/dashboard/admin-profile")
+                    }
+                  >
                     <BadgeCheck className="mr-2 text-primary" />
                     <span>Profile</span>
                   </DropdownMenuItem>

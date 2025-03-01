@@ -38,6 +38,7 @@ const NavTop = () => {
         {
           label: "Profile",
           icon: User,
+          onClick: () => router.push("/apricus-admin/dashboard/admin-profile"),
         },
       ],
 

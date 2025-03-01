@@ -53,7 +53,7 @@ export default function Home() {
       setIsLoading(false);
       // Trigger confetti after a small delay to ensure smooth transition
       setTimeout(triggerConfetti, 100);
-    }, 3000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, []);
