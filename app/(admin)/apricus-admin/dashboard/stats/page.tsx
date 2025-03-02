@@ -129,14 +129,6 @@ const DashboardStatistics = () => {
       ]
     : [];
 
-  const contactChartData = stats
-    ? [
-        { name: "Last Week", count: stats.contacts.lastWeek },
-        { name: "Last Month", count: stats.contacts.lastMonth },
-        { name: "Total", count: stats.contacts.total },
-      ]
-    : [];
-
   const revenueChartData = stats
     ? [
         { name: "Last Month", revenue: stats.revenue.lastMonth },
