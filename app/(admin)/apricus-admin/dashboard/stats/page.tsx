@@ -23,6 +23,8 @@ import {
   Users,
   ArrowUp,
   ArrowDown,
+  CreditCard,
+  IndianRupee,
 } from "lucide-react";
 
 type DashboardStats = {
@@ -46,7 +48,18 @@ type DashboardStats = {
     total: number;
     percentageChange: number;
   };
+  transactions: {
+    total: number;
+    lastMonth: number;
+    percentageChange: number;
+  };
+  revenue: {
+    total: number;
+    lastMonth: number;
+    percentageChange: number;
+  };
 };
+
 const initialStats: DashboardStats = {
   contacts: {
     total: 0,
@@ -66,6 +79,16 @@ const initialStats: DashboardStats = {
   },
   hotels: {
     total: 0,
+    percentageChange: 0,
+  },
+  transactions: {
+    total: 0,
+    lastMonth: 0,
+    percentageChange: 0,
+  },
+  revenue: {
+    total: 0,
+    lastMonth: 0,
     percentageChange: 0,
   },
 };
@@ -111,6 +134,13 @@ const DashboardStatistics = () => {
         { name: "Last Week", count: stats.contacts.lastWeek },
         { name: "Last Month", count: stats.contacts.lastMonth },
         { name: "Total", count: stats.contacts.total },
+      ]
+    : [];
+
+  const revenueChartData = stats
+    ? [
+        { name: "Last Month", revenue: stats.revenue.lastMonth },
+        { name: "Total", revenue: stats.revenue.total },
       ]
     : [];
 
@@ -166,7 +196,7 @@ const DashboardStatistics = () => {
   const LoadingSkeleton = () => (
     <div className="space-y-8 p-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[...Array(4)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <Card key={i} className="relative overflow-hidden">
             <CardContent className="p-6">
               <Skeleton className="h-4 w-24 mb-2" />
@@ -233,6 +263,20 @@ const DashboardStatistics = () => {
           icon={Users}
           color={COLORS.purple}
         />
+        <StatCard
+          title="Total Transactions"
+          value={stats?.transactions?.total ?? 0}
+          percentageChange={stats?.transactions?.percentageChange ?? 0}
+          icon={CreditCard}
+          color={COLORS.gray}
+        />
+        <StatCard
+          title="Total Revenue"
+          value={stats?.revenue?.total ?? 0}
+          percentageChange={stats?.revenue?.percentageChange ?? 0}
+          icon={IndianRupee}
+          color={COLORS.success}
+        />
       </div>
 
       {/* Charts */}
@@ -298,17 +342,17 @@ const DashboardStatistics = () => {
           </CardContent>
         </Card>
 
-        {/* Contact Trends Chart */}
+        {/* Revenue Trends Chart */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg font-semibold">
-              Contact Trends
+              Revenue Trends
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={contactChartData}>
+                <BarChart data={revenueChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis
                     dataKey="name"
@@ -329,8 +373,8 @@ const DashboardStatistics = () => {
                     }}
                   />
                   <Bar
-                    dataKey="count"
-                    fill={COLORS.primary}
+                    dataKey="revenue"
+                    fill={COLORS.success}
                     radius={[4, 4, 0, 0]}
                   />
                 </BarChart>

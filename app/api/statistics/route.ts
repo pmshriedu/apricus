@@ -16,7 +16,7 @@ export async function GET() {
     );
     const lastWeek = new Date(now.setDate(now.getDate() - 7));
 
-    // Contact statistics with proper date handling
+    // Contact statistics
     const [
       totalContacts,
       lastMonthContacts,
@@ -48,7 +48,7 @@ export async function GET() {
       }),
     ]);
 
-    // Booking statistics with proper status handling
+    // Booking statistics
     const [
       totalBookings,
       confirmedBookings,
@@ -127,7 +127,60 @@ export async function GET() {
       }),
     ]);
 
-    // Calculate percentage changes with null checks
+    // Transaction and Revenue statistics
+    const [
+      totalTransactions,
+      lastMonthTransactions,
+      twoMonthsAgoTransactions,
+      totalRevenue,
+      lastMonthRevenue,
+      twoMonthsAgoRevenue,
+    ] = await Promise.all([
+      prisma.transaction.count(),
+      prisma.transaction.count({
+        where: {
+          createdAt: {
+            gte: firstDayLastMonth,
+          },
+        },
+      }),
+      prisma.transaction.count({
+        where: {
+          createdAt: {
+            gte: firstDayTwoMonthsAgo,
+            lt: firstDayLastMonth,
+          },
+        },
+      }),
+      prisma.transaction.aggregate({
+        _sum: {
+          amount: true,
+        },
+      }),
+      prisma.transaction.aggregate({
+        _sum: {
+          amount: true,
+        },
+        where: {
+          createdAt: {
+            gte: firstDayLastMonth,
+          },
+        },
+      }),
+      prisma.transaction.aggregate({
+        _sum: {
+          amount: true,
+        },
+        where: {
+          createdAt: {
+            gte: firstDayTwoMonthsAgo,
+            lt: firstDayLastMonth,
+          },
+        },
+      }),
+    ]);
+
+    // Calculate percentage changes
     const calculatePercentageChange = (current: number, previous: number) => {
       if (previous === 0) return 0;
       return Math.round(((current - previous) / previous) * 100);
@@ -164,6 +217,22 @@ export async function GET() {
         percentageChange: calculatePercentageChange(
           lastMonthHotels,
           twoMonthsAgoHotels
+        ),
+      },
+      transactions: {
+        total: totalTransactions,
+        lastMonth: lastMonthTransactions,
+        percentageChange: calculatePercentageChange(
+          lastMonthTransactions,
+          twoMonthsAgoTransactions
+        ),
+      },
+      revenue: {
+        total: totalRevenue._sum.amount || 0,
+        lastMonth: lastMonthRevenue._sum.amount || 0,
+        percentageChange: calculatePercentageChange(
+          lastMonthRevenue._sum.amount || 0,
+          twoMonthsAgoRevenue._sum.amount || 0
         ),
       },
     });
