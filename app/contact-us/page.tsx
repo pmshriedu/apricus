@@ -77,13 +77,28 @@ const ContactPage = () => {
                 <MapPin className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-comfortaaBold text-xl mb-4">Visit Us</h3>
-              <p className="text-gray-600 font-comfortaaLight">
-                B3, Ground Floor, H.No. 31/N/S,
-                <br />
-                CD Symphony, Seraulim,
-                <br />
-                Colva, South Goa 403708
-              </p>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="font-comfortaaMedium text-primary mb-2">
+                    Registered Office
+                  </h4>
+                  <p className="text-gray-600 font-comfortaaLight leading-relaxed">
+                    Apricus Hotels Private Limited
+                    <br />
+                    B3, Ground Floor, H.No. 31/N/S,
+                    <br />
+                    CD Symphony, Seraulim,
+                    <br />
+                    Colva, South Goa 403708
+                  </p>
+                </div>
+                <div className="pt-4 border-t border-gray-100">
+                  <p className="text-gray-500 text-sm font-comfortaaLight">
+                    CIN:{" "}
+                    <span className="text-primary">U55101GA2023PTC016038</span>
+                  </p>
+                </div>
+              </div>
             </CardContent>
           </Card>
 

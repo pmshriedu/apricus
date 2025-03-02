@@ -8,10 +8,11 @@ import {
   Linkedin,
   ArrowRight,
   LucideIcon,
+  MapPin,
 } from "lucide-react";
 import { FormEvent } from "react";
 
-// Types
+// Keep existing interfaces...
 interface SocialIconProps {
   Icon: LucideIcon;
   label: string;
@@ -26,19 +27,16 @@ interface FooterLinkProps {
   children: React.ReactNode;
   url: string;
 }
-interface NavigationLink {
-  label: string;
-  url: string;
-}
-// Memoized components
+
+// Enhanced memoized components with improved styling
 const SocialIcon = memo(({ Icon, label, url }: SocialIconProps) => (
   <Link
     href={url}
     aria-label={label}
-    className="w-10 h-10 rounded-full bg-white flex items-center justify-center 
-             hover:bg-black transition-all duration-300 group"
+    className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center 
+             hover:bg-white transition-all duration-300 group"
   >
-    <Icon size={18} className="text-black group-hover:text-white" />
+    <Icon size={20} className="text-white group-hover:text-primary" />
   </Link>
 ));
 SocialIcon.displayName = "SocialIcon";
@@ -47,8 +45,8 @@ const FooterLink = memo(({ children, url }: FooterLinkProps) => (
   <li>
     <Link
       href={url}
-      className="text-white hover:text-white transition-colors duration-300 
-               flex items-center group"
+      className="text-white/80 hover:text-white transition-colors duration-300 
+               flex items-center group text-sm"
     >
       <ArrowRight
         className="w-4 h-4 opacity-0 -ml-4 group-hover:opacity-100 
@@ -61,14 +59,15 @@ const FooterLink = memo(({ children, url }: FooterLinkProps) => (
 FooterLink.displayName = "FooterLink";
 
 const SectionTitle = memo(({ children }: SectionTitleProps) => (
-  <h3 className="font-comfortaaBold text-lg mb-6 relative">
+  <h3 className="font-comfortaaBold text-lg mb-8 relative inline-block">
     <span className="relative z-10">{children}</span>
-    <span className="absolute bottom-0 left-0 w-12 h-1 bg-primary" />
+    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white/20" />
+    <span className="absolute bottom-0 left-0 w-8 h-0.5 bg-white" />
   </h3>
 ));
 SectionTitle.displayName = "SectionTitle";
 
-// Constants
+// Keep existing constants...
 const SOCIAL_ICONS = [
   {
     Icon: Facebook,
@@ -87,21 +86,19 @@ const SOCIAL_ICONS = [
   },
 ];
 
-const QUICK_LINKS: NavigationLink[] = [
+const QUICK_LINKS = [
   { label: "Home", url: "/" },
   { label: "About Us", url: "/aboutus" },
-  // { label: "Rooms", url: "/rooms" },
   { label: "Contact Us", url: "/contact-us" },
 ];
-const EXPLORE_LINKS: NavigationLink[] = [
-  // { label: "FAQ", url: "/faq" },
 
+const EXPLORE_LINKS = [
   { label: "Dining", url: "/dinings" },
-  // { label: "Spa & Wellness", url: "/spa-wellness" },
   { label: "Events", url: "/events" },
   { label: "Partner With Us", url: "/partner-with-us" },
 ];
-const INSTAGRAM_IMAGES: string[] = [
+
+const INSTAGRAM_IMAGES = [
   "/images/roomone.jpg",
   "/images/roomtwo.jpg",
   "/images/swim.jpg",
@@ -111,9 +108,9 @@ const INSTAGRAM_IMAGES: string[] = [
 ];
 
 const FOOTER_POLICIES = [
-  { name: "Privacy Policy", url: "/privacy-policies" },
-  { name: "Terms of Service", url: "/terms" },
-  { name: "Refund Policy", url: "/refund-policies" },
+  { label: "Privacy Policy", url: "/privacy-policies" },
+  { label: "Terms of Service", url: "/terms" },
+  { label: "Refund Policy", url: "/refund-policies" },
 ];
 
 const Footer: React.FC = () => {
@@ -128,9 +125,9 @@ const Footer: React.FC = () => {
     <footer className="bg-primary text-white font-comfortaaRegular">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+        <div className="py-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-x-12 gap-y-16">
           {/* Brand Section */}
-          <div className="space-y-6">
+          <div className="lg:col-span-4 space-y-8">
             <Link href="/" className="block">
               <Image
                 src="/logo-white.png"
@@ -142,12 +139,29 @@ const Footer: React.FC = () => {
                 loading="eager"
               />
             </Link>
-            <p className="font-comfortaaLight text-white leading-relaxed">
+            <p className="font-comfortaaLight text-white/80 leading-relaxed text-sm">
               Experience luxury redefined at Apricus, where every moment is
               crafted to perfection. Immerse yourself in unparalleled comfort
               and hospitality.
             </p>
-            <div className="flex space-x-4 ">
+            <div className="bg-white/5 rounded-xl p-6 space-y-4">
+              <div className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 mt-1 flex-shrink-0 text-white/60" />
+                <div className="font-comfortaaLight text-sm text-white/80 space-y-1">
+                  <p>Apricus Hotels Private Limited</p>
+                  <p>B3, Ground Floor, H.No. 31/N/S,</p>
+                  <p>CD Symphony, Seraulim,</p>
+
+                  <p>Colva, South Goa 403708</p>
+                </div>
+              </div>
+              <div className="pt-2 border-t border-white/10">
+                <p className="font-comfortaaLight text-sm text-white/60">
+                  CIN: <span className="text-white">U55101GA2023PTC016038</span>
+                </p>
+              </div>
+            </div>
+            <div className="flex space-x-4">
               {SOCIAL_ICONS.map((social, index) => (
                 <SocialIcon
                   key={index}
@@ -160,9 +174,9 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="lg:col-span-2">
             <SectionTitle>Quick Links</SectionTitle>
-            <ul className="space-y-3 font-comfortaaLight">
+            <ul className="space-y-4 font-comfortaaLight">
               {QUICK_LINKS.map((item) => (
                 <FooterLink key={item.label} url={item.url}>
                   {item.label}
@@ -172,9 +186,9 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Explore */}
-          <div>
+          <div className="lg:col-span-2">
             <SectionTitle>Explore</SectionTitle>
-            <ul className="space-y-3 font-comfortaaLight">
+            <ul className="space-y-4 font-comfortaaLight">
               {EXPLORE_LINKS.map((item) => (
                 <FooterLink key={item.label} url={item.url}>
                   {item.label}
@@ -184,31 +198,25 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Instagram Feed */}
-          <div>
+          <div className="lg:col-span-4">
             <SectionTitle>Instagram</SectionTitle>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-3">
               {INSTAGRAM_IMAGES.map((src, index) => (
                 <Link
                   key={index}
                   href="#"
-                  className="group block relative aspect-square overflow-hidden rounded-md"
+                  className="group block relative aspect-square overflow-hidden rounded-lg"
                 >
                   <Image
                     src={src}
                     alt={`Instagram ${index + 1}`}
                     fill
                     sizes="(max-width: 768px) 33vw, 20vw"
-                    className="transition-transform duration-500 group-hover:scale-110"
+                    className="transition-transform duration-500 group-hover:scale-110 object-cover"
                     loading="lazy"
                   />
-                  <div
-                    className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 
-                                transition-opacity duration-300"
-                  />
-                  <Instagram
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-                             w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  />
+                  <div className="absolute inset-0 bg-primary/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <Instagram className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </Link>
               ))}
             </div>
@@ -216,13 +224,13 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Newsletter Section */}
-        <div className="py-8 border-t border-gray-800">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="py-10 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
             <div className="md:w-1/2">
-              <h4 className="font-comfortaaBold text-lg mb-2">
+              <h4 className="font-comfortaaBold text-xl mb-3">
                 Subscribe to Our Newsletter
               </h4>
-              <p className="font-comfortaaLight text-white">
+              <p className="font-comfortaaLight text-white/80 text-sm">
                 Stay updated with our latest offers and experiences.
               </p>
             </div>
@@ -233,14 +241,15 @@ const Footer: React.FC = () => {
               <input
                 type="email"
                 placeholder="Your email address"
-                className="flex-grow px-4 py-2 bg-white text-black font-comfortaaRegular rounded-md focus:outline-none 
-                         focus:ring-2 focus:ring-primary "
+                className="flex-grow px-6 py-3 bg-white/5 text-white placeholder:text-white/40 
+                         font-comfortaaLight text-sm rounded-lg border border-white/10 
+                         focus:outline-none focus:border-white/30 transition-colors"
                 required
               />
               <button
                 type="submit"
-                className="px-6 py-2 bg-white hover:bg-black hover:text-white  text-black rounded-md transition-colors 
-                         duration-300 font-comfortaaMedium"
+                className="px-8 py-3 bg-white text-primary hover:bg-white/90 
+                         rounded-lg transition-colors duration-300 font-comfortaaMedium text-sm"
               >
                 Subscribe
               </button>
@@ -249,19 +258,19 @@ const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-6 border-t border-white">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="font-comfortaaLight text-white text-sm text-center md:text-left">
+        <div className="py-8 border-t border-white/10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <p className="font-comfortaaLight text-white/60 text-sm text-center md:text-left">
               &copy; {currentYear} Apricus Hotels. All Rights Reserved.
             </p>
-            <ul className="flex flex-wrap justify-center gap-6 font-comfortaaLight text-sm">
+            <ul className="flex flex-wrap justify-center gap-8 font-comfortaaLight text-sm">
               {FOOTER_POLICIES.map((item) => (
-                <li key={item.name}>
+                <li key={item.label}>
                   <Link
                     href={item.url}
-                    className="text-white hover:text-white transition-colors duration-300"
+                    className="text-white/60 hover:text-white transition-colors duration-300"
                   >
-                    {item.name}
+                    {item.label}
                   </Link>
                 </li>
               ))}
