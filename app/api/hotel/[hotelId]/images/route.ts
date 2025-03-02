@@ -2,15 +2,39 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { handleSuccess, handleError } from "@/lib/api-helpers";
 
-export async function POST(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { hotelId: string } }
+) {
   try {
-    const { hotelId, imageUrls } = await request.json();
+    const { hotelId } = params;
 
-    if (!hotelId || !imageUrls || !imageUrls.length) {
+    const images = await prisma.hotelImage.findMany({
+      where: {
+        hotelId,
+      },
+    });
+
+    return handleSuccess(images);
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+export async function POST(
+  request: Request,
+  { params }: { params: { hotelId: string } }
+) {
+  try {
+    const { hotelId } = params;
+    const body = await request.json();
+    const { imageUrls } = body;
+
+    if (!imageUrls || !imageUrls.length) {
       return new NextResponse(
         JSON.stringify({
           success: false,
-          error: "Hotel ID and image URLs are required",
+          error: "Image URLs are required",
         }),
         { status: 400 }
       );
@@ -33,11 +57,11 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create image records
+    // Create multiple images in a single transaction
     const createPromises = imageUrls.map((url: string) =>
       prisma.hotelImage.create({
         data: {
-          url, // Use the URL string directly
+          url,
           hotelId,
         },
       })
@@ -50,8 +74,12 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: { hotelId: string } }
+) {
   try {
+    const { hotelId } = params;
     const { searchParams } = new URL(request.url);
     const imageId = searchParams.get("imageId");
 
@@ -65,10 +93,11 @@ export async function DELETE(request: Request) {
       );
     }
 
-    // Check if the image exists
-    const image = await prisma.hotelImage.findUnique({
+    // Check if the image exists and belongs to the hotel
+    const image = await prisma.hotelImage.findFirst({
       where: {
         id: imageId,
+        hotelId,
       },
     });
 
@@ -76,7 +105,7 @@ export async function DELETE(request: Request) {
       return new NextResponse(
         JSON.stringify({
           success: false,
-          error: "Image not found",
+          error: "Image not found or doesn't belong to this hotel",
         }),
         { status: 404 }
       );

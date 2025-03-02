@@ -322,6 +322,7 @@ const Hero: React.FC = () => {
   };
 
   const handleSearch = (): void => {
+    // Check for location
     if (!formData.location) {
       toast({
         title: "Error",
@@ -330,21 +331,8 @@ const Hero: React.FC = () => {
       });
       return;
     }
-    const selectedLocation = locations.find(
-      (loc) => loc.id === formData.location
-    );
-    const searchParams = new URLSearchParams({
-      checkIn: formData.checkin,
-      checkOut: formData.checkout,
-      adults: formData.adults.toString(),
-      childrens: formData.childrens.toString(),
-    });
 
-    if (selectedLocation) {
-      router.push(
-        `/locations-slug/${selectedLocation.slug}?${searchParams.toString()}`
-      );
-    }
+    // Check for dates
     if (!formData.checkin || !formData.checkout) {
       toast({
         title: "Error",
@@ -354,6 +342,7 @@ const Hero: React.FC = () => {
       return;
     }
 
+    // Validate dates
     const dateError = validateDates();
     if (dateError) {
       toast({
@@ -364,6 +353,7 @@ const Hero: React.FC = () => {
       return;
     }
 
+    // Check for adults
     if (formData.adults < 1) {
       toast({
         title: "Error",
@@ -371,6 +361,31 @@ const Hero: React.FC = () => {
         variant: "destructive",
       });
       return;
+    }
+
+    // All validations passed, proceed with search
+    const selectedLocation = locations.find(
+      (loc) => loc.id === formData.location
+    );
+
+    if (selectedLocation) {
+      const searchParams = new URLSearchParams({
+        checkIn: formData.checkin,
+        checkOut: formData.checkout,
+        adults: formData.adults.toString(),
+        childrens: formData.childrens.toString(),
+      });
+
+      router.push(
+        `/locations-slug/${selectedLocation.slug}?${searchParams.toString()}`
+      );
+    } else {
+      // This is a fallback in case the selected location is not found
+      toast({
+        title: "Error",
+        description: "Selected location not found",
+        variant: "destructive",
+      });
     }
   };
 
