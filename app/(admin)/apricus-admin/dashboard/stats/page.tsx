@@ -101,7 +101,13 @@ const DashboardStatistics = () => {
     const fetchStats = async () => {
       try {
         const response = await fetch("/api/statistics");
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error("API error:", errorData);
+          return;
+        }
         const data = await response.json();
+        console.log("Fetched stats:", data);
         setStats(data);
       } catch (error) {
         console.error("Failed to fetch dashboard statistics:", error);
