@@ -25,7 +25,9 @@ import {
   ArrowDown,
   CreditCard,
   IndianRupee,
+  RefreshCw,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type DashboardStats = {
   contacts: {
@@ -96,27 +98,60 @@ const initialStats: DashboardStats = {
 const DashboardStatistics = () => {
   const [stats, setStats] = useState<DashboardStats>(initialStats);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchStats = async (retryCount = 0) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Add a cache-busting timestamp parameter
+      const cacheParam = `?t=${Date.now()}`; // Unique timestamp for every request
+
+      const response = await fetch(`/api/statistics${cacheParam}`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`API returned ${response.status}: ${errorText}`);
+      }
+
+      const data = await response.json();
+
+      // Validate data structure
+      if (!data || typeof data !== "object") {
+        throw new Error("Invalid data structure received from API");
+      }
+
+      setStats(data);
+    } catch (error) {
+      console.error(`Fetch attempt ${retryCount + 1} failed:`, error);
+      setError(
+        `Failed to load statistics: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+
+      // Retry logic (up to 3 retries with exponential backoff)
+      if (retryCount < 3) {
+        const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+        setTimeout(() => fetchStats(retryCount + 1), delay);
+      } else {
+        console.error("All retry attempts failed");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await fetch("/api/statistics");
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("API error:", errorData);
-          return;
-        }
-        const data = await response.json();
-        console.log("Fetched stats:", data);
-        setStats(data);
-      } catch (error) {
-        console.error("Failed to fetch dashboard statistics:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchStats();
+
+    // Set up periodic refresh (every 5 minutes)
+    const refreshInterval = setInterval(() => {
+      fetchStats();
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(refreshInterval);
   }, []);
 
   const COLORS = {
@@ -128,19 +163,15 @@ const DashboardStatistics = () => {
     gray: "#6B7280",
   };
 
-  const bookingChartData = stats
-    ? [
-        { name: "Confirmed", value: stats.bookings.confirmed },
-        { name: "Pending", value: stats.bookings.pending },
-      ]
-    : [];
+  const bookingChartData = [
+    { name: "Confirmed", value: stats?.bookings?.confirmed || 0 },
+    { name: "Pending", value: stats?.bookings?.pending || 0 },
+  ];
 
-  const revenueChartData = stats
-    ? [
-        { name: "Last Month", revenue: stats.revenue.lastMonth },
-        { name: "Total", revenue: stats.revenue.total },
-      ]
-    : [];
+  const revenueChartData = [
+    { name: "Last Month", revenue: stats?.revenue?.lastMonth || 0 },
+    { name: "Total", revenue: stats?.revenue?.total || 0 },
+  ];
 
   const StatCard = ({
     title,
@@ -219,18 +250,40 @@ const DashboardStatistics = () => {
     return <LoadingSkeleton />;
   }
 
-  if (!stats) {
+  if (error) {
     return (
-      <Alert variant="destructive">
-        <AlertDescription>
-          Failed to load dashboard statistics. Please try again later.
-        </AlertDescription>
-      </Alert>
+      <div className="p-8 space-y-4">
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button
+          variant="outline"
+          onClick={() => fetchStats()}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Try Again
+        </Button>
+      </div>
     );
   }
 
   return (
     <div className="space-y-8 p-8">
+      {/* Refresh Button */}
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fetchStats()}
+          className="flex items-center gap-2"
+          disabled={isLoading}
+        >
+          <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+          Refresh Data
+        </Button>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard

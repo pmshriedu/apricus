@@ -116,12 +116,24 @@ export default function BookingsDashboard() {
   const deleteBooking = async () => {
     if (!deleteId) return;
     try {
-      await fetch(`/api/bookings/${deleteId}`, { method: "DELETE" });
+      const response = await fetch(`/api/bookings/${deleteId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete booking");
+      }
+
       setBookings(bookings.filter((booking) => booking.id !== deleteId));
       setIsDeleteDialogOpen(false);
       setDeleteId(null);
     } catch (error) {
       console.error("Failed to delete booking:", error);
+      // Show error message to user
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
   };
 

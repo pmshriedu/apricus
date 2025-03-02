@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+// Disable caching for this route
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const now = new Date();
@@ -14,15 +17,34 @@ export async function GET() {
       now.getMonth() - 2,
       1
     );
-    const lastWeek = new Date(now.setDate(now.getDate() - 7));
+    const lastWeek = new Date(now);
+    lastWeek.setDate(now.getDate() - 7);
 
-    // Contact statistics
+    // Fetch all statistics in parallel
     const [
       totalContacts,
       lastMonthContacts,
       lastWeekContacts,
       twoMonthsAgoContacts,
+      totalBookings,
+      confirmedBookings,
+      pendingBookings,
+      lastMonthBookings,
+      twoMonthsAgoBookings,
+      totalLocations,
+      lastMonthLocations,
+      twoMonthsAgoLocations,
+      totalHotels,
+      lastMonthHotels,
+      twoMonthsAgoHotels,
+      totalTransactions,
+      lastMonthTransactions,
+      twoMonthsAgoTransactions,
+      totalRevenue,
+      lastMonthRevenue,
+      twoMonthsAgoRevenue,
     ] = await Promise.all([
+      // Contact statistics
       prisma.contact.count(),
       prisma.contact.count({
         where: {
@@ -46,16 +68,8 @@ export async function GET() {
           },
         },
       }),
-    ]);
 
-    // Booking statistics
-    const [
-      totalBookings,
-      confirmedBookings,
-      pendingBookings,
-      lastMonthBookings,
-      twoMonthsAgoBookings,
-    ] = await Promise.all([
+      // Booking statistics
       prisma.booking.count(),
       prisma.booking.count({
         where: {
@@ -82,17 +96,8 @@ export async function GET() {
           },
         },
       }),
-    ]);
 
-    // Location and Hotel statistics
-    const [
-      totalLocations,
-      lastMonthLocations,
-      twoMonthsAgoLocations,
-      totalHotels,
-      lastMonthHotels,
-      twoMonthsAgoHotels,
-    ] = await Promise.all([
+      // Location statistics
       prisma.location.count(),
       prisma.location.count({
         where: {
@@ -109,6 +114,8 @@ export async function GET() {
           },
         },
       }),
+
+      // Hotel statistics
       prisma.hotel.count(),
       prisma.hotel.count({
         where: {
@@ -125,17 +132,8 @@ export async function GET() {
           },
         },
       }),
-    ]);
 
-    // Transaction and Revenue statistics
-    const [
-      totalTransactions,
-      lastMonthTransactions,
-      twoMonthsAgoTransactions,
-      totalRevenue,
-      lastMonthRevenue,
-      twoMonthsAgoRevenue,
-    ] = await Promise.all([
+      // Transaction statistics
       prisma.transaction.count(),
       prisma.transaction.count({
         where: {
@@ -152,6 +150,8 @@ export async function GET() {
           },
         },
       }),
+
+      // Revenue statistics
       prisma.transaction.aggregate({
         _sum: {
           amount: true,
@@ -186,56 +186,70 @@ export async function GET() {
       return Math.round(((current - previous) / previous) * 100);
     };
 
-    return NextResponse.json({
-      contacts: {
-        total: totalContacts,
-        lastMonth: lastMonthContacts,
-        lastWeek: lastWeekContacts,
-        percentageChange: calculatePercentageChange(
-          lastMonthContacts,
-          twoMonthsAgoContacts
-        ),
+    // Safely handle null values for revenue
+    const safeRevenueLast = lastMonthRevenue._sum.amount || 0;
+    const safeRevenueTwoMonthsAgo = twoMonthsAgoRevenue._sum.amount || 0;
+    const totalRevenueValue = totalRevenue._sum.amount || 0;
+
+    // Return the response with headers to prevent caching
+    return NextResponse.json(
+      {
+        contacts: {
+          total: totalContacts,
+          lastMonth: lastMonthContacts,
+          lastWeek: lastWeekContacts,
+          percentageChange: calculatePercentageChange(
+            lastMonthContacts,
+            twoMonthsAgoContacts
+          ),
+        },
+        bookings: {
+          total: totalBookings,
+          confirmed: confirmedBookings,
+          pending: pendingBookings,
+          percentageChange: calculatePercentageChange(
+            lastMonthBookings,
+            twoMonthsAgoBookings
+          ),
+        },
+        locations: {
+          total: totalLocations,
+          percentageChange: calculatePercentageChange(
+            lastMonthLocations,
+            twoMonthsAgoLocations
+          ),
+        },
+        hotels: {
+          total: totalHotels,
+          percentageChange: calculatePercentageChange(
+            lastMonthHotels,
+            twoMonthsAgoHotels
+          ),
+        },
+        transactions: {
+          total: totalTransactions,
+          lastMonth: lastMonthTransactions,
+          percentageChange: calculatePercentageChange(
+            lastMonthTransactions,
+            twoMonthsAgoTransactions
+          ),
+        },
+        revenue: {
+          total: totalRevenueValue,
+          lastMonth: safeRevenueLast,
+          percentageChange: calculatePercentageChange(
+            safeRevenueLast,
+            safeRevenueTwoMonthsAgo
+          ),
+        },
       },
-      bookings: {
-        total: totalBookings,
-        confirmed: confirmedBookings,
-        pending: pendingBookings,
-        percentageChange: calculatePercentageChange(
-          lastMonthBookings,
-          twoMonthsAgoBookings
-        ),
-      },
-      locations: {
-        total: totalLocations,
-        percentageChange: calculatePercentageChange(
-          lastMonthLocations,
-          twoMonthsAgoLocations
-        ),
-      },
-      hotels: {
-        total: totalHotels,
-        percentageChange: calculatePercentageChange(
-          lastMonthHotels,
-          twoMonthsAgoHotels
-        ),
-      },
-      transactions: {
-        total: totalTransactions,
-        lastMonth: lastMonthTransactions,
-        percentageChange: calculatePercentageChange(
-          lastMonthTransactions,
-          twoMonthsAgoTransactions
-        ),
-      },
-      revenue: {
-        total: totalRevenue._sum.amount || 0,
-        lastMonth: lastMonthRevenue._sum.amount || 0,
-        percentageChange: calculatePercentageChange(
-          lastMonthRevenue._sum.amount || 0,
-          twoMonthsAgoRevenue._sum.amount || 0
-        ),
-      },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0", // Disable caching
+          Pragma: "no-cache", // For older browsers
+        },
+      }
+    );
   } catch (error) {
     console.error("Error fetching dashboard statistics:", error);
     return NextResponse.json(

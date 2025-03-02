@@ -128,6 +128,26 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // First, delete all related roomBookings
+    await prisma.roomBooking.deleteMany({
+      where: {
+        bookingId: params.id,
+      },
+    });
+
+    // If there's a transaction related to this booking, we need to handle it too
+    const booking = await prisma.booking.findUnique({
+      where: { id: params.id },
+      include: { transaction: true },
+    });
+
+    if (booking?.transaction) {
+      await prisma.transaction.delete({
+        where: { id: booking.transaction.id },
+      });
+    }
+
+    // Now delete the booking itself
     await prisma.booking.delete({
       where: {
         id: params.id,
@@ -138,7 +158,10 @@ export async function DELETE(
   } catch (error) {
     console.error("Failed to delete booking:", error);
     return NextResponse.json(
-      { error: "Failed to delete booking" },
+      {
+        error: "Failed to delete booking",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
