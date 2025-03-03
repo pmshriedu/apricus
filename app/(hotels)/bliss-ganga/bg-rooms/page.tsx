@@ -37,6 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import BGNavigation from "@/components/hotel-nav/bliss-ganga";
+import BookingModal from "@/components/checkin-modal/checkin-modal-layout";
 
 interface Amenity {
   icon: React.ReactNode;
@@ -212,7 +213,7 @@ const rooms: Room[] = [
     title: "Executive Rooms",
     description:
       "Luxury suite with premium amenities and panoramic views for the ultimate experience.",
-    image: "/images/bliss/exeroom.jpg",
+    image: "/images/bliss/executive.jpg",
     amenities: [
       { icon: <BedDouble className="h-4 w-4" />, label: "Master Bedroom" },
       { icon: <Wifi className="h-4 w-4" />, label: "High-Speed WiFi" },
@@ -229,6 +230,7 @@ const rooms: Room[] = [
 
 const RoomsPage: React.FC = () => {
   const router = useRouter();
+  const locationId = "bliss-rooms-id";
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10 font-comfortaaBold">
       {/* Hero Section */}
@@ -313,15 +315,28 @@ const RoomsPage: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <Button size="lg" className="w-full">
-                        Book Now
-                      </Button>
-                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-center mt-10"
+            >
+              <BookingModal
+                defaultLocationId={locationId}
+                trigger={
+                  <Button
+                    size="lg"
+                    className="px-8 py-6 text-lg bg-primary hover:bg-primary/90 transition-colors"
+                  >
+                    Book Your Stay Now
+                  </Button>
+                }
+              />
+            </motion.div>
           </TabsContent>
 
           <TabsContent value="gallery">
@@ -422,6 +437,18 @@ const RoomsPage: React.FC = () => {
           </TabsContent>
         </Tabs>
       </section>
+      {/* Add floating Book Now button for mobile - matching the BlissGanga implementation */}
+      <div className="fixed bottom-20 left-0 right-0 z-50 px-4 md:hidden">
+        <BookingModal
+          defaultLocationId={locationId}
+          className="w-full"
+          trigger={
+            <Button className="w-full bg-primary hover:bg-primary/90 text-white py-6 rounded-full shadow-xl">
+              Book Now
+            </Button>
+          }
+        />
+      </div>
     </div>
   );
 };

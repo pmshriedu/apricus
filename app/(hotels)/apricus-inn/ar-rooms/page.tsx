@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 
 import ARNavigation from "@/components/hotel-nav/apricus-in";
+import BookingModal from "@/components/checkin-modal/checkin-modal-layout";
 
 interface Amenity {
   icon: React.ReactNode;
@@ -188,9 +189,9 @@ const rooms: Room[] = [
 
 const RoomsPage: React.FC = () => {
   const router = useRouter();
-  const handleBookNow = () => {
-    window.location.href = "/";
-  };
+
+  const locationId = "vp-residency-id";
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/10 font-comfortaaBold">
       {/* Hero Section */}
@@ -305,13 +306,17 @@ const RoomsPage: React.FC = () => {
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="text-center"
               >
-                <Button
-                  size="lg"
-                  onClick={handleBookNow}
-                  className="px-8 py-6 text-lg bg-primary hover:bg-primary/90 transition-colors"
-                >
-                  Book Your Stay Now
-                </Button>
+                <BookingModal
+                  defaultLocationId={locationId}
+                  trigger={
+                    <Button
+                      size="lg"
+                      className="px-8 py-6 text-lg bg-primary hover:bg-primary/90 transition-colors"
+                    >
+                      Book Your Stay Now
+                    </Button>
+                  }
+                />
               </motion.div>
             </section>
           </TabsContent>
@@ -414,6 +419,18 @@ const RoomsPage: React.FC = () => {
           </TabsContent>
         </Tabs>
       </section>
+      {/* Add floating Book Now button for mobile - matching the BlissGanga implementation */}
+      <div className="fixed bottom-20 left-0 right-0 z-50 px-4 md:hidden">
+        <BookingModal
+          defaultLocationId={locationId}
+          className="w-full"
+          trigger={
+            <Button className="w-full bg-primary hover:bg-primary/90 text-white py-6 rounded-full shadow-xl">
+              Book Now
+            </Button>
+          }
+        />
+      </div>
     </div>
   );
 };

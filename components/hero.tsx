@@ -147,7 +147,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
           htmlFor="location"
           className="text-white text-sm mb-1 font-comfortaaBold"
         >
-          Location
+          Destination
         </Label>
         <Select onValueChange={handleLocationChange} value={formData.location}>
           <SelectTrigger className="bg-white text-black text-sm h-8 md:h-10 font-comfortaaBold text-left">

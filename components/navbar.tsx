@@ -49,12 +49,11 @@ const standardNavItems: NavItem[] = [
     label: "Locations",
     icon: <MapPin className="w-4 h-4" />,
     subItems: [
-      { label: "Benaulim South Goa", href: "/locations/benaulim-south-goa" },
-      { label: "Cavelossim South Goa", href: "/locations/cavelossim" },
-      { label: "Varca ", href: "/locations/varca" },
-      { label: "Porvorim", href: "/locations/porvorim" },
-      { label: "Mussoorie", href: "/locations/mussoorie" },
-      { label: "Rishikesh", href: "/locations/rishikesh" },
+      { label: "South Goa", href: "/locations/south-goa" },
+
+      { label: "North Goa", href: "/locations/north-goa" },
+
+      { label: "Uttarakhand", href: "/locations/uttrakhand" },
     ],
   },
   {

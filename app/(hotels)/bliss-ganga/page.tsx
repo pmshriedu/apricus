@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import BGNavigation from "@/components/hotel-nav/bliss-ganga";
+import BookingModal from "@/components/checkin-modal/checkin-modal-layout";
 
 interface ImageData {
   src: string;
@@ -36,6 +37,9 @@ interface Facility {
 const TheBlissGangaPage: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
   const [currentGallerySlide, setCurrentGallerySlide] = useState<number>(0);
+
+  // Define the location ID for Bliss Ganga
+  const locationId = "bliss-ganga-id";
 
   const heroImages: string[] = [
     "/images/bliss/hero1.jpg",
@@ -77,7 +81,7 @@ const TheBlissGangaPage: React.FC = () => {
 
   const roomImages: ImageData[] = [
     {
-      src: "/images/bliss/exeroom.jpg",
+      src: "/images/bliss/executive.jpg",
       title: "",
       alt: "Luxurious Master Bedroom",
     },
@@ -117,11 +121,6 @@ const TheBlissGangaPage: React.FC = () => {
     } else {
       setCurrent((current - 1 + length) % length);
     }
-  };
-
-  const handleBookNow = () => {
-    window.location.href =
-      "https://www.asiatech.in/booking_engine/index3.php?token=NDczMQ==";
   };
 
   return (
@@ -243,13 +242,17 @@ const TheBlissGangaPage: React.FC = () => {
                       Complimentary Airport Transfers
                     </li>
                   </ul>
-                  <Button
-                    onClick={handleBookNow}
-                    className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-lg shadow-md transition-all hover:shadow-xl"
-                  >
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Check Availability
-                  </Button>
+
+                  {/* Replace the old handleBookNow button with BookingModal */}
+                  <BookingModal
+                    defaultLocationId={locationId}
+                    trigger={
+                      <Button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-white px-8 py-6 text-lg rounded-lg shadow-md transition-all hover:shadow-xl">
+                        <Calendar className="w-5 h-5 mr-2" />
+                        Check Availability
+                      </Button>
+                    }
+                  />
                 </div>
 
                 <div className="relative h-[300px] rounded-lg overflow-hidden hidden md:block">
@@ -284,21 +287,6 @@ const TheBlissGangaPage: React.FC = () => {
                 land where spirituality and Mother Nature blend into a heady
                 concoction
               </p>
-              {/* <div className="space-y-4">
-                <h3 className="font-comfortaaBold text-xl text-gray-900">
-                  Nearby Attractions
-                </h3>
-                <div className="space-y-2 text-gray-600">
-                  {attractions.map((attraction, index) => (
-                    <p key={index} className="flex items-center space-x-2">
-                      <MapPin className="w-4 h-4 text-primary" />
-                      <span>
-                        {attraction.name} - {attraction.distance}
-                      </span>
-                    </p>
-                  ))}
-                </div>
-              </div> */}
             </div>
             <div className="relative h-[400px] rounded-lg overflow-hidden shadow-xl">
               <Image
@@ -485,13 +473,17 @@ const TheBlissGangaPage: React.FC = () => {
 
       {/* Floating Book Now Button - Fixed on mobile */}
       <div className="fixed bottom-20 left-0 right-0 z-50 px-4 md:hidden">
-        <Button
-          onClick={handleBookNow}
-          className="w-full bg-primary hover:bg-primary/90 text-white py-6 rounded-full shadow-xl"
-        >
-          <Calendar className="w-5 h-5 mr-2" />
-          Book Now
-        </Button>
+        {/* Replace the old handleBookNow button with BookingModal */}
+        <BookingModal
+          defaultLocationId={locationId}
+          className="w-full"
+          trigger={
+            <Button className="w-full bg-primary hover:bg-primary/90 text-white py-6 rounded-full shadow-xl">
+              <Calendar className="w-5 h-5 mr-2" />
+              Book Now
+            </Button>
+          }
+        />
       </div>
     </div>
   );
