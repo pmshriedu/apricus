@@ -150,8 +150,8 @@ const SearchForm: React.FC<SearchFormProps> = ({
           Destination
         </Label>
         <Select onValueChange={handleLocationChange} value={formData.location}>
-          <SelectTrigger className="bg-white text-black text-sm h-8 md:h-10 font-comfortaaBold text-left">
-            <SelectValue placeholder="Select location" />
+          <SelectTrigger className="bg-white text-black text-sm h-8 md:h-10 font-comfortaaBold text-left truncate">
+            <SelectValue placeholder="Select destination" className="w-full" />
           </SelectTrigger>
           <SelectContent>
             {locations.map((loc: Location) => (

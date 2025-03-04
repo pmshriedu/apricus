@@ -46,7 +46,7 @@ type DropdownMenuProps = {
 const standardNavItems: NavItem[] = [
   { label: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
   {
-    label: "Locations",
+    label: "Destination",
     icon: <MapPin className="w-4 h-4" />,
     subItems: [
       { label: "South Goa", href: "/locations/south-goa" },

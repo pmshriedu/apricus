@@ -197,7 +197,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 value={formData.location}
               >
                 <SelectTrigger className="text-sm h-10 font-comfortaaBold">
-                  <SelectValue placeholder="Select location" />
+                  <SelectValue placeholder="Select destination" />
                 </SelectTrigger>
                 <SelectContent>
                   {locations.map((loc) => (
