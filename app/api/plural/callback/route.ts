@@ -59,7 +59,8 @@ async function handleCallback(request: NextRequest) {
     });
 
     // Make sure APP_URL is properly defined to prevent null URL errors
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://www.apricushotels.com";
 
     // Verify if orderId and status are present
     if (!orderId || !status) {
@@ -224,7 +225,8 @@ async function handleCallback(request: NextRequest) {
     }
   } catch (error) {
     console.error("Callback API error:", error);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL || "https://www.apricushotels.com";
     return NextResponse.redirect(
       `${appUrl}/bookings/failure?reason=server_error`
     );
