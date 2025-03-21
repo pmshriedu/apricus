@@ -52,11 +52,36 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Only apply to Plural callback routes
+  if (path.startsWith("/api/plural/callback")) {
+    // Clone the request headers
+    const requestHeaders = new Headers(request.headers);
+
+    // Remove the x-forwarded-host header if it exists
+    requestHeaders.delete("x-forwarded-host");
+
+    // Create a new request with modified headers
+    const modifiedRequest = new Request(request.url, {
+      method: request.method,
+      headers: requestHeaders,
+      body: request.body,
+    });
+
+    // Return the modified request
+    return NextResponse.next({
+      request: modifiedRequest,
+    });
+  }
+
   // For all other routes, continue normally
   return NextResponse.next();
 }
 
 // Configure which routes to run middleware on
 export const config = {
-  matcher: ["/apricus-admin/:path*", "/customer/:path*"],
+  matcher: [
+    "/apricus-admin/:path*",
+    "/customer/:path*",
+    "/api/plural/callback/:path*",
+  ],
 };
