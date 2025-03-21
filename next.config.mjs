@@ -6,9 +6,6 @@ const nextConfig = {
   experimental: {
     serverActions: {
       allowedOrigins: [
-        "localhost:3000",
-        "www.apricushotels.com",
-        "https://www.apricushotels.com",
         "pluralcheckout.pinepg.in",
         "https://pluralcheckout.pinepg.in",
       ],

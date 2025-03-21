@@ -196,7 +196,7 @@ async function handleCallback(request: NextRequest) {
         }
 
         // Add a small delay to ensure the database transaction is fully committed
-        // await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         // Payment successful - redirect to success page with transaction ID
         return NextResponse.redirect(
