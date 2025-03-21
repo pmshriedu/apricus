@@ -14,14 +14,31 @@ export async function middleware(request: NextRequest) {
       const actualDomain = pathParts[1];
       const actualPath = pathParts.slice(2).join("/");
 
-      // Create the correct URL
-      const correctUrl = new URL(`https://www.${actualDomain}/${actualPath}`);
+      // Special handling for Plural callback
+      if (actualPath.includes("api/plural/callback")) {
+        // Create the correct URL for the callback
+        const correctUrl = new URL(`https://www.${actualDomain}/${actualPath}`);
 
-      // Clone the request headers
+        // Clone the request headers
+        const requestHeaders = new Headers(request.headers);
+        requestHeaders.delete("x-forwarded-host");
+
+        // Create a new request with the correct URL
+        const modifiedRequest = new Request(correctUrl.toString(), {
+          method: request.method,
+          headers: requestHeaders,
+          body: request.body,
+        });
+
+        return NextResponse.next({
+          request: modifiedRequest,
+        });
+      }
+
+      // Handle other paths
+      const correctUrl = new URL(`https://www.${actualDomain}/${actualPath}`);
       const requestHeaders = new Headers(request.headers);
       requestHeaders.delete("x-forwarded-host");
-
-      // Create a new request with the correct URL
       const modifiedRequest = new Request(correctUrl.toString(), {
         method: request.method,
         headers: requestHeaders,
