@@ -8,8 +8,7 @@ const nextConfig = {
       allowedOrigins: [
         "localhost:3000",
         "www.apricushotels.com",
-        "apricushotels.com",
-        "https://www.apricushotels.com/",
+        "https://www.apricushotels.com",
       ],
     },
   },
