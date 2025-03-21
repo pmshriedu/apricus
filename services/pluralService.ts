@@ -134,6 +134,12 @@ export const pluralService = {
         throw new Error("Missing callback URL in checkout request");
       }
 
+      // Log the full request for debugging
+      console.log("Plural checkout request:", {
+        headers: { ...headers, Authorization: "[REDACTED]" },
+        body: orderDetails,
+      });
+
       const response = await fetch(`${API_BASE_URL}/checkout/v1/orders`, {
         method: "POST",
         headers,

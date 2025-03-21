@@ -6,51 +6,6 @@ export async function middleware(request: NextRequest) {
   // Get the pathname of the request
   const path = request.nextUrl.pathname;
 
-  // Handle Plural domain redirects
-  if (request.headers.get("host")?.includes("pluralcheckout.pinepg.in")) {
-    // Extract the actual domain from the path
-    const pathParts = path.split("/");
-    if (pathParts.length > 1) {
-      const actualDomain = pathParts[1];
-      const actualPath = pathParts.slice(2).join("/");
-
-      // Special handling for Plural callback
-      if (actualPath.includes("api/plural/callback")) {
-        // Create the correct URL for the callback
-        const correctUrl = new URL(`https://www.${actualDomain}/${actualPath}`);
-
-        // Clone the request headers
-        const requestHeaders = new Headers(request.headers);
-        requestHeaders.delete("x-forwarded-host");
-
-        // Create a new request with the correct URL
-        const modifiedRequest = new Request(correctUrl.toString(), {
-          method: request.method,
-          headers: requestHeaders,
-          body: request.body,
-        });
-
-        return NextResponse.next({
-          request: modifiedRequest,
-        });
-      }
-
-      // Handle other paths
-      const correctUrl = new URL(`https://www.${actualDomain}/${actualPath}`);
-      const requestHeaders = new Headers(request.headers);
-      requestHeaders.delete("x-forwarded-host");
-      const modifiedRequest = new Request(correctUrl.toString(), {
-        method: request.method,
-        headers: requestHeaders,
-        body: request.body,
-      });
-
-      return NextResponse.next({
-        request: modifiedRequest,
-      });
-    }
-  }
-
   // If the path starts with /apricus-admin
   if (path.startsWith("/apricus-admin")) {
     // Allow access to the auth page without authentication
@@ -103,9 +58,5 @@ export async function middleware(request: NextRequest) {
 
 // Configure which routes to run middleware on
 export const config = {
-  matcher: [
-    "/apricus-admin/:path*",
-    "/customer/:path*",
-    "/:path*", // Match all paths to handle Plural redirects
-  ],
+  matcher: ["/apricus-admin/:path*", "/customer/:path*"],
 };

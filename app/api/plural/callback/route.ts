@@ -1,3 +1,6 @@
+// FILE 1: app/api/plural/callback/route.ts
+// This handles the callback from PluralPay
+
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendBookingConfirmationEmail } from "@/lib/email-utils";
@@ -106,6 +109,7 @@ async function handleCallback(request: NextRequest) {
             OR: [
               { pluralOrderId: orderId },
               { razorpayOrderId: merchantOrderReference },
+              { id: merchantOrderReference }, // Added to search by transaction ID
             ],
           },
           include: {
@@ -179,6 +183,7 @@ async function handleCallback(request: NextRequest) {
             OR: [
               { pluralOrderId: orderId },
               { razorpayOrderId: merchantOrderReference },
+              { id: merchantOrderReference }, // Added to search by transaction ID
             ],
           },
           include: { booking: true },
