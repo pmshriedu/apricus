@@ -100,40 +100,8 @@ async function handleCallback(request: NextRequest) {
 
     if (successStatuses.includes(status)) {
       try {
-        // Find the transaction by plural order ID
+        // Find the transaction by plural order ID or merchant reference
         const transaction = await prisma.transaction.findFirst({
-          where: {
-            pluralOrderId: orderId,
-          },
-          include: {
-            booking: true,
-          },
-        });
-
-        // If no transaction found with pluralOrderId, try by razorpayOrderId (which we used as merchant_order_reference)
-        if (!transaction && merchantOrderReference) {
-          const transactionByRef = await prisma.transaction.findFirst({
-            where: {
-              razorpayOrderId: merchantOrderReference,
-            },
-            include: {
-              booking: true,
-            },
-          });
-
-          if (transactionByRef) {
-            // Update the transaction with the plural order ID
-            await prisma.transaction.update({
-              where: { id: transactionByRef.id },
-              data: {
-                pluralOrderId: orderId,
-              },
-            });
-          }
-        }
-
-        // Retry finding the transaction after possible update
-        const updatedTransaction = await prisma.transaction.findFirst({
           where: {
             OR: [
               { pluralOrderId: orderId },
@@ -145,7 +113,7 @@ async function handleCallback(request: NextRequest) {
           },
         });
 
-        if (!updatedTransaction) {
+        if (!transaction) {
           console.error(
             "Transaction not found for order:",
             orderId,
@@ -159,57 +127,36 @@ async function handleCallback(request: NextRequest) {
         // Update transaction and booking status atomically
         const [finalTransaction] = await prisma.$transaction([
           prisma.transaction.update({
-            where: { id: updatedTransaction.id },
+            where: { id: transaction.id },
             data: {
               status: "SUCCESS",
               pluralOrderId: orderId,
               pluralTransactionId: transactionId || "plural-txn-" + Date.now(),
               paymentMethod: "PLURAL",
-              updatedAt: new Date(), // Ensure timestamp is updated
+              updatedAt: new Date(),
             },
           }),
           // Update booking status if it exists
-          ...(updatedTransaction.booking
+          ...(transaction.booking
             ? [
                 prisma.booking.update({
-                  where: { id: updatedTransaction.booking.id },
+                  where: { id: transaction.booking.id },
                   data: {
                     status: "CONFIRMED",
-                    updatedAt: new Date(), // Ensure timestamp is updated
+                    updatedAt: new Date(),
                   },
                 }),
               ]
             : []),
         ]);
 
-        // Send confirmation email after successful payment
-        if (updatedTransaction.booking?.id) {
-          try {
-            await sendBookingConfirmationEmail(updatedTransaction.booking.id);
-            console.log(
-              `Email sent for booking: ${updatedTransaction.booking.id}`
-            );
-          } catch (emailError) {
-            console.error("Failed to send confirmation email:", emailError);
-            // Don't fail the transaction if email fails
-          }
-        }
-
-        // Add a longer delay to ensure the database transaction is fully committed
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        // Verify the transaction was updated successfully
-        const verifiedTransaction = await prisma.transaction.findUnique({
-          where: { id: finalTransaction.id },
-          include: {
-            booking: true,
-          },
-        });
-
-        if (!verifiedTransaction || verifiedTransaction.status !== "SUCCESS") {
-          console.error("Transaction verification failed");
-          return NextResponse.redirect(
-            `${appUrl}/bookings/failure?reason=verification_failed`
+        // Send confirmation email asynchronously
+        if (transaction.booking?.id) {
+          // Fire and forget email sending
+          sendBookingConfirmationEmail(transaction.booking.id).catch(
+            (error) => {
+              console.error("Failed to send confirmation email:", error);
+            }
           );
         }
 
@@ -246,7 +193,7 @@ async function handleCallback(request: NextRequest) {
                 pluralOrderId: orderId,
                 pluralTransactionId:
                   transactionId || "plural-txn-failed-" + Date.now(),
-                updatedAt: new Date(), // Ensure timestamp is updated
+                updatedAt: new Date(),
               },
             }),
             // Update booking if it exists
@@ -256,7 +203,7 @@ async function handleCallback(request: NextRequest) {
                     where: { id: transaction.booking.id },
                     data: {
                       status: "CANCELLED",
-                      updatedAt: new Date(), // Ensure timestamp is updated
+                      updatedAt: new Date(),
                     },
                   }),
                 ]
