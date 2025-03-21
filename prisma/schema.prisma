@@ -32,6 +32,7 @@ model Room {
   description String?
   price       Float
   capacity    Int
+  totalCount  Int           @default(1)  
   amenities   Amenity[]     @relation("RoomToAmenity")
   images      RoomImage[]
   hotelId     String
@@ -207,28 +208,32 @@ model Enquiry {
 }
 
 model Transaction {
-  id                String   @id @default(cuid())
-  amount            Float // Base amount after discount
-  totalAmount       Float? // Total amount including taxes
-  sgst              Float? // SGST amount
-  cgst              Float? // CGST amount
-  currency          String   @default("INR")
-  status            String   @default("PENDING")
-  razorpayOrderId   String?  @unique
-  razorpayPaymentId String?
-  razorpaySignature String?
-  userEmail         String
-  userName          String
-  booking           Booking? @relation(fields: [bookingId], references: [id])
-  bookingId         String?  @unique
-  coupon            Coupon?  @relation(fields: [couponId], references: [id])
-  couponId          String?
-  discountAmount    Float?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                  String   @id @default(cuid())
+  amount              Float // Base amount after discount
+  totalAmount         Float? // Total amount including taxes
+  sgst                Float? // SGST amount
+  cgst                Float? // CGST amount
+  currency            String   @default("INR")
+  status              String   @default("PENDING")
+  razorpayOrderId     String?  @unique
+  razorpayPaymentId   String?
+  razorpaySignature   String?
+  pluralOrderId       String?  @unique // New field for Plural order ID
+  pluralTransactionId String? // New field for Plural transaction ID
+  paymentMethod       String?  @default("RAZORPAY") // Track which payment method was used
+  userEmail           String
+  userName            String
+  booking             Booking? @relation(fields: [bookingId], references: [id])
+  bookingId           String?  @unique
+  coupon              Coupon?  @relation(fields: [couponId], references: [id])
+  couponId            String?
+  discountAmount      Float?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   @@index([bookingId])
   @@index([couponId])
+  @@index([pluralOrderId])
 }
 
 enum EnquiryStatus {

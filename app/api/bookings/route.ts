@@ -1,3 +1,5 @@
+// app/api/bookings/route.ts
+
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -23,7 +25,7 @@ const BookingSchema = z.object({
   locationId: z.string(),
   hotelId: z.string(),
   roomId: z.string(),
-  couponCode: z.string().optional(), // Add coupon code to schema
+  couponCode: z.string().optional(),
 });
 
 function calculateNights(checkIn: Date, checkOut: Date): number {
@@ -76,8 +78,6 @@ async function calculateDiscount(
   };
 }
 
-// Send booking confirmation email
-
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -100,7 +100,12 @@ export async function POST(request: NextRequest) {
     // Check if room exists
     const room = await prisma.room.findUnique({
       where: { id: validatedData.roomId },
-      select: { price: true, name: true },
+      select: {
+        id: true,
+        price: true,
+        name: true,
+        totalCount: true,
+      },
     });
 
     if (!room) {
@@ -112,6 +117,43 @@ export async function POST(request: NextRequest) {
 
     const checkInDate = new Date(validatedData.checkIn);
     const checkOutDate = new Date(validatedData.checkOut);
+
+    // Check room availability before booking
+    const overlappingBookings = await prisma.roomBooking.count({
+      where: {
+        roomId: validatedData.roomId,
+        AND: [
+          {
+            checkIn: {
+              lt: checkOutDate,
+            },
+          },
+          {
+            checkOut: {
+              gt: checkInDate,
+            },
+          },
+          {
+            booking: {
+              status: {
+                not: "CANCELLED",
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    // Check if there are enough rooms available
+    const availableRooms = (room.totalCount || 1) - overlappingBookings;
+
+    if (availableRooms <= 0) {
+      return NextResponse.json(
+        { success: false, error: "No rooms available for the selected dates" },
+        { status: 400 }
+      );
+    }
+
     const numberOfNights = calculateNights(checkInDate, checkOutDate);
     const baseAmount = room.price * numberOfNights;
 
@@ -143,7 +185,7 @@ export async function POST(request: NextRequest) {
           gstNumber: validatedData.gstNumber,
           locationId: validatedData.locationId,
           hotelId: validatedData.hotelId,
-          status: "PENDING" as const, // Type assertion to fix the enum issue
+          status: "PENDING" as const,
           ...(userExists && { userId: session.user.id }),
           roomBookings: {
             create: {
@@ -163,7 +205,7 @@ export async function POST(request: NextRequest) {
 
         // Create order with Razorpay using the total amount (including taxes)
         const order = await razorpay.orders.create({
-          amount: Math.round(totalAmount * 100), // Use total amount with taxes
+          amount: Math.round(totalAmount * 100),
           currency: "INR",
           receipt: bookingReference,
           notes: {
@@ -207,15 +249,15 @@ export async function POST(request: NextRequest) {
       booking,
       orderId: transaction.razorpayOrderId,
       transactionId: transaction.id,
-      baseAmount: baseAmount, // Original room price * nights
-      discountAmount: discountAmount, // Coupon discount amount
-      discountedAmount: discountedAmount, // After applying discount
-      sgst: sgst, // SGST component
-      cgst: cgst, // CGST component
-      totalTax: totalTax, // Total tax amount
-      totalAmount: totalAmount, // Final amount with taxes
+      baseAmount: baseAmount,
+      discountAmount: discountAmount,
+      discountedAmount: discountedAmount,
+      sgst: sgst,
+      cgst: cgst,
+      totalTax: totalTax,
+      totalAmount: totalAmount,
       numberOfNights,
-      gstRate: discountedAmount > 7500 ? 18 : 12, // GST rate applied
+      gstRate: discountedAmount > 7500 ? 18 : 12,
     });
   } catch (error) {
     console.error("Booking creation error:", error);
@@ -251,6 +293,7 @@ export async function GET() {
               select: {
                 name: true,
                 price: true,
+                totalCount: true,
               },
             },
           },

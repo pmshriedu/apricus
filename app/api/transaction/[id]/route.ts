@@ -4,41 +4,55 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: { id: string } }
 ) {
-  const params = await context.params;
+  const { id } = context.params;
 
-  if (!params.id || params.id === "undefined") {
+  if (!id || id === "undefined") {
     return NextResponse.json(
-      { error: "Invalid transaction ID" },
+      { success: false, error: "Invalid transaction ID" },
       { status: 400 }
     );
   }
 
   try {
     const transaction = await prisma.transaction.findUnique({
-      where: { id: params.id },
+      where: { id },
       select: {
         id: true,
         amount: true,
+        totalAmount: true,
+        status: true,
         userEmail: true,
         userName: true,
+        paymentMethod: true,
         createdAt: true,
+        booking: {
+          select: {
+            id: true,
+            status: true,
+            checkIn: true,
+            checkOut: true,
+          },
+        },
       },
     });
 
     if (!transaction) {
       return NextResponse.json(
-        { error: "Transaction not found" },
+        { success: false, error: "Transaction not found" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(transaction);
+    return NextResponse.json({
+      success: true,
+      transaction,
+    });
   } catch (error) {
     console.error("Transaction fetch error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { success: false, error: "Internal server error" },
       { status: 500 }
     );
   }

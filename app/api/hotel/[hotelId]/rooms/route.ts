@@ -12,26 +12,7 @@ export async function GET(
     const checkIn = searchParams.get("checkIn");
     const checkOut = searchParams.get("checkOut");
 
-    if (!checkIn || !checkOut) {
-      const rooms = await prisma.room.findMany({
-        where: {
-          hotelId: params.hotelId,
-        },
-        include: {
-          images: true,
-          amenities: true,
-          bookings: true,
-        },
-      });
-
-      return handleSuccess(
-        rooms.map((room) => ({
-          ...room,
-          isAvailable: true,
-        }))
-      );
-    }
-
+    // First, get all rooms for the hotel
     const rooms = await prisma.room.findMany({
       where: {
         hotelId: params.hotelId,
@@ -47,56 +28,65 @@ export async function GET(
               },
             },
           },
-          where: {
-            AND: [
-              {
-                checkIn: {
-                  lt: new Date(checkOut),
-                },
-              },
-              {
-                checkOut: {
-                  gt: new Date(checkIn),
-                },
-              },
-            ],
-          },
         },
       },
     });
 
-    // Check for overlapping bookings
-    const unavailableRoomIds = (
-      await prisma.roomBooking.findMany({
-        where: {
-          AND: [
-            {
-              checkIn: {
-                lt: new Date(checkOut),
-              },
-            },
-            {
-              checkOut: {
-                gt: new Date(checkIn),
-              },
-            },
-          ],
-          booking: {
-            status: {
-              not: "CANCELLED",
-            },
-          },
-        },
-        select: {
-          roomId: true,
-        },
-      })
-    ).map((booking) => booking.roomId);
+    // If no dates are provided, return all rooms with full availability
+    if (!checkIn || !checkOut) {
+      return handleSuccess(
+        rooms.map((room) => ({
+          ...room,
+          availableCount: room.totalCount || 0, // Default to 0 if totalCount is null
+          isAvailable: (room.totalCount || 0) > 0,
+        }))
+      );
+    }
 
-    const roomsWithAvailability = rooms.map((room) => ({
-      ...room,
-      isAvailable: !unavailableRoomIds.includes(room.id),
-    }));
+    // Check for overlapping bookings for the selected dates
+    const checkInDate = new Date(checkIn);
+    const checkOutDate = new Date(checkOut);
+
+    // Calculate available rooms for each room type based on active bookings
+    const roomsWithAvailability = await Promise.all(
+      rooms.map(async (room) => {
+        const overlappingBookingsCount = await prisma.roomBooking.count({
+          where: {
+            roomId: room.id,
+            AND: [
+              {
+                checkIn: {
+                  lt: checkOutDate,
+                },
+              },
+              {
+                checkOut: {
+                  gt: checkInDate,
+                },
+              },
+              {
+                booking: {
+                  status: {
+                    not: "CANCELLED",
+                  },
+                },
+              },
+            ],
+          },
+        });
+
+        const availableCount = Math.max(
+          0,
+          (room.totalCount || 0) - overlappingBookingsCount
+        );
+
+        return {
+          ...room,
+          availableCount,
+          isAvailable: availableCount > 0,
+        };
+      })
+    );
 
     return handleSuccess(roomsWithAvailability);
   } catch (error) {
@@ -109,8 +99,15 @@ export async function POST(
   { params }: { params: { hotelId: string } }
 ) {
   try {
-    const { name, description, price, capacity, amenityIds, imageUrls } =
-      await request.json();
+    const {
+      name,
+      description,
+      price,
+      capacity,
+      totalCount,
+      amenityIds,
+      imageUrls,
+    } = await request.json();
 
     const room = await prisma.room.create({
       data: {
@@ -118,12 +115,73 @@ export async function POST(
         description,
         price: parseFloat(price),
         capacity: parseInt(capacity),
+        totalCount: parseInt(totalCount) || 0, // Default to 0 if not provided
         hotelId: params.hotelId,
         amenities: {
-          connect: amenityIds.map((id: string) => ({ id })),
+          connect: amenityIds?.map((id: string) => ({ id })) || [],
         },
         images: {
-          create: imageUrls.map((url: string) => ({ url })),
+          create: imageUrls?.map((url: string) => ({ url })) || [],
+        },
+      },
+      include: {
+        images: true,
+        amenities: true,
+      },
+    });
+
+    return handleSuccess(room);
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+// Update a room
+export async function PUT(
+  request: Request
+  // { params }: { params: { hotelId: string } }
+) {
+  try {
+    const {
+      id,
+      name,
+      description,
+      price,
+      capacity,
+      totalCount,
+      amenityIds,
+      imageUrls,
+    } = await request.json();
+
+    // First disconnect all existing amenities and delete existing images
+    await prisma.$transaction([
+      prisma.room.update({
+        where: { id },
+        data: {
+          amenities: {
+            set: [], // Disconnect all amenities
+          },
+        },
+      }),
+      prisma.roomImage.deleteMany({
+        where: { roomId: id },
+      }),
+    ]);
+
+    // Then update room with new data
+    const room = await prisma.room.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        price: parseFloat(price),
+        capacity: parseInt(capacity),
+        totalCount: parseInt(totalCount) || 0,
+        amenities: {
+          connect: amenityIds?.map((id: string) => ({ id })) || [],
+        },
+        images: {
+          create: imageUrls?.map((url: string) => ({ url })) || [],
         },
       },
       include: {

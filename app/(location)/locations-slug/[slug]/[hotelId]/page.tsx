@@ -30,7 +30,11 @@ export default async function HotelPage({
         include: {
           images: true,
           amenities: true,
-          bookings: true, // Add this line to include bookings
+          bookings: {
+            include: {
+              booking: true,
+            },
+          },
         },
       },
       images: true,

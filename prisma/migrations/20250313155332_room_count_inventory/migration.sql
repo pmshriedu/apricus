@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Room" ADD COLUMN     "totalCount" INTEGER NOT NULL DEFAULT 1;

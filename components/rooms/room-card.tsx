@@ -3,20 +3,32 @@
 import { useState, ReactNode } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Room, RoomImage, Amenity, RoomBooking } from "@prisma/client";
+import {
+  Room,
+  RoomImage,
+  Amenity,
+  RoomBooking,
+  BookingStatus,
+} from "@prisma/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/currency-formatter";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
-import { Bed, Users, Bath, Coffee, Wifi } from "lucide-react";
+import { Bed, Users, Bath, Coffee, Wifi, Calendar } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Carousel } from "@/components/ui/carousel";
 
 interface RoomWithImagesAndAmenities extends Room {
   images: RoomImage[];
   amenities: Amenity[];
-  bookings: RoomBooking[];
+  bookings: (RoomBooking & {
+    booking: {
+      status: BookingStatus;
+    };
+  })[];
+  availableCount?: number;
+  isAvailable?: boolean;
 }
 
 interface BookingDetails {
@@ -43,23 +55,15 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
   const mainImage =
     !imageError && room.images[0]?.url ? room.images[0].url : defaultImage;
 
-  // Check if room is available for the selected dates
-  const isRoomAvailable = () => {
-    if (!bookingDetails.checkIn || !bookingDetails.checkOut) return true;
+  // Use the provided availableCount from parent component or default to 0
+  const availableCount =
+    typeof room.availableCount !== "undefined" ? room.availableCount : 0;
 
-    const checkInDate = new Date(bookingDetails.checkIn);
-    const checkOutDate = new Date(bookingDetails.checkOut);
-
-    return !room.bookings.some((booking) => {
-      const bookingCheckIn = new Date(booking.checkIn);
-      const bookingCheckOut = new Date(booking.checkOut);
-
-      // Check for any overlap
-      return bookingCheckIn < checkOutDate && bookingCheckOut > checkInDate;
-    });
-  };
-
-  const isAvailable = isRoomAvailable();
+  // Use the provided isAvailable flag or calculate based on availableCount
+  const isAvailable =
+    typeof room.isAvailable !== "undefined"
+      ? room.isAvailable
+      : availableCount > 0;
 
   const validateBookingDetails = () => {
     if (!bookingDetails.checkIn || !bookingDetails.checkOut) {
@@ -71,7 +75,7 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
     if (bookingDetails.adults + bookingDetails.childrens > room.capacity) {
       return `This room's capacity (${room.capacity} guests) is not sufficient for your group`;
     }
-    if (!isAvailable) {
+    if (!isAvailable || availableCount <= 0) {
       return "This room is not available for the selected dates";
     }
     return null;
@@ -126,10 +130,14 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
     Bathroom: <Bath className="w-4 h-4" />,
   };
 
+  // // Show dates are selected but no rooms are available
+  // const datesSelectedNoRooms =
+  //   bookingDetails.checkIn && bookingDetails.checkOut && !isAvailable;
+
   return (
     <Card
       className={`group transition-all duration-300 hover:shadow-lg ${
-        !isAvailable ? "opacity-75 grayscale" : ""
+        !isAvailable || availableCount <= 0 ? "opacity-75 grayscale" : ""
       }`}
     >
       <div className="flex flex-col lg:flex-row">
@@ -143,7 +151,9 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
                   alt={room.name}
                   fill
                   className={`object-cover transition-transform duration-300 ${
-                    isAvailable ? "group-hover:scale-105" : ""
+                    isAvailable && availableCount > 0
+                      ? "group-hover:scale-105"
+                      : ""
                   }`}
                   onError={() => setImageError(true)}
                   priority={false}
@@ -192,8 +202,8 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
                 </p>
               </div>
 
-              {/* Room Capacity */}
-              <div className="flex items-center space-x-4">
+              {/* Room Capacity and Inventory */}
+              <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center space-x-2">
                   <Users className="w-5 h-5 text-primary" />
                   <span className="font-comfortaaMedium">
@@ -202,8 +212,19 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
                 </div>
                 {numberOfNights > 0 && (
                   <div className="flex items-center space-x-2">
+                    <Calendar className="w-5 h-5 text-primary" />
                     <span className="font-comfortaaMedium text-gray-600">
                       {numberOfNights} night{numberOfNights > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                )}
+                {/* Room inventory status */}
+                {bookingDetails.checkIn && bookingDetails.checkOut && (
+                  <div className="flex items-center space-x-2">
+                    <Bed className="w-5 h-5 text-primary" />
+                    <span className="font-comfortaaMedium text-gray-600">
+                      {availableCount} of {room.totalCount || 0} room
+                      {(room.totalCount || 0) > 1 ? "s" : ""} available
                     </span>
                   </div>
                 )}
@@ -238,34 +259,72 @@ const RoomCard = ({ room, bookingDetails }: RoomCardProps) => {
             </div>
 
             {/* Availability and Booking */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center space-x-2">
-                <div
-                  className={`w-2 h-2 ${
-                    isAvailable ? "bg-green-500" : "bg-red-500"
-                  } rounded-full`}
-                ></div>
-                <span
-                  className={`${
-                    isAvailable ? "text-green-600" : "text-red-600"
-                  } font-comfortaaMedium`}
-                >
-                  {isAvailable
-                    ? "Available for your dates"
-                    : "Not available for selected dates"}
-                </span>
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-8">
+                <div className="w-full sm:w-auto">
+                  <div className="mb-3">
+                    <h4 className="font-comfortaaSemiBold text-gray-800 text-lg">
+                      Room Availability
+                    </h4>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className={`p-1 rounded-md ${
+                        isAvailable && availableCount > 0
+                          ? "bg-green-100"
+                          : "bg-red-100"
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 ${
+                          isAvailable && availableCount > 0
+                            ? "bg-green-600"
+                            : "bg-red-600"
+                        } rounded-sm`}
+                      ></div>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-comfortaaBold text-gray-800">
+                        {isAvailable && availableCount > 0
+                          ? "Available"
+                          : "Unavailable"}
+                      </span>
+                      <span className="text-gray-600 text-sm font-comfortaaRegular">
+                        {!bookingDetails.checkIn || !bookingDetails.checkOut
+                          ? `${room.totalCount || 0} total room${
+                              (room.totalCount || 0) > 1 ? "s" : ""
+                            }`
+                          : isAvailable && availableCount > 0
+                          ? `${availableCount} of ${room.totalCount || 0} room${
+                              availableCount > 1 ? "s" : ""
+                            } available`
+                          : "Not available for selected dates"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full sm:w-auto flex flex-col">
+                  {numberOfNights > 0 && (
+                    <span className="text-right mb-2 text-gray-600 font-comfortaaRegular">
+                      {formatCurrency(totalPrice)} total for {numberOfNights}{" "}
+                      night{numberOfNights > 1 ? "s" : ""}
+                    </span>
+                  )}
+                  <Button
+                    onClick={handleBookNow}
+                    disabled={!isAvailable || availableCount <= 0}
+                    className={`w-full sm:w-auto font-comfortaaBold px-10 py-3 rounded-md ${
+                      isAvailable && availableCount > 0
+                        ? "bg-primary hover:bg-primary/90 text-white shadow-sm hover:shadow transition-all duration-300"
+                        : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    {isAvailable && availableCount > 0
+                      ? "Reserve Now"
+                      : "Unavailable"}
+                  </Button>
+                </div>
               </div>
-              <Button
-                onClick={handleBookNow}
-                disabled={!isAvailable}
-                className={`w-full sm:w-auto font-comfortaaBold px-8 py-2.5 ${
-                  isAvailable
-                    ? "bg-primary hover:bg-primary/90 text-white"
-                    : "bg-gray-400 cursor-not-allowed text-white"
-                }`}
-              >
-                {isAvailable ? "Book Now" : "Unavailable"}
-              </Button>
             </div>
           </div>
         </CardContent>

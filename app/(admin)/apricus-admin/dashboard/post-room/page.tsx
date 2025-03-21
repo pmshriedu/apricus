@@ -481,7 +481,7 @@ export default function RoomManagement() {
                       {room.name}
                     </TableCell>
                     <TableCell className="font-comfortaaRegular">
-                      ${room.price.toFixed(2)}
+                      ₹{room.price.toFixed(2)}
                     </TableCell>
                     <TableCell className="font-comfortaaRegular">
                       {room.capacity}

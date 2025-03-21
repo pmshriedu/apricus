@@ -37,48 +37,48 @@ const properties: Property[] = [
 
     url: "/contact-us",
   },
-  {
-    title: "Veggie Delight Varca",
-    imageUrl: "/images/dining1.jpg",
-    content:
-      "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
-    address: "Varca, Goa",
-    hours: "11am - 10pm",
-    cuisine: "Multi-Cuisine, Vegetarian",
-    url: "/the-center-court/cc-dine",
-  },
-  {
-    title: "Ambrosia",
-    subtitle: "The Multi Cuisine Restaurant",
-    imageUrl: "/images/bliss/res1.jpg",
-    content:
-      "A speciality multi-cuisine restaurant offering a wide and varied choice of both International and Indian cuisine. Experience the perfect blend of flavors in an elegant dining atmosphere, where each dish is crafted to perfection by our expert chefs.",
-    address: "Hotel Bliss Ganga, Rishikesh",
-    hours: "7:00 AM - 11:00 PM",
-    cuisine: "International, Indian",
-    url: "/bliss-ganga/bg-dine",
-  },
-  {
-    title: "Bliss Cafe",
-    subtitle: "Rooftop Cafe & Lounge",
-    imageUrl: "/images/bliss/res2.jpg",
-    content:
-      "Our Rooftop cafe offers a glimpse of Haridwar. A rejuvenating evening, complete with delicious food and piping hot beverages, awaits you at Bliss Cafe. Enjoy panoramic views while savoring our carefully curated menu of beverages and light meals.",
-    address: "Rooftop, Hotel Bliss Ganga",
-    hours: "8:00 AM - 10:00 PM",
-    cuisine: "Cafe, Beverages, Light Meals",
-    url: "/bliss-ganga/bg-dine",
-  },
-  {
-    title: "Veggie Delight Varca",
-    imageUrl: "/images/dining1.jpg",
-    content:
-      "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
-    address: "Varca, Goa",
-    hours: "11am - 10pm",
-    cuisine: "Multi-Cuisine, Vegetarian",
-    url: "/the-center-court/cc-dine",
-  },
+  // {
+  //   title: "Veggie Delight Varca",
+  //   imageUrl: "/images/dining1.jpg",
+  //   content:
+  //     "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
+  //   address: "Varca, Goa",
+  //   hours: "11am - 10pm",
+  //   cuisine: "Multi-Cuisine, Vegetarian",
+  //   url: "/the-center-court/cc-dine",
+  // },
+  // {
+  //   title: "Ambrosia",
+  //   subtitle: "The Multi Cuisine Restaurant",
+  //   imageUrl: "/images/bliss/res1.jpg",
+  //   content:
+  //     "A speciality multi-cuisine restaurant offering a wide and varied choice of both International and Indian cuisine. Experience the perfect blend of flavors in an elegant dining atmosphere, where each dish is crafted to perfection by our expert chefs.",
+  //   address: "Hotel Bliss Ganga, Rishikesh",
+  //   hours: "7:00 AM - 11:00 PM",
+  //   cuisine: "International, Indian",
+  //   url: "/bliss-ganga/bg-dine",
+  // },
+  // {
+  //   title: "Bliss Cafe",
+  //   subtitle: "Rooftop Cafe & Lounge",
+  //   imageUrl: "/images/bliss/res2.jpg",
+  //   content:
+  //     "Our Rooftop cafe offers a glimpse of Haridwar. A rejuvenating evening, complete with delicious food and piping hot beverages, awaits you at Bliss Cafe. Enjoy panoramic views while savoring our carefully curated menu of beverages and light meals.",
+  //   address: "Rooftop, Hotel Bliss Ganga",
+  //   hours: "8:00 AM - 10:00 PM",
+  //   cuisine: "Cafe, Beverages, Light Meals",
+  //   url: "/bliss-ganga/bg-dine",
+  // },
+  // {
+  //   title: "Veggie Delight Varca",
+  //   imageUrl: "/images/dining1.jpg",
+  //   content:
+  //     "Indulge in a culinary journey at our beautifully designed restaurant, The Veggie Delight, where every dining experience is special. Savor multi-cuisine vegetarian and non-vegetarian dishes prepared with the freshest local ingredients.",
+  //   address: "Varca, Goa",
+  //   hours: "11am - 10pm",
+  //   cuisine: "Multi-Cuisine, Vegetarian",
+  //   url: "/the-center-court/cc-dine",
+  // },
 ];
 
 const DiningPage: React.FC = () => {

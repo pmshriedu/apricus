@@ -16,6 +16,8 @@ import {
   LocateIcon,
   HotelIcon,
   House,
+  BedDouble,
+  ChartArea,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -106,6 +108,10 @@ const getNavData = () => ({
           title: "Reservations",
           url: "/apricus-admin/dashboard/bookings",
         },
+        {
+          title: "Booking Status",
+          url: "/apricus-admin/dashboard/booking-status",
+        },
       ],
     },
 
@@ -115,6 +121,10 @@ const getNavData = () => ({
       icon: Users,
       isActive: false,
       items: [
+        {
+          title: "Manage Users",
+          url: "/apricus-admin/dashboard/user-management",
+        },
         {
           title: "Register User",
           url: "/apricus-admin/dashboard/user-register",
@@ -166,6 +176,18 @@ const getNavData = () => ({
       ],
     },
     {
+      title: "Rooms Inventory",
+      url: "#",
+      icon: BedDouble,
+      isActive: false,
+      items: [
+        {
+          title: "View/Edit Inventory",
+          url: "/apricus-admin/dashboard/post-room/inventory",
+        },
+      ],
+    },
+    {
       title: "Coupons",
       url: "#",
       icon: HotelIcon,
@@ -174,6 +196,18 @@ const getNavData = () => ({
         {
           title: "Add Coupons",
           url: "/apricus-admin/dashboard/coupons-post",
+        },
+      ],
+    },
+    {
+      title: "Reports",
+      url: "#",
+      icon: ChartArea,
+      isActive: false,
+      items: [
+        {
+          title: "View/Generate Reports",
+          url: "/apricus-admin/dashboard/reports",
         },
       ],
     },

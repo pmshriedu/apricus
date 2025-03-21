@@ -76,9 +76,13 @@ const standardNavItems: NavItem[] = [
   },
   {
     label: "Clubs/Dining",
-    href: "/dinings",
     icon: <UtensilsCrossed className="w-4 h-4" />,
+    subItems: [
+      { label: "Craft Kitchen & Bar", href: "/dinings/craft-kitchen" },
+      { label: "Zuki Club", href: "/dinings/zuki" },
+    ],
   },
+
   {
     label: "Events",
     href: "/events",
