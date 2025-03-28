@@ -35,8 +35,7 @@ export async function POST(request: NextRequest) {
     console.log("Amount in paise:", amountInPaise);
 
     // Build the absolute callback URL with fallback to localhost if env var is missing
-    const baseUrl =
-      process.env.NEXT_PUBLIC_APP_URL || "https://www.apricushotels.com/";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const callbackUrl = `${baseUrl}/api/plural/callback`;
 
     console.log("Using callback URL:", callbackUrl);

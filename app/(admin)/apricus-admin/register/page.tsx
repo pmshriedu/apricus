@@ -7,13 +7,14 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import { Toaster } from "@/components/ui/toaster";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   Form,
@@ -23,9 +24,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { UserPlus, Loader2, EyeOff, Eye } from "lucide-react";
-import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 const registerSchema = z.object({
   name: z
@@ -44,6 +52,7 @@ const registerSchema = z.object({
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
       "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character"
     ),
+  role: z.enum(["STAFF", "ADMIN"]),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
@@ -53,6 +62,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -60,6 +70,7 @@ export default function RegisterPage() {
       name: "",
       email: "",
       password: "",
+      role: "STAFF",
     },
   });
 
@@ -79,8 +90,29 @@ export default function RegisterPage() {
         throw new Error(data.error || "Failed to register");
       }
 
-      router.push("/apricus-admin/auth");
+      // Show success toast
+      toast({
+        title: "User Account Created",
+        description: `${values.name} has been registered as ${values.role}`,
+        variant: "default",
+      });
+
+      // Reset form
+      form.reset();
+
+      // Redirect after a short delay to allow toast to be visible
+      setTimeout(() => {
+        router.push("/apricus-admin/dashboard/user-register");
+      }, 1500);
     } catch (err) {
+      // Show error toast
+      toast({
+        title: "Registration Failed",
+        description:
+          err instanceof Error ? err.message : "An unexpected error occurred",
+        variant: "destructive",
+      });
+
       setError(
         err instanceof Error ? err.message : "An unexpected error occurred"
       );
@@ -90,17 +122,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    <div className="min-h-[80vh] bg-gray-50 flex items-center justify-center p-4">
+      <Toaster />
       <Card className="w-full max-w-lg shadow-lg">
         <CardHeader className="space-y-2 text-center">
           <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
             <UserPlus className="w-8 h-8 text-primary" />
           </div>
           <CardTitle className="font-comfortaaBold text-3xl">
-            Create Admin Account
+            Create User Account
           </CardTitle>
           <CardDescription className="font-comfortaaRegular text-gray-600">
-            Register a new administrator account for Apricus Hotels
+            Register a new staff or admin account for Apricus Hotels
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -124,7 +157,7 @@ export default function RegisterPage() {
                     <FormControl>
                       <Input
                         {...field}
-                        placeholder="Apricus Admin"
+                        placeholder="Enter full name"
                         className="font-comfortaaRegular"
                         disabled={isLoading}
                         autoComplete="name"
@@ -146,7 +179,7 @@ export default function RegisterPage() {
                       <Input
                         {...field}
                         type="email"
-                        placeholder="admin@apricushotels.com"
+                        placeholder="email@apricushotels.com"
                         className="font-comfortaaRegular"
                         disabled={isLoading}
                         autoComplete="email"
@@ -168,16 +201,16 @@ export default function RegisterPage() {
                       <div className="relative">
                         <Input
                           {...field}
-                          type={showPassword ? "text" : "password"} // Toggle input type
+                          type={showPassword ? "text" : "password"}
                           placeholder="Create a strong password"
-                          className="font-comfortaaRegular pr-10" // Add padding for the icon
+                          className="font-comfortaaRegular pr-10"
                           disabled={isLoading}
                           autoComplete="new-password"
                         />
                         <button
                           type="button"
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                          onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                          onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
                             <EyeOff className="h-5 w-5 text-gray-400" />
@@ -187,6 +220,41 @@ export default function RegisterPage() {
                         </button>
                       </div>
                     </FormControl>
+                    <FormMessage className="font-comfortaaLight" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="font-comfortaaMedium">Role</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      disabled={isLoading}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="font-comfortaaRegular">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem
+                          value="STAFF"
+                          className="font-comfortaaRegular"
+                        >
+                          Staff
+                        </SelectItem>
+                        <SelectItem
+                          value="ADMIN"
+                          className="font-comfortaaRegular"
+                        >
+                          Admin
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage className="font-comfortaaLight" />
                   </FormItem>
                 )}
@@ -211,17 +279,6 @@ export default function RegisterPage() {
             </form>
           </Form>
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-600 font-comfortaaLight">
-            Already have an account?{" "}
-            <Link
-              href="/apricus-admin/auth"
-              className="text-primary hover:underline font-comfortaaMedium"
-            >
-              Sign in
-            </Link>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );

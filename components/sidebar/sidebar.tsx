@@ -53,15 +53,8 @@ import {
 } from "@/components/ui/sidebar";
 import { useRouter } from "next/navigation";
 
-const getNavData = () => ({
-  teams: [
-    {
-      name: "Apricus Hotel",
-      logo: Hotel,
-      plan: "Premium Resort",
-    },
-  ],
-  navMain: [
+const getNavData = (role: string) => {
+  const adminNavItems = [
     {
       title: "Dashboard",
       url: "#",
@@ -114,7 +107,6 @@ const getNavData = () => ({
         },
       ],
     },
-
     {
       title: "Users",
       url: "#",
@@ -211,19 +203,125 @@ const getNavData = () => ({
         },
       ],
     },
-  ],
-});
+  ];
+
+  const staffNavItems = [
+    {
+      title: "Dashboard",
+      url: "#",
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: "Overview",
+          url: "/apricus-admin/dashboard",
+        },
+      ],
+    },
+    {
+      title: "Enquiries",
+      url: "#",
+      icon: Home,
+      isActive: true,
+      items: [
+        {
+          title: "Enquiry Details",
+          url: "/apricus-admin/dashboard/enquiry",
+        },
+      ],
+    },
+    {
+      title: "Bookings",
+      url: "#",
+      icon: Calendar,
+      isActive: false,
+      items: [
+        {
+          title: "Reservations",
+          url: "/apricus-admin/dashboard/bookings",
+        },
+        {
+          title: "Booking Status",
+          url: "/apricus-admin/dashboard/booking-status",
+        },
+      ],
+    },
+    {
+      title: "Rooms & Amenities",
+      url: "#",
+      icon: House,
+      isActive: false,
+      items: [
+        {
+          title: "View Room Chart",
+          url: "/apricus-admin/dashboard/calender-view",
+        },
+      ],
+    },
+    {
+      title: "Rooms Inventory",
+      url: "#",
+      icon: BedDouble,
+      isActive: false,
+      items: [
+        {
+          title: "View Inventory",
+          url: "/apricus-admin/dashboard/post-room/inventory",
+        },
+      ],
+    },
+    {
+      title: "Reports",
+      url: "#",
+      icon: ChartArea,
+      isActive: false,
+      items: [
+        {
+          title: "View Reports",
+          url: "/apricus-admin/dashboard/reports",
+        },
+      ],
+    },
+  ];
+
+  return {
+    teams: [
+      {
+        name: "Apricus Hotel",
+        logo: Hotel,
+        plan: role === "ADMIN" ? "Super Admin" : "Staff Access",
+      },
+    ],
+    navMain: role === "ADMIN" ? adminNavItems : staffNavItems,
+  };
+};
 
 export default function ApricusSidebar() {
   const { data: session } = useSession();
-  const [activeTeam, setActiveTeam] = React.useState(getNavData().teams[0]);
-  const data = getNavData();
+  const userRole = session?.user?.role || "STAFF";
+  const [activeTeam, setActiveTeam] = React.useState(() => ({
+    name: "Apricus Hotel",
+    logo: Hotel,
+    plan: userRole === "ADMIN" ? "Super Admin" : "Staff Access",
+  }));
+
+  const data = getNavData(userRole);
   const router = useRouter();
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
     router.replace("/");
   };
+
+  // Re-run the team initialization if the user role changes
+  React.useEffect(() => {
+    setActiveTeam({
+      name: "Apricus Hotel",
+      logo: Hotel,
+      plan: userRole === "ADMIN" ? "Super Admin" : "Staff Access",
+    });
+  }, [userRole]);
+
   return (
     <Sidebar
       collapsible="icon"
@@ -277,15 +375,19 @@ export default function ApricusSidebar() {
                     <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuSeparator className="bg-accent/20" />
-                <DropdownMenuItem className="gap-2 p-2 hover:bg-accent/10">
-                  <div className="flex size-6 items-center justify-center rounded-md border border-primary bg-secondary">
-                    <Plus className="size-4 text-primary" />
-                  </div>
-                  <div className="font-comfortaaMedium text-primary">
-                    Add Property
-                  </div>
-                </DropdownMenuItem>
+                {userRole === "ADMIN" && (
+                  <>
+                    <DropdownMenuSeparator className="bg-accent/20" />
+                    <DropdownMenuItem className="gap-2 p-2 hover:bg-accent/10">
+                      <div className="flex size-6 items-center justify-center rounded-md border border-primary bg-secondary">
+                        <Plus className="size-4 text-primary" />
+                      </div>
+                      <div className="font-comfortaaMedium text-primary">
+                        Add Property
+                      </div>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

@@ -37,13 +37,16 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 
+type User = {
+  id: string;
+  role: "STAFF" | "ADMIN";
+};
 // Type definitions remain the same...
 type Booking = {
   id: string;
@@ -86,10 +89,22 @@ export default function BookingsDashboard() {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
-
+  const [user, setUser] = useState<User | null>(null);
   const itemsPerPage = 10;
 
   useEffect(() => {
+    // Fetch current user's information
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch("/api/user");
+        const userData = await response.json();
+        setUser(userData);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
     fetchBookings();
   }, []);
 
@@ -384,17 +399,19 @@ export default function BookingsDashboard() {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                setDeleteId(booking.id);
-                                setIsDeleteDialogOpen(true);
-                              }}
-                              className="bg-red-500 hover:bg-red-600"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {user?.role === "ADMIN" && (
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setDeleteId(booking.id);
+                                  setIsDeleteDialogOpen(true);
+                                }}
+                                className="bg-red-500 hover:bg-red-600"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
@@ -744,7 +761,7 @@ export default function BookingsDashboard() {
 
                 <Separator />
 
-                <DialogFooter className="flex justify-between items-center gap-4">
+                {/* <DialogFooter className="flex justify-between items-center gap-4">
                   <Button
                     variant="outline"
                     onClick={() => setIsDetailModalOpen(false)}
@@ -774,7 +791,7 @@ export default function BookingsDashboard() {
                       </Button>
                     </div>
                   )}
-                </DialogFooter>
+                </DialogFooter> */}
               </div>
             )}
           </DialogContent>
