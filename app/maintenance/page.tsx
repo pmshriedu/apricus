@@ -1,12 +1,12 @@
 import MaintenancePage from "@/components/maintenance";
 import React from "react";
 
-const Page = () => {
+const Maintenance = () => {
   return (
-    <div>
+    <>
       <MaintenancePage />
-    </div>
+    </>
   );
 };
 
-export default Page;
+export default Maintenance;

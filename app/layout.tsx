@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import NavigationWrapper from "@/components/nav-wrapper";
+// import NavigationWrapper from "@/components/nav-wrapper";
 import { Providers } from "@/components/providers/providers";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -127,7 +127,7 @@ export default function RootLayout({
         className={`${comfortaaBold.variable} ${comfortaaRegular.variable} ${comfortaaLight.variable} ${comfortaaMedium.variable} ${lucidaUnicodeCalligraphy.variable} antialiased overflow-x-hidden min-h-screen w-full`}
       >
         <Providers>
-          <NavigationWrapper>{children}</NavigationWrapper>
+          {children}
           <Toaster />
         </Providers>
       </body>
