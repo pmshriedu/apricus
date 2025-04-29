@@ -4,6 +4,7 @@ import "./globals.css";
 // import NavigationWrapper from "@/components/nav-wrapper";
 import { Providers } from "@/components/providers/providers";
 import { Toaster } from "@/components/ui/toaster";
+import NavigationWrapper from "@/components/nav-wrapper";
 
 const comfortaaBold = localFont({
   src: "./fonts/Comfortaa-Bold.ttf",
@@ -127,7 +128,7 @@ export default function RootLayout({
         className={`${comfortaaBold.variable} ${comfortaaRegular.variable} ${comfortaaLight.variable} ${comfortaaMedium.variable} ${lucidaUnicodeCalligraphy.variable} antialiased overflow-x-hidden min-h-screen w-full`}
       >
         <Providers>
-          {children}
+          <NavigationWrapper>{children}</NavigationWrapper>
           <Toaster />
         </Providers>
       </body>
